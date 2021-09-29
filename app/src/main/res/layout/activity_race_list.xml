@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ie.wit.recipeappv1.activities.RecipeListActivity">
+    tools:context="ie.wit.runappv1.activities.RaceListActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"

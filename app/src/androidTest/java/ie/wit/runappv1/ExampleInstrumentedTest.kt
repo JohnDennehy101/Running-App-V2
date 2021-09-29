@@ -1,4 +1,4 @@
-package ie.wit.recipeappv1
+package ie.wit.runappv1
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

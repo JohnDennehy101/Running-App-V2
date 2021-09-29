@@ -6,21 +6,21 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import ie.wit.recipeappv1.databinding.ActivityRecipeListBinding
-import ie.wit.recipeappv1.databinding.CardRecipeBinding
-import ie.wit.recipeappv1.main.MainApp
-import ie.wit.recipeappv1.models.RecipeModel
+import ie.wit.runappv1.databinding.ActivityRaceListBinding
+import ie.wit.runappv1.databinding.CardRaceBinding
+import ie.wit.runappv1.main.MainApp
+import ie.wit.runappv1.models.RaceModel
 
 //import ie.wit.recipeappv1.models.PlacemarkModel
 
 class RecipeListActivity : AppCompatActivity() {
 
     lateinit var app: MainApp
-    private lateinit var binding: ActivityRecipeListBinding
+    private lateinit var binding: ActivityRaceListBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityRecipeListBinding.inflate(layoutInflater)
+        binding = ActivityRaceListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         app = application as MainApp
@@ -31,27 +31,27 @@ class RecipeListActivity : AppCompatActivity() {
     }
 }
 
-class PlacemarkAdapter constructor(private var recipes: List<RecipeModel>) :
-    RecyclerView.Adapter<PlacemarkAdapter.MainHolder>() {
+class RaceAdapter constructor(private var races: List<RaceModel>) :
+    RecyclerView.Adapter<RaceAdapter.MainHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainHolder {
-        val binding = CardRecipeBinding
+        val binding = CardRaceBinding
             .inflate(LayoutInflater.from(parent.context), parent, false)
 
         return MainHolder(binding)
     }
 
     override fun onBindViewHolder(holder: MainHolder, position: Int) {
-        val recipe = recipes[holder.adapterPosition]
+        val recipe = races[holder.adapterPosition]
         holder.bind(recipe)
     }
 
-    override fun getItemCount(): Int = recipes.size
+    override fun getItemCount(): Int = races.size
 
-    class MainHolder(private val binding : CardRecipeBinding) :
+    class MainHolder(private val binding : CardRaceBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(recipe: RecipeModel) {
+        fun bind(race: RaceModel) {
             //binding.placemarkTitle.text = placemark.title
             //binding.description.text = placemark.description
         }

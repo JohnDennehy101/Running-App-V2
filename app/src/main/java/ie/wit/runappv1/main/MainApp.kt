@@ -1,4 +1,4 @@
-package ie.wit.recipeappv1.main
+package ie.wit.runappv1.main
 
 import android.app.Application
 import timber.log.Timber

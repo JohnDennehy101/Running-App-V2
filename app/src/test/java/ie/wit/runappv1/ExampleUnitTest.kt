@@ -1,4 +1,4 @@
-package ie.wit.recipeappv1
+package ie.wit.runappv1
 
 import org.junit.Test
 

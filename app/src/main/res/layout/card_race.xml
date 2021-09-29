@@ -13,7 +13,7 @@
         android:padding="16dp">
 
         <TextView
-            android:id="@+id/recipeTitle"
+            android:id="@+id/raceTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -21,10 +21,10 @@
             tools:text="A Title" />
 
         <TextView
-            android:id="@+id/description"
+            android:id="@+id/raceDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/recipeTitle"
+            android:layout_below="@id/raceTitle"
             tools:text="A Description" />
 
     </RelativeLayout>
