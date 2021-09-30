@@ -1,24 +1,22 @@
-package ie.wit.runappv1.adapters
+package ie.wit.runappv1.activities
+
 
 import RaceAdapter
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import ie.wit.runappv1.databinding.ActivityRaceListBinding
-import ie.wit.runappv1.databinding.CardRaceBinding
-import ie.wit.runappv1.main.MainApp
-import ie.wit.runappv1.models.RaceModel
+
 import android.view.Menu
 import android.view.MenuItem
+import androidx.recyclerview.widget.LinearLayoutManager
+
+import ie.wit.runappv1.databinding.ActivityRaceListBinding
+import ie.wit.runappv1.main.MainApp
+
 import ie.wit.runappv1.R
-import ie.wit.runappv1.activities.RaceActivity
 
 
-class RecipeListActivity : AppCompatActivity() {
+class RaceListActivity : AppCompatActivity() {
 
     lateinit var app: MainApp
     private lateinit var binding: ActivityRaceListBinding
@@ -34,7 +32,7 @@ class RecipeListActivity : AppCompatActivity() {
 
         val layoutManager = LinearLayoutManager(this)
         binding.recyclerView.layoutManager = layoutManager
-        binding.recyclerView.adapter = RaceAdapter()
+        binding.recyclerView.adapter = RaceAdapter(app.races.findAll())
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

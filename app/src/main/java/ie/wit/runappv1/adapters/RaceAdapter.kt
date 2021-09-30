@@ -25,7 +25,7 @@ class RaceAdapter constructor(private var races: List<RaceModel>) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(race: RaceModel) {
-            //binding.placemarkTitle.text = placemark.title
+            binding.raceTitle.text = race.title
             //binding.description.text = placemark.description
         }
     }

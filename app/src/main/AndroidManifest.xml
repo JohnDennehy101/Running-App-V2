@@ -10,7 +10,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RaceAppV1">
-        <activity android:name=".activities.RaceListActivity"
+        <activity android:name="ie.wit.runappv1.activities.RaceListActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
