@@ -2,6 +2,7 @@ package ie.wit.runappv1.activities
 
 
 import RaceAdapter
+import RaceListener
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -14,9 +15,10 @@ import ie.wit.runappv1.databinding.ActivityRaceListBinding
 import ie.wit.runappv1.main.MainApp
 
 import ie.wit.runappv1.R
+import ie.wit.runappv1.models.RaceModel
 
 
-class RaceListActivity : AppCompatActivity() {
+class RaceListActivity : AppCompatActivity(), RaceListener {
 
     lateinit var app: MainApp
     private lateinit var binding: ActivityRaceListBinding
@@ -32,7 +34,7 @@ class RaceListActivity : AppCompatActivity() {
 
         val layoutManager = LinearLayoutManager(this)
         binding.recyclerView.layoutManager = layoutManager
-        binding.recyclerView.adapter = RaceAdapter(app.races.findAll())
+        binding.recyclerView.adapter = RaceAdapter(app.races.findAll(),this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -47,6 +49,12 @@ class RaceListActivity : AppCompatActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onRaceClick(race: RaceModel) {
+        val launcherIntent = Intent(this, RaceActivity::class.java)
+        launcherIntent.putExtra("race_edit", race)
+        startActivityForResult(launcherIntent,0)
     }
 }
 
