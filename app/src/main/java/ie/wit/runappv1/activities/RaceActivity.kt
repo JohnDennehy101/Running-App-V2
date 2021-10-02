@@ -37,14 +37,14 @@ class RaceActivity : AppCompatActivity() {
             race = intent.extras?.getParcelable("race_edit")!!
             binding.raceTitle.setText(race.title)
             binding.raceDescription.setText(race.description)
+            binding.raceDatePicker.setText(race.raceDate)
             binding.btnAdd.setText("Edit Race")
         }
 
-        val c = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
 
-        val builder :
-                MaterialDatePicker.Builder<Long> = MaterialDatePicker.Builder.datePicker()
-        builder.setTitleText("Select a Date")
+
+        val builder : MaterialDatePicker.Builder<Long> = MaterialDatePicker.Builder.datePicker()
+//        builder.setTitleText("Select a Date")
         builder.setCalendarConstraints(
             limitRange().build()
         )
@@ -52,9 +52,11 @@ class RaceActivity : AppCompatActivity() {
 
         val picker : MaterialDatePicker<Long> = builder.build()
 
+        val count = Math.random()
+
         binding.raceDatePicker.setOnClickListener {
 
-            picker.show(supportFragmentManager, picker.toString())
+            picker.show(supportFragmentManager, count.toString())
         }
 
         picker.addOnPositiveButtonClickListener {
@@ -69,7 +71,12 @@ class RaceActivity : AppCompatActivity() {
         binding.btnAdd.setOnClickListener() {
             race.title = binding.raceTitle.text.toString()
             race.description = binding.raceDescription.text.toString()
-            if (race.title.isNotEmpty() && !intent.hasExtra("race_edit")) {
+//            race.raceDate = LocalDate.of(binding.raceDatePicker.text.substring(binding.raceDatePicker.text.length - 4).toInt(), binding.raceDatePicker.text.substring(3,5).toInt(), binding.raceDatePicker.text.substring(0,2).toInt())
+            race.raceDate = binding.raceDatePicker.text.toString()
+
+           
+
+            if (race.title.isNotEmpty() && race.raceDate.isNotEmpty() && !intent.hasExtra("race_edit")) {
                 app.races.create(race.copy())
                 setResult(RESULT_OK)
                 finish()
@@ -108,14 +115,15 @@ class RaceActivity : AppCompatActivity() {
 
         val currentDateTime = LocalDateTime.now()
 
+        System.out.println(currentDateTime)
+
 
         val year = currentDateTime.toString().substring(0,4).toInt()
         val day = currentDateTime.toString().substring(8,10).toInt()
-        System.out.println(day)
         val month = currentDateTime.toString().substring(5,7).toInt()
-        System.out.println(month)
 
-        calendarStart.set(year, month -1, day)
+
+        calendarStart.set(year, month-1, day)
         calendarEnd.set(year + 1, 12, 31)
 
         val minDate = calendarStart.timeInMillis

@@ -15,8 +15,8 @@ class RaceAdapter constructor(private var races: List<RaceModel>, private val li
     }
 
     override fun onBindViewHolder(holder: MainHolder, position: Int) {
-        val recipe = races[holder.adapterPosition]
-        holder.bind(recipe, listener)
+        val race = races[holder.adapterPosition]
+        holder.bind(race, listener)
     }
 
     override fun getItemCount(): Int = races.size
@@ -27,6 +27,7 @@ class RaceAdapter constructor(private var races: List<RaceModel>, private val li
         fun bind(race: RaceModel, listener: RaceListener) {
             binding.raceTitle.text = race.title
             binding.raceDescription.text = race.description
+            binding.raceDate.text = race.raceDate
             binding.root.setOnClickListener { listener.onRaceClick(race) }
         }
     }
