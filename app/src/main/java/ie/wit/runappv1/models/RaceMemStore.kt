@@ -26,6 +26,7 @@ class RaceMemStore : RaceStore {
         if (foundRace != null) {
             foundRace.title = race.title
             foundRace.description = race.description
+            foundRace.raceDate = race.raceDate
             logAll()
         }
     }

@@ -13,7 +13,8 @@ import ie.wit.runappv1.R
 import ie.wit.runappv1.main.MainApp
 import ie.wit.runappv1.databinding.ActivityRaceBinding
 import ie.wit.runappv1.models.RaceModel
-import java.time.LocalDateTime
+import java.time.*
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 
@@ -44,10 +45,26 @@ class RaceActivity : AppCompatActivity() {
 
 
         val builder : MaterialDatePicker.Builder<Long> = MaterialDatePicker.Builder.datePicker()
-//        builder.setTitleText("Select a Date")
-        builder.setCalendarConstraints(
-            limitRange().build()
-        )
+
+
+            builder.setCalendarConstraints(
+                limitRange().build()
+            )
+
+        if (intent.hasExtra("race_edit")) {
+            race = intent.extras?.getParcelable("race_edit")!!
+            if (race.raceDate.substring(0,2).contains("/")) {
+                race.raceDate = '0' + race.raceDate
+            }
+
+            var formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")
+            var date = LocalDateTime.parse(race.raceDate + " 01:00:01", formatter)
+            val instant: Instant = date.atZone(ZoneId.systemDefault()).toInstant()
+            val timeInMillis: Long = instant.toEpochMilli()
+
+
+            builder.setSelection(timeInMillis)
+        }
 
 
         val picker : MaterialDatePicker<Long> = builder.build()
@@ -74,7 +91,7 @@ class RaceActivity : AppCompatActivity() {
 //            race.raceDate = LocalDate.of(binding.raceDatePicker.text.substring(binding.raceDatePicker.text.length - 4).toInt(), binding.raceDatePicker.text.substring(3,5).toInt(), binding.raceDatePicker.text.substring(0,2).toInt())
             race.raceDate = binding.raceDatePicker.text.toString()
 
-           
+
 
             if (race.title.isNotEmpty() && race.raceDate.isNotEmpty() && !intent.hasExtra("race_edit")) {
                 app.races.create(race.copy())
