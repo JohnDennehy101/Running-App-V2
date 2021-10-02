@@ -27,6 +27,7 @@ class RaceMemStore : RaceStore {
             foundRace.title = race.title
             foundRace.description = race.description
             foundRace.raceDate = race.raceDate
+            foundRace.raceDistance = race.raceDistance
             logAll()
         }
     }

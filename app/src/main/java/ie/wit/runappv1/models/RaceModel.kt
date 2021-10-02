@@ -10,5 +10,6 @@ data class RaceModel(
     var id: Long = 0,
     var title: String = "",
     var description: String = "",
-    var raceDate: String = ""
+    var raceDate: String = "",
+    var raceDistance: String = ""
 ) : Parcelable

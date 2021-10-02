@@ -28,6 +28,7 @@ class RaceAdapter constructor(private var races: List<RaceModel>, private val li
             binding.raceTitle.text = race.title
             binding.raceDescription.text = race.description
             binding.raceDate.text = race.raceDate
+            binding.raceDistance.text = race.raceDistance
             binding.root.setOnClickListener { listener.onRaceClick(race) }
         }
     }

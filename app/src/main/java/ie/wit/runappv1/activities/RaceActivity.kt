@@ -40,6 +40,7 @@ class RaceActivity : AppCompatActivity() {
             binding.raceTitle.setText(race.title)
             binding.raceDescription.setText(race.description)
             binding.raceDatePicker.setText(race.raceDate)
+            binding.menuAutocomplete.setText(race.raceDistance)
             binding.btnAdd.setText("Edit Race")
         }
 
@@ -96,6 +97,7 @@ class RaceActivity : AppCompatActivity() {
             race.description = binding.raceDescription.text.toString()
 //            race.raceDate = LocalDate.of(binding.raceDatePicker.text.substring(binding.raceDatePicker.text.length - 4).toInt(), binding.raceDatePicker.text.substring(3,5).toInt(), binding.raceDatePicker.text.substring(0,2).toInt())
             race.raceDate = binding.raceDatePicker.text.toString()
+            race.raceDistance = binding.menuAutocomplete.text.toString()
 
 
 
