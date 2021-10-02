@@ -5,6 +5,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ArrayAdapter
 import com.google.android.material.datepicker.CalendarConstraints
 
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -83,6 +84,11 @@ class RaceActivity : AppCompatActivity() {
             binding.raceDatePicker.setText("${calendar.get(Calendar.DAY_OF_MONTH)}/" +
                     "${calendar.get(Calendar.MONTH) + 1}/${calendar.get(Calendar.YEAR)}")
         }
+
+        val items = listOf("1km", "5km", "8km", "10km", "Half Marathon (21km)", "Marathon (42km)")
+        val adapter = ArrayAdapter(this, R.layout.race_length_list_item, items)
+
+        binding.menuAutocomplete.setAdapter(adapter)
 
 
         binding.btnAdd.setOnClickListener() {
