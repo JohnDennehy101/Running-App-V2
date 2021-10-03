@@ -1,11 +1,19 @@
 package ie.wit.runappv1.activities
+import android.R.attr
+import android.app.Activity
+import android.content.Intent
+import android.graphics.Bitmap
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
+import android.provider.MediaStore
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ArrayAdapter
+import android.widget.Toast
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import com.google.android.material.datepicker.CalendarConstraints
 
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -17,10 +25,17 @@ import ie.wit.runappv1.models.RaceModel
 import java.time.*
 import java.time.format.DateTimeFormatter
 import java.util.*
+import android.R.attr.data
+import android.net.Uri
+import android.R.attr.data
+import android.view.View
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
 
 
 class RaceActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRaceBinding
+    private var requestCodeValue : Int = 55
     var race = RaceModel()
     lateinit var app: MainApp
 
@@ -117,7 +132,36 @@ class RaceActivity : AppCompatActivity() {
             }
         }
 
+
+        val getImage = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data: Intent? = result.data
+                val takenImage = data?.extras?.get("data") as Bitmap
+                binding.imageView.setImageBitmap(takenImage)
+                val params = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    800
+                )
+                binding.imageView.layoutParams = params
+                binding.imageView.visibility = View.VISIBLE
+
+            }
+        }
+
+
+        binding.takePictureButton.setOnClickListener() {
+            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+
+//            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                getImage.launch(takePictureIntent)
+           // }
+        }
+
+
+
     }
+
+
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_race, menu)

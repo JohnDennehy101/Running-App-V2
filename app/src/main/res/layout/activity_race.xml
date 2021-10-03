@@ -45,7 +45,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:layout_margin="8dp"
-                    android:autofillHints=""
                     android:hint="Enter Title"
                     android:inputType="text"
                     android:maxLength="25"
@@ -59,7 +58,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:layout_margin="8dp"
-                    android:autofillHints=""
                     android:hint="Enter Description"
                     android:inputType="text"
                     android:maxLength="25"
@@ -73,7 +71,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:layout_margin="8dp"
-                    android:autofillHints=""
                     android:hint="Select Rate Date:"
                     android:maxLength="25"
                     android:background="@drawable/edit_text_border"
@@ -101,19 +98,33 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
 
-<!--                <Button-->
-<!--                    android:id="@+id/raceDatePickerButton"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_margin="16dp"-->
-<!--                    android:background="@color/colorAccent"-->
-<!--                    android:paddingTop="8dp"-->
-<!--                    android:paddingBottom="8dp"-->
-<!--                    android:stateListAnimator="@null"-->
-<!--                    android:text="Test"-->
-<!--                    android:textColor="@color/colorPrimary"-->
-<!--                    android:textSize="16sp"-->
-<!--                    />-->
+                <Button
+                    android:id="@+id/takePictureButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:background="@color/colorAccent"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:stateListAnimator="@null"
+                    android:text="Take Photo"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="16sp"
+                    app:icon="@drawable/ic_camera" />
+
+                <ImageView
+                    android:id="@id/imageView"
+                    android:visibility="invisible"
+                    android:layout_height="0dp"
+                    android:layout_width="0dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:layout_margin="3dp"
+                    />
+
+
+
+
 
 
 

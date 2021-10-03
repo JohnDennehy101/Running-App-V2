@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ie.wit.runappv1">
+    
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:name="ie.wit.runappv1.main.MainApp"
@@ -11,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RaceAppV1">
 
-        <!-- The below is for the splash screen and we need no action bar and the default theme -->
+
         <activity android:name="ie.wit.runappv1.activities.SplashActivity"
             android:theme="@style/Theme.RaceAppV1.NoActionBar"
             android:exported="true">
