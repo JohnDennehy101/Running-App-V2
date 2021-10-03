@@ -113,7 +113,6 @@
                     android:id="@+id/takePictureButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_paddingRight="5dp"
                     android:paddingTop="8dp"
                     android:paddingBottom="8dp"
                     tools:layout_editor_absoluteX="168dp"
@@ -128,7 +127,7 @@
                         android:id="@+id/uploadPictureButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_paddingLeft="5dp"
+
                         android:paddingTop="8dp"
                         android:paddingBottom="8dp"
                         android:stateListAnimator="@null"

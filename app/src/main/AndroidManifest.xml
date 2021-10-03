@@ -27,6 +27,10 @@
         </activity>
         <activity android:name="ie.wit.runappv1.activities.RaceActivity">
         </activity>
+        <activity android:name="ie.wit.runappv1.activities.LoginActivity">
+        </activity>
+        <activity android:name="ie.wit.runappv1.activities.RegisterActivity">
+        </activity>
     </application>
 
 </manifest>
