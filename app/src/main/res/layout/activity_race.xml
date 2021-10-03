@@ -98,19 +98,48 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
 
+                <com.google.android.material.button.MaterialButtonToggleGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:divider="@drawable/divider"
+                    android:showDividers="middle">
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
                 <Button
                     android:id="@+id/takePictureButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
-                    android:background="@color/colorAccent"
+                    android:layout_paddingRight="5dp"
                     android:paddingTop="8dp"
                     android:paddingBottom="8dp"
+                    tools:layout_editor_absoluteX="168dp"
+                    tools:layout_editor_absoluteY="151dp"
                     android:stateListAnimator="@null"
                     android:text="Take Photo"
                     android:textColor="@color/colorPrimary"
                     android:textSize="16sp"
                     app:icon="@drawable/ic_camera" />
+
+                    <Button
+                        android:id="@+id/uploadPictureButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_paddingLeft="5dp"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp"
+                        android:stateListAnimator="@null"
+                        android:text="Select Photo"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="16sp"
+                        app:icon="@drawable/ic_file"
+                        tools:layout_editor_absoluteX="168dp"
+                        tools:layout_editor_absoluteY="445dp" />
+
+                </com.google.android.material.button.MaterialButtonToggleGroup>
 
                 <ImageView
                     android:id="@id/imageView"
