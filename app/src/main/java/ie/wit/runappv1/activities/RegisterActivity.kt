@@ -26,6 +26,21 @@ class RegisterActivity : AppCompatActivity() {
 
         app = application as MainApp
 
+        binding.registerButton.setOnClickListener() {
+            if (binding.userName.text.trim().isNotEmpty() && binding.password.text.trim()
+                    .isNotEmpty() && binding.email.text.trim().isNotEmpty() && binding.password.text == binding.confirmPassword.text
+            ) {
+
+            } else {
+                Toast.makeText(this, "Username and password required", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        binding.loginLink.setOnClickListener() {
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+        }
+
     }
 
 
