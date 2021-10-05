@@ -37,10 +37,9 @@ class RaceListActivity : AppCompatActivity(), RaceListener {
 
         app = application as MainApp
 
-//        val layoutManager = LinearLayoutManager(this)
-//        binding.recyclerView.layoutManager = layoutManager
-//        binding.recyclerView.adapter = RaceAdapter(app.races.findAll(),this)
-
+        val layoutManager = LinearLayoutManager(this)
+        binding.recyclerView.layoutManager = layoutManager
+        binding.recyclerView.adapter = RaceAdapter(app.races.findAll(),this)
 
         val drawerLayout : DrawerLayout = findViewById(R.id.drawerLayout)
         val navView : NavigationView = findViewById(R.id.nav_view)
@@ -60,6 +59,9 @@ class RaceListActivity : AppCompatActivity(), RaceListener {
             }
             true
         }
+
+
+
 
 
 
