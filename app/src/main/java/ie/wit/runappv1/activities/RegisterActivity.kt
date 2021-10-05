@@ -34,7 +34,7 @@ class RegisterActivity : AppCompatActivity() {
                 val passHash = BCrypt.withDefaults().hashToString(12, binding.password.text.toString().toCharArray())
                 user.userName = binding.userName.text.toString()
                 user.email = binding.email.text.toString()
-                user.passwordHash = passHash
+                user.passwordHash = passHash.toCharArray()
 
                 app.users.create(user.copy())
                 val i = Intent(this, RaceListActivity::class.java)

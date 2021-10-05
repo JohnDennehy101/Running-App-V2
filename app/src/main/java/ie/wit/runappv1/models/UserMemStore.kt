@@ -9,9 +9,9 @@ class UserMemStore : UserStore {
         return users
     }
 
-    override fun findOne(email : String) {
+    override fun findOne(email : String ): UserModel? {
         var foundUser: UserModel? = users.find { p -> p.email == email }
-
+        return foundUser
     }
 
     override fun create(user: UserModel) {
@@ -30,7 +30,7 @@ class UserMemStore : UserStore {
 //        }
     }
 
-    private fun logAll() {
+     fun logAll() {
        users.forEach { i("$it") }
     }
 }

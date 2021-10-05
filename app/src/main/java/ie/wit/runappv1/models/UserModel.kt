@@ -9,5 +9,5 @@ import java.util.*
 data class UserModel(
     var userName: String = "",
     var email: String = "",
-    var passwordHash: String = "",
+    var passwordHash: CharArray = charArrayOf()
 ) : Parcelable

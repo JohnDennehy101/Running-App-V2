@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import at.favre.lib.crypto.bcrypt.BCrypt
 import ie.wit.runappv1.R
 import ie.wit.runappv1.main.MainApp
 import ie.wit.runappv1.databinding.LoginBinding
@@ -27,13 +28,32 @@ class LoginActivity : AppCompatActivity() {
         app = application as MainApp
 
         binding.loginButton.setOnClickListener() {
-            if (binding.userName.text.trim().isNotEmpty() && binding.password.text.trim()
-                    .isNotEmpty()
-            ) {
+//            if (binding.userName.text.trim().isNotEmpty() && binding.password.text.trim()
+//                    .isNotEmpty()
+//            ) {
 
-            } else {
-                Toast.makeText(this, "Username and password required", Toast.LENGTH_SHORT).show()
-            }
+                val userCheck = app.users.findOne(binding.userName.text.toString())
+
+                if (userCheck != null) {
+                    var passwordHash = BCrypt.verifyer().verify(binding.password.text.trim().toString().toCharArray(), userCheck.passwordHash)
+
+                    if (passwordHash.verified) {
+                        val i = Intent(this, RaceListActivity::class.java)
+                        setResult(RESULT_OK)
+                        finish()
+                        startActivity(i)
+                    }
+                    else {
+                        Toast.makeText(this, "Password is incorrect", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+
+//
+
+//            } else {
+//                Toast.makeText(this, "Username and password required", Toast.LENGTH_SHORT).show()
+//            }
         }
 
         binding.registerLink.setOnClickListener() {
