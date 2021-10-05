@@ -9,7 +9,11 @@ import android.os.Bundle
 
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.navigation.NavigationView
 
 import ie.wit.runappv1.databinding.ActivityRaceListBinding
 import ie.wit.runappv1.main.MainApp
@@ -21,6 +25,7 @@ import ie.wit.runappv1.models.RaceModel
 class RaceListActivity : AppCompatActivity(), RaceListener {
 
     lateinit var app: MainApp
+    lateinit var toggle: ActionBarDrawerToggle
     private lateinit var binding: ActivityRaceListBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,16 +37,43 @@ class RaceListActivity : AppCompatActivity(), RaceListener {
 
         app = application as MainApp
 
-        val layoutManager = LinearLayoutManager(this)
-        binding.recyclerView.layoutManager = layoutManager
-        binding.recyclerView.adapter = RaceAdapter(app.races.findAll(),this)
+//        val layoutManager = LinearLayoutManager(this)
+//        binding.recyclerView.layoutManager = layoutManager
+//        binding.recyclerView.adapter = RaceAdapter(app.races.findAll(),this)
+
+
+        val drawerLayout : DrawerLayout = findViewById(R.id.drawerLayout)
+        val navView : NavigationView = findViewById(R.id.nav_view)
+
+        toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        actionBar?.setDisplayHomeAsUpEnabled(true)
+
+        navView.setNavigationItemSelectedListener {
+            when(it.itemId) {
+                R.id.item_home -> Toast.makeText(applicationContext, "Clicked home", Toast.LENGTH_SHORT).show()
+                R.id.item_map -> Toast.makeText(applicationContext, "Clicked home", Toast.LENGTH_SHORT).show()
+                R.id.item_logout -> Toast.makeText(applicationContext, "Clicked home", Toast.LENGTH_SHORT).show()
+            }
+            true
+        }
+
+
+
+//        val layoutManager = LinearLayoutManager(this)
+//        binding.recyclerView.layoutManager = layoutManager
+//        binding.recyclerView.adapter = RaceAdapter(app.races.findAll(),this)
+
+
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return super.onCreateOptionsMenu(menu)
-    }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (toggle.onOptionsItemSelected(item)) {
+            return true
+        }
         when (item.itemId) {
             R.id.item_add -> {
                 val launcherIntent = Intent(this, RaceActivity::class.java)
@@ -49,6 +81,11 @@ class RaceListActivity : AppCompatActivity(), RaceListener {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return super.onCreateOptionsMenu(menu)
     }
 
     override fun onRaceClick(race: RaceModel) {
