@@ -113,6 +113,7 @@ class RaceActivity : AppCompatActivity() {
 //            race.raceDate = LocalDate.of(binding.raceDatePicker.text.substring(binding.raceDatePicker.text.length - 4).toInt(), binding.raceDatePicker.text.substring(3,5).toInt(), binding.raceDatePicker.text.substring(0,2).toInt())
             race.raceDate = binding.raceDatePicker.text.toString()
             race.raceDistance = binding.menuAutocomplete.text.toString()
+            val i = Intent(this, RaceListActivity::class.java)
 
 
 
@@ -120,11 +121,13 @@ class RaceActivity : AppCompatActivity() {
                 app.races.create(race.copy())
                 setResult(RESULT_OK)
                 finish()
+                startActivity(i)
             }
             else if (race.title.isNotEmpty() && intent.hasExtra("race_edit")) {
                 app.races.update(race);
                 setResult(RESULT_OK)
                 finish()
+                startActivity(i)
             }
             else {
                 Snackbar.make(it,"Please Enter a title", Snackbar.LENGTH_LONG)

@@ -15,9 +15,11 @@ class MainApp : Application() {
     val users = UserMemStore()
 
     override fun onCreate() {
+        race.title = "Test 1"
         race.raceDistance="10km"
         race.raceDate="10/10/2021"
         race.description="Test"
+        race2.title = "Test 2"
         race2.raceDistance="5km"
         race2.raceDate="11/10/2021"
         race2.description="Test2"
