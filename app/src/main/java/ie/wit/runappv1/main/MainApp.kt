@@ -11,7 +11,9 @@ class MainApp : Application() {
 //    val races = RaceJSONMemStore(applicationContext)
     val race = RaceModel()
     val race2 = RaceModel()
-    val users = UserMemStore()
+//    var users = UserMemStore()
+
+    lateinit var users: UserStore
 
     lateinit var races: RaceJSONStore
 
@@ -25,6 +27,7 @@ class MainApp : Application() {
 //        race2.raceDate="11/10/2021"
 //        race2.description="Test2"
         super.onCreate()
+        users = UserMemStore(applicationContext)
         races = RaceJSONMemStore(applicationContext)
 //        races.create(race.copy())
 //        races.create(race2.copy())

@@ -7,13 +7,16 @@ import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import android.content.Context
 import java.io.File
+import java.lang.reflect.Type
 import java.util.*
 
 
-val JSON_FILE =  "races.json"
+val JSON_FILE =  "test.json"
+
+val combinedDataModel = UnifiedModel()
 
 val gsonBuilder = GsonBuilder().setPrettyPrinting().create()
-val listType = object : TypeToken<ArrayList<RaceModel>>() {}.type
+val listType = object : TypeToken<ArrayList<Any>>() {}.type
 
 fun generateRandomId(): Long {
     return Random().nextLong()
@@ -23,6 +26,9 @@ class RaceJSONMemStore : RaceJSONStore {
     val context: Context
 
     var races = mutableListOf<RaceModel>()
+    var users = mutableListOf<UserModel>()
+
+
 
     constructor (context: Context) {
         this.context = context
@@ -58,12 +64,21 @@ class RaceJSONMemStore : RaceJSONStore {
     }
 
     private fun serialize() {
-        val jsonString = gsonBuilder.toJson(races, listType)
+
+        combinedDataModel.races = races
+        combinedDataModel.users = users
+
+        val test2 = mutableListOf(combinedDataModel)
+        val jsonString = gsonBuilder.toJson(test2, listType)
         write(context, JSON_FILE, jsonString)
     }
 
     private fun deserialize() {
         val jsonString = read(context, JSON_FILE)
-        races = Gson().fromJson(jsonString, listType)
+        val collectionType: Type = object : TypeToken<List<UnifiedModel?>?>() {}.type
+        val dataResponse : ArrayList<UnifiedModel> = Gson().fromJson(jsonString, collectionType)
+
+        races = dataResponse.get(0).races!!
+        users = dataResponse.get(0).users!!
     }
 }
