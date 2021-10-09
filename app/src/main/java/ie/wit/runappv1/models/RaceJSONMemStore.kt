@@ -11,7 +11,7 @@ import java.lang.reflect.Type
 import java.util.*
 
 
-val JSON_FILE =  "test.json"
+val JSON_FILE =  "data.json"
 
 val combinedDataModel = UnifiedModel()
 
@@ -68,8 +68,8 @@ class RaceJSONMemStore : RaceJSONStore {
         combinedDataModel.races = races
         combinedDataModel.users = users
 
-        val test2 = mutableListOf(combinedDataModel)
-        val jsonString = gsonBuilder.toJson(test2, listType)
+        val combinedData = mutableListOf(combinedDataModel)
+        val jsonString = gsonBuilder.toJson(combinedData, listType)
         write(context, JSON_FILE, jsonString)
     }
 

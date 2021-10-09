@@ -9,7 +9,7 @@ import timber.log.Timber.i
 import java.lang.reflect.Type
 import java.util.*
 
-class UserMemStore : UserStore {
+class UserJSONMemStore : UserJSONStore {
 
     var users =
         mutableListOf<UserModel>()
@@ -64,9 +64,9 @@ class UserMemStore : UserStore {
         combinedDataModel.races = races
         combinedDataModel.users = users
 
-        val test2 = mutableListOf(combinedDataModel)
+        val combinedData = mutableListOf(combinedDataModel)
 
-        val jsonString = gsonBuilder.toJson(test2, listType)
+        val jsonString = gsonBuilder.toJson(combinedData, listType)
         write(context, JSON_FILE, jsonString)
     }
 
