@@ -10,7 +10,6 @@ class MainApp : Application() {
 //    val races = RaceMemStore()
 //    val races = RaceJSONMemStore(applicationContext)
     val race = RaceModel()
-    val race2 = RaceModel()
 //    var users = UserMemStore()
 
     lateinit var users: UserJSONStore

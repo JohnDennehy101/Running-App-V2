@@ -143,8 +143,8 @@
                 <ImageView
                     android:id="@id/imageView"
                     android:visibility="invisible"
-                    android:layout_height="0dp"
-                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
                     android:paddingTop="8dp"
                     android:paddingBottom="8dp"
                     android:layout_margin="3dp"

@@ -62,14 +62,6 @@ class RaceListActivity : AppCompatActivity(), RaceListener {
 
 
 
-
-
-
-//        val layoutManager = LinearLayoutManager(this)
-//        binding.recyclerView.layoutManager = layoutManager
-//        binding.recyclerView.adapter = RaceAdapter(app.races.findAll(),this)
-
-
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -94,6 +86,11 @@ class RaceListActivity : AppCompatActivity(), RaceListener {
         val launcherIntent = Intent(this, RaceActivity::class.java)
         launcherIntent.putExtra("race_edit", race)
         startActivityForResult(launcherIntent,0)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        binding.recyclerView.adapter?.notifyDataSetChanged()
+        super.onActivityResult(requestCode, resultCode, data)
     }
 }
 

@@ -1,12 +1,9 @@
 package ie.wit.runappv1.models
-import android.os.Environment
 import ie.wit.runappv1.helpers.*
-import timber.log.Timber.i
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import android.content.Context
-import java.io.File
+import android.net.Uri
+import com.google.gson.*
 import java.lang.reflect.Type
 import java.util.*
 
@@ -15,7 +12,7 @@ val JSON_FILE =  "data.json"
 
 val combinedDataModel = UnifiedModel()
 
-val gsonBuilder = GsonBuilder().setPrettyPrinting().create()
+val gsonBuilder = GsonBuilder().registerTypeAdapter(Uri::class.java, UriDeserializer()).setPrettyPrinting().create()
 val listType = object : TypeToken<ArrayList<Any>>() {}.type
 
 fun generateRandomId(): Long {
@@ -48,7 +45,7 @@ class RaceJSONMemStore : RaceJSONStore {
 
     override fun create(race: RaceModel) {
         race.id = generateRandomId()
-        races.add(race)
+        races.add(race.copy())
         serialize()
     }
 
@@ -80,5 +77,16 @@ class RaceJSONMemStore : RaceJSONStore {
 
         races = dataResponse.get(0).races!!
         users = dataResponse.get(0).users!!
+    }
+}
+
+class UriDeserializer : JsonDeserializer<Uri> {
+
+    override fun deserialize(
+        json: JsonElement?,
+        typeOfT: Type?,
+        context: JsonDeserializationContext?
+    ): Uri {
+        return Uri.parse(json?.asString)
     }
 }

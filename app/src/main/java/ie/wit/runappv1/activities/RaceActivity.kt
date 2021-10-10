@@ -30,12 +30,17 @@ import android.net.Uri
 import android.R.attr.data
 import android.view.View
 import android.widget.LinearLayout
+import timber.log.Timber.i
 import android.widget.RelativeLayout
+import androidx.activity.result.ActivityResultLauncher
+import androidx.core.net.toUri
+import com.squareup.picasso.Picasso
+import ie.wit.runappv1.helpers.showImagePicker
 
 
 class RaceActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRaceBinding
-    private var requestCodeValue : Int = 55
+    private lateinit var imageIntentLauncher : ActivityResultLauncher<Intent>
     var race = RaceModel()
     lateinit var app: MainApp
 
@@ -45,8 +50,16 @@ class RaceActivity : AppCompatActivity() {
         setContentView(binding.root)
         binding.toolbarAdd.title = title
         setSupportActionBar(binding.toolbarAdd)
+        registerImagePickerCallback()
 
         app = application as MainApp
+
+        val builder : MaterialDatePicker.Builder<Long> = MaterialDatePicker.Builder.datePicker()
+
+
+        builder.setCalendarConstraints(
+            limitRange().build()
+        )
 
 
 
@@ -57,22 +70,11 @@ class RaceActivity : AppCompatActivity() {
             binding.raceDatePicker.setText(race.raceDate)
             binding.menuAutocomplete.setText(race.raceDistance)
             binding.btnAdd.setText("Edit Race")
-        }
 
-
-
-        val builder : MaterialDatePicker.Builder<Long> = MaterialDatePicker.Builder.datePicker()
-
-
-            builder.setCalendarConstraints(
-                limitRange().build()
-            )
-
-        if (intent.hasExtra("race_edit")) {
-            race = intent.extras?.getParcelable("race_edit")!!
             if (race.raceDate.substring(0,2).contains("/")) {
                 race.raceDate = '0' + race.raceDate
             }
+
 
             var formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")
             var date = LocalDateTime.parse(race.raceDate + " 01:00:01", formatter)
@@ -81,6 +83,13 @@ class RaceActivity : AppCompatActivity() {
 
 
             builder.setSelection(timeInMillis)
+
+            if (race.image.length > 0) {
+                Picasso.get()
+                    .load(race.image.toUri())
+                    .into(binding.imageView)
+                binding.imageView.visibility = View.VISIBLE
+            }
         }
 
 
@@ -110,7 +119,6 @@ class RaceActivity : AppCompatActivity() {
         binding.btnAdd.setOnClickListener() {
             race.title = binding.raceTitle.text.toString()
             race.description = binding.raceDescription.text.toString()
-//            race.raceDate = LocalDate.of(binding.raceDatePicker.text.substring(binding.raceDatePicker.text.length - 4).toInt(), binding.raceDatePicker.text.substring(3,5).toInt(), binding.raceDatePicker.text.substring(0,2).toInt())
             race.raceDate = binding.raceDatePicker.text.toString()
             race.raceDistance = binding.menuAutocomplete.text.toString()
             val i = Intent(this, RaceListActivity::class.java)
@@ -153,11 +161,17 @@ class RaceActivity : AppCompatActivity() {
 
 
         binding.takePictureButton.setOnClickListener() {
+            i("Capture image")
             val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 
 //            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
                 getImage.launch(takePictureIntent)
            // }
+        }
+
+        binding.uploadPictureButton.setOnClickListener {
+            i("Select image")
+            showImagePicker(imageIntentLauncher)
         }
 
 
@@ -175,6 +189,28 @@ class RaceActivity : AppCompatActivity() {
             R.id.item_cancel -> { finish() }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun registerImagePickerCallback() {
+        imageIntentLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+            { result ->
+                when(result.resultCode){
+                    RESULT_OK -> {
+                        if (result.data != null) {
+                            i("Got Result ${result.data!!.data}")
+//                            race.image = result.data!!.data!!
+                            race.image = result.data!!.data!!.toString()
+
+                            Picasso.get()
+                                .load(race.image)
+                                .into(binding.imageView)
+                            binding.imageView.visibility = View.VISIBLE
+                        } // end of if
+                    }
+                    RESULT_CANCELED -> { } else -> { }
+                }
+            }
     }
 
     private fun limitRange(): CalendarConstraints.Builder {
