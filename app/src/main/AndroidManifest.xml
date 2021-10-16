@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ie.wit.runappv1">
-    
+
+
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
-        android:name="ie.wit.runappv1.main.MainApp"
+        android:name=".main.MainApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -15,23 +18,28 @@
         android:theme="@style/Theme.RaceAppV1">
 
 
-        <activity android:name="ie.wit.runappv1.activities.SplashActivity"
-            android:theme="@style/Theme.RaceAppV1.NoActionBar"
-            android:exported="true">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+        <activity
+            android:name=".activities.MapActivity"
+            android:exported="true"
+            android:label="@string/title_activity_map" />
+        <activity
+            android:name=".activities.SplashActivity"
+            android:exported="true"
+            android:theme="@style/Theme.RaceAppV1.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="ie.wit.runappv1.activities.RaceListActivity">
-
-        </activity>
-        <activity android:name="ie.wit.runappv1.activities.RaceActivity">
-        </activity>
-        <activity android:name="ie.wit.runappv1.activities.LoginActivity">
-        </activity>
-        <activity android:name="ie.wit.runappv1.activities.RegisterActivity">
-        </activity>
+        <activity android:name=".activities.RaceListActivity"></activity>
+        <activity android:name=".activities.RaceActivity"></activity>
+        <activity android:name=".activities.LoginActivity"></activity>
+        <activity android:name=".activities.RegisterActivity"></activity>
     </application>
 
 </manifest>

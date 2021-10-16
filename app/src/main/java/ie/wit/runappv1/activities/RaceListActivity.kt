@@ -10,6 +10,8 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,6 +29,7 @@ class RaceListActivity : AppCompatActivity(), RaceListener {
     lateinit var app: MainApp
     lateinit var toggle: ActionBarDrawerToggle
     private lateinit var binding: ActivityRaceListBinding
+    private lateinit var refreshIntentLauncher : ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +54,8 @@ class RaceListActivity : AppCompatActivity(), RaceListener {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         actionBar?.setDisplayHomeAsUpEnabled(true)
 
+
+
         navView.setNavigationItemSelectedListener {
             when(it.itemId) {
                 R.id.item_home -> Toast.makeText(applicationContext, "Clicked home", Toast.LENGTH_SHORT).show()
@@ -60,6 +65,7 @@ class RaceListActivity : AppCompatActivity(), RaceListener {
             true
         }
 
+        registerRefreshCallback()
 
 
     }
@@ -71,7 +77,7 @@ class RaceListActivity : AppCompatActivity(), RaceListener {
         when (item.itemId) {
             R.id.item_add -> {
                 val launcherIntent = Intent(this, RaceActivity::class.java)
-                startActivityForResult(launcherIntent,0)
+                refreshIntentLauncher.launch(launcherIntent)
             }
         }
         return super.onOptionsItemSelected(item)
@@ -85,12 +91,13 @@ class RaceListActivity : AppCompatActivity(), RaceListener {
     override fun onRaceClick(race: RaceModel) {
         val launcherIntent = Intent(this, RaceActivity::class.java)
         launcherIntent.putExtra("race_edit", race)
-        startActivityForResult(launcherIntent,0)
+        refreshIntentLauncher.launch(launcherIntent)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        binding.recyclerView.adapter?.notifyDataSetChanged()
-        super.onActivityResult(requestCode, resultCode, data)
+    private fun registerRefreshCallback() {
+        refreshIntentLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+            { binding.recyclerView.adapter?.notifyDataSetChanged() }
     }
 }
 

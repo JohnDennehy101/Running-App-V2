@@ -36,6 +36,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.core.net.toUri
 import com.squareup.picasso.Picasso
 import ie.wit.runappv1.helpers.showImagePicker
+import ie.wit.runappv1.models.Location
 import java.io.File
 import java.io.File.separator
 import java.io.FileOutputStream
@@ -45,7 +46,9 @@ import java.io.OutputStream
 class RaceActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRaceBinding
     private lateinit var imageIntentLauncher : ActivityResultLauncher<Intent>
+    private lateinit var mapIntentLauncher : ActivityResultLauncher<Intent>
     var race = RaceModel()
+    var location = Location(52.245696, -7.139102, 15f)
     lateinit var app: MainApp
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,6 +72,7 @@ class RaceActivity : AppCompatActivity() {
 
         if (intent.hasExtra("race_edit")) {
             race = intent.extras?.getParcelable("race_edit")!!
+            location = race.location
             binding.raceTitle.setText(race.title)
             binding.raceDescription.setText(race.description)
             binding.raceDatePicker.setText(race.raceDate)
@@ -89,6 +93,7 @@ class RaceActivity : AppCompatActivity() {
             builder.setSelection(timeInMillis)
 
             if (race.image.length > 0) {
+                Picasso.get().setLoggingEnabled(true);
                 Picasso.get()
                     .load(race.image.toUri())
                     .into(binding.imageView)
@@ -131,6 +136,7 @@ class RaceActivity : AppCompatActivity() {
             race.description = binding.raceDescription.text.toString()
             race.raceDate = binding.raceDatePicker.text.toString()
             race.raceDistance = binding.menuAutocomplete.text.toString()
+            race.location = location
             val i = Intent(this, RaceListActivity::class.java)
 
 
@@ -186,6 +192,19 @@ class RaceActivity : AppCompatActivity() {
             i("Select image")
             showImagePicker(imageIntentLauncher)
         }
+
+
+
+        binding.raceLocation.setOnClickListener {
+            i ("Set Location Pressed")
+            val launcherIntent = Intent(this, MapActivity::class.java)
+                .putExtra("location", location)
+            mapIntentLauncher.launch(launcherIntent)
+        }
+
+        registerMapCallback()
+
+
 
 
 
@@ -253,6 +272,23 @@ class RaceActivity : AppCompatActivity() {
             R.id.item_cancel -> { finish() }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun registerMapCallback() {
+        mapIntentLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+            { result ->
+                when (result.resultCode) {
+                    RESULT_OK -> {
+                        if (result.data != null) {
+                            i("Got Location ${result.data.toString()}")
+                            location = result.data!!.extras?.getParcelable("location")!!
+                            i("Location == $location")
+                        } // end of if
+                    }
+                    RESULT_CANCELED -> { } else -> { }
+                }
+            }
     }
 
     private fun registerImagePickerCallback() {

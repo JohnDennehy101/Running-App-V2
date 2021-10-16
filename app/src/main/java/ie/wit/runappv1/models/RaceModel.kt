@@ -14,6 +14,13 @@ data class RaceModel(
     var description: String = "",
     var raceDate: String = "",
     var raceDistance: String = "",
-    var image: String = ""
-//    var image: Uri = "about:blank".toUri()
+    var image: String = "",
+    var location: Location = Location(0.0,0.0,0f)
 ) : Parcelable
+
+
+
+@Parcelize
+data class Location(var lat: Double = 0.0,
+                    var lng: Double = 0.0,
+                    var zoom: Float = 0f) : Parcelable
