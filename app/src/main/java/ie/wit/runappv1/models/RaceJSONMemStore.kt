@@ -56,6 +56,7 @@ class RaceJSONMemStore : RaceJSONStore {
             foundRace.description = race.description
             foundRace.raceDate = race.raceDate
             foundRace.raceDistance = race.raceDistance
+            foundRace.image = race.image
         }
         serialize()
     }

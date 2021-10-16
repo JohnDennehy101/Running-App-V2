@@ -35,6 +35,7 @@ import android.widget.RelativeLayout
 import androidx.activity.result.ActivityResultLauncher
 import androidx.core.net.toUri
 import com.squareup.picasso.Picasso
+import ie.wit.runappv1.helpers.FirebaseStorageManager
 import ie.wit.runappv1.helpers.showImagePicker
 import ie.wit.runappv1.models.Location
 import java.io.File
@@ -166,7 +167,10 @@ class RaceActivity : AppCompatActivity() {
                 val takenImage = data?.extras?.get("data") as Bitmap
                 binding.imageView.setImageBitmap(takenImage)
                 val imageUri = takenImage.saveImage(applicationContext)
-                race.image = imageUri.toString()
+
+                if (imageUri != null) {
+                    FirebaseStorageManager().uploadImage(imageUri, race)
+                }
 
                 val params = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
@@ -299,8 +303,9 @@ class RaceActivity : AppCompatActivity() {
                     RESULT_OK -> {
                         if (result.data != null) {
                             i("Got Result ${result.data!!.data}")
-//                            race.image = result.data!!.data!!
                             race.image = result.data!!.data!!.toString()
+
+                            FirebaseStorageManager().uploadImage(result.data!!.data!!, race)
 
                             Picasso.get()
                                 .load(race.image)
