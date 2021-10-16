@@ -40,6 +40,8 @@ class RaceListActivity : AppCompatActivity(), RaceListener {
 
         app = application as MainApp
 
+
+
         val layoutManager = LinearLayoutManager(this)
         binding.recyclerView.layoutManager = layoutManager
         binding.recyclerView.adapter = RaceAdapter(app.races.findAll(),this)
@@ -53,6 +55,11 @@ class RaceListActivity : AppCompatActivity(), RaceListener {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         actionBar?.setDisplayHomeAsUpEnabled(true)
+
+        if (intent.hasExtra("race_delete")) {
+            println("WORKING")
+            Toast.makeText(this, "Deleted Race", Toast.LENGTH_LONG).show()
+        }
 
 
 
@@ -91,6 +98,13 @@ class RaceListActivity : AppCompatActivity(), RaceListener {
     override fun onRaceClick(race: RaceModel) {
         val launcherIntent = Intent(this, RaceActivity::class.java)
         launcherIntent.putExtra("race_edit", race)
+        refreshIntentLauncher.launch(launcherIntent)
+    }
+
+    override fun onRaceDeleteClick(race: RaceModel) {
+        val launcherIntent = Intent(this, RaceListActivity::class.java)
+        launcherIntent.putExtra("race_delete", true)
+        app.races.delete(race)
         refreshIntentLauncher.launch(launcherIntent)
     }
 

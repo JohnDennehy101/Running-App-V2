@@ -49,6 +49,12 @@ class RaceJSONMemStore : RaceJSONStore {
         serialize()
     }
 
+    override fun delete(race: RaceModel) {
+        var foundRace = findOne(race.id!!)
+        races.remove(foundRace)
+        serialize()
+    }
+
     override fun update(race: RaceModel) {
         var foundRace = findOne(race.id!!)
         if (foundRace != null) {
