@@ -22,10 +22,12 @@ class UserJSONMemStore : UserJSONStore {
 
     val listType = object : TypeToken<ArrayList<Any>>() {}.type
 
-    constructor (context: Context) {
+    constructor (context: Context, test: Boolean) {
         this.context = context
-        if (exists(context, JSON_FILE)) {
-            deserialize()
+        if (!test) {
+            if (exists(context, JSON_FILE)) {
+                deserialize()
+            }
         }
     }
 
@@ -38,13 +40,16 @@ class UserJSONMemStore : UserJSONStore {
         return foundUser
     }
 
-    override fun create(user: UserModel) {
+    override fun create(user: UserModel, test: Boolean) {
         users.add(user)
-        serialize()
+        if (!test) {
+            serialize()
+        }
+
         logAll()
     }
 
-    override fun update(user: UserModel) {
+    override fun update(user: UserModel, test: Boolean) {
         var foundUser: UserModel? = users.find { p -> p.email == user.email }
 //        if (foundRace != null) {
 //            foundRace.title = race.title

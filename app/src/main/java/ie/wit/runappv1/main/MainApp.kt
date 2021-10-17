@@ -26,7 +26,7 @@ class MainApp : Application() {
 //        race2.raceDate="11/10/2021"
 //        race2.description="Test2"
         super.onCreate()
-        users = UserJSONMemStore(applicationContext)
+        users = UserJSONMemStore(applicationContext, false)
         races = RaceJSONMemStore(applicationContext, false)
 //        races.create(race.copy())
 //        races.create(race2.copy())
