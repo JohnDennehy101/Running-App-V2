@@ -27,7 +27,7 @@ class MainApp : Application() {
 //        race2.description="Test2"
         super.onCreate()
         users = UserJSONMemStore(applicationContext)
-        races = RaceJSONMemStore(applicationContext)
+        races = RaceJSONMemStore(applicationContext, false)
 //        races.create(race.copy())
 //        races.create(race2.copy())
         Timber.plant(Timber.DebugTree())

@@ -27,11 +27,14 @@ class RaceJSONMemStore : RaceJSONStore {
 
 
 
-    constructor (context: Context) {
+    constructor (context: Context, test: Boolean) {
         this.context = context
-        if (exists(context, JSON_FILE)) {
-            deserialize()
+        if (!test) {
+            if (exists(context, JSON_FILE)) {
+                deserialize()
+            }
         }
+
     }
 
     override fun findAll(): List<RaceModel> {
@@ -43,19 +46,26 @@ class RaceJSONMemStore : RaceJSONStore {
         return foundRace
     }
 
-    override fun create(race: RaceModel) {
+    override fun create(race: RaceModel, test: Boolean) {
         race.id = generateRandomId()
         races.add(race.copy())
-        serialize()
+
+        if (!test) {
+            serialize()
+        }
+
     }
 
-    override fun delete(race: RaceModel) {
+    override fun delete(race: RaceModel, test: Boolean) {
         var foundRace = findOne(race.id!!)
         races.remove(foundRace)
-        serialize()
+        if (!test) {
+            serialize()
+        }
+
     }
 
-    override fun update(race: RaceModel) {
+    override fun update(race: RaceModel, test: Boolean) {
         var foundRace = findOne(race.id!!)
         if (foundRace != null) {
             foundRace.title = race.title
@@ -63,8 +73,12 @@ class RaceJSONMemStore : RaceJSONStore {
             foundRace.raceDate = race.raceDate
             foundRace.raceDistance = race.raceDistance
             foundRace.image = race.image
+            foundRace.location = race.location
         }
-        serialize()
+        if (!test) {
+            serialize()
+        }
+
     }
 
     private fun serialize() {
