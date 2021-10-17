@@ -40,6 +40,7 @@
         <activity android:name=".activities.RaceActivity"></activity>
         <activity android:name=".activities.LoginActivity"></activity>
         <activity android:name=".activities.RegisterActivity"></activity>
+        <activity android:name=".activities.MapListActivity" android:label="MapListActivity"></activity>
     </application>
 
 </manifest>

@@ -49,7 +49,7 @@ class RaceActivity : AppCompatActivity() {
     private lateinit var imageIntentLauncher : ActivityResultLauncher<Intent>
     private lateinit var mapIntentLauncher : ActivityResultLauncher<Intent>
     var race = RaceModel()
-    var location = Location(52.245696, -7.139102, 15f)
+    var location = Location(52.245696, -7.139102, 7f)
     lateinit var app: MainApp
 
     override fun onCreate(savedInstanceState: Bundle?) {

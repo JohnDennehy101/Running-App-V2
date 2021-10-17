@@ -64,9 +64,10 @@ class RaceListActivity : AppCompatActivity(), RaceListener {
 
 
         navView.setNavigationItemSelectedListener {
+            val mapListIntent = Intent(this, MapListActivity::class.java)
             when(it.itemId) {
                 R.id.item_home -> Toast.makeText(applicationContext, "Clicked home", Toast.LENGTH_SHORT).show()
-                R.id.item_map -> Toast.makeText(applicationContext, "Clicked home", Toast.LENGTH_SHORT).show()
+                R.id.item_map -> startActivity(mapListIntent)
                 R.id.item_logout -> Toast.makeText(applicationContext, "Clicked home", Toast.LENGTH_SHORT).show()
             }
             true
