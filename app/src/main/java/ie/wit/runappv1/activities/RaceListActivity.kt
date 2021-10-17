@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.widget.SearchView
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.navigation.NavigationView
@@ -22,12 +23,15 @@ import ie.wit.runappv1.main.MainApp
 
 import ie.wit.runappv1.R
 import ie.wit.runappv1.models.RaceModel
+import java.util.*
 
 
 class RaceListActivity : AppCompatActivity(), RaceListener {
 
     lateinit var app: MainApp
     lateinit var toggle: ActionBarDrawerToggle
+    private lateinit var races : MutableList<RaceModel>
+    private lateinit var filteredRaces : MutableList<RaceModel>
     private lateinit var binding: ActivityRaceListBinding
     private lateinit var refreshIntentLauncher : ActivityResultLauncher<Intent>
 
@@ -39,12 +43,15 @@ class RaceListActivity : AppCompatActivity(), RaceListener {
         setSupportActionBar(binding.toolbar)
 
         app = application as MainApp
+        races = app.races.findAll() as MutableList<RaceModel>
+
+        filteredRaces = races.toMutableList()
 
 
 
         val layoutManager = LinearLayoutManager(this)
         binding.recyclerView.layoutManager = layoutManager
-        binding.recyclerView.adapter = RaceAdapter(app.races.findAll(),this)
+        binding.recyclerView.adapter = RaceAdapter(filteredRaces,this)
 
         val drawerLayout : DrawerLayout = findViewById(R.id.drawerLayout)
         val navView : NavigationView = findViewById(R.id.nav_view)
@@ -93,6 +100,36 @@ class RaceListActivity : AppCompatActivity(), RaceListener {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
+        val item = menu?.findItem(R.id.item_search)
+        val searchView = item?.actionView as SearchView
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                TODO("Not yet implemented")
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                filteredRaces.clear()
+                val searchText = newText!!.lowercase(Locale.getDefault())
+
+                if (searchText.length > 0) {
+                    races.forEach {
+
+                        if (it.title.lowercase(Locale.getDefault()).contains(searchText.lowercase())) {
+                            filteredRaces.add(it)
+                        }
+
+                    }
+                    binding.recyclerView.adapter?.notifyDataSetChanged()
+                }
+                else {
+                    filteredRaces.clear()
+                    filteredRaces.addAll(races)
+                    binding.recyclerView.adapter?.notifyDataSetChanged()
+                }
+                return false
+            }
+
+        })
         return super.onCreateOptionsMenu(menu)
     }
 
