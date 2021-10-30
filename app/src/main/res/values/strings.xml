@@ -12,4 +12,9 @@
     <string name="button_location">Set Location</string>
     <string name="title_activity_map">MapActivity</string>
     <string name="menu_search">Search</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="nav_header_title">DonationX (Lab)</string>
+    <string name="nav_header_subtitle">voteforhomer@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
 </resources>

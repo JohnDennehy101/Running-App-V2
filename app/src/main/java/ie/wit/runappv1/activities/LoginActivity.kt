@@ -38,7 +38,7 @@ class LoginActivity : AppCompatActivity() {
                     var passwordHash = BCrypt.verifyer().verify(binding.password.text.trim().toString().toCharArray(), userCheck.passwordHash)
 
                     if (passwordHash.verified) {
-                        val i = Intent(this, RaceListActivity::class.java)
+                        val i = Intent(this, RaceActivity::class.java)
                         setResult(RESULT_OK)
                         finish()
                         startActivity(i)

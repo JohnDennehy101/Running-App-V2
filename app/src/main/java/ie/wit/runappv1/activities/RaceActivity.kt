@@ -7,8 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.provider.MediaStore
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import com.google.android.material.datepicker.CalendarConstraints
@@ -29,11 +27,16 @@ import android.content.ContentValues
 import android.content.Context
 import android.os.*
 import android.view.View
-import android.widget.LinearLayout
 import timber.log.Timber.i
-import android.widget.RelativeLayout
 import androidx.activity.result.ActivityResultLauncher
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.widget.Toolbar
 import androidx.core.net.toUri
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.navigation.findNavController
+import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.navigation.NavigationView
 import com.squareup.picasso.Picasso
 import ie.wit.runappv1.helpers.FirebaseStorageManager
 import ie.wit.runappv1.helpers.showImagePicker
@@ -48,6 +51,7 @@ class RaceActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRaceBinding
     private lateinit var imageIntentLauncher : ActivityResultLauncher<Intent>
     private lateinit var mapIntentLauncher : ActivityResultLauncher<Intent>
+    private lateinit var drawerLayout: DrawerLayout
     var race = RaceModel()
     var location = Location(52.245696, -7.139102, 7f)
     lateinit var app: MainApp
@@ -55,12 +59,37 @@ class RaceActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRaceBinding.inflate(layoutInflater)
+
         setContentView(binding.root)
-        binding.toolbarAdd.title = title
-        setSupportActionBar(binding.toolbarAdd)
+        drawerLayout = binding.drawerLayout
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        //binding.toolbarAdd.title = title
+        //setSupportActionBar(binding.toolbarAdd)
         registerImagePickerCallback()
 
         app = application as MainApp
+
+//        //START of COPY
+//        val drawerLayout : DrawerLayout = findViewById(R.id.drawerLayout)
+//        val navView : NavigationView = findViewById(R.id.nav_view)
+//
+//        toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
+//        drawerLayout.addDrawerListener(toggle)
+//        toggle.syncState()
+//
+//        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+//        actionBar?.setDisplayHomeAsUpEnabled(true)
+//        //END of COPY
+
+//        val navController = findNavController(R.id.nav_host_fragment)
+//        NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout)
+        val navController = findNavController(R.id.nav_host_fragment)
+        println("NAV CONTROLLER")
+        println(navController)
+        NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout)
+        val navView = binding.navView
+        navView.setupWithNavController(navController)
 
         val builder : MaterialDatePicker.Builder<Long> = MaterialDatePicker.Builder.datePicker()
 
@@ -74,11 +103,11 @@ class RaceActivity : AppCompatActivity() {
         if (intent.hasExtra("race_edit")) {
             race = intent.extras?.getParcelable("race_edit")!!
             location = race.location
-            binding.raceTitle.setText(race.title)
-            binding.raceDescription.setText(race.description)
-            binding.raceDatePicker.setText(race.raceDate)
-            binding.menuAutocomplete.setText(race.raceDistance)
-            binding.btnAdd.setText("Edit Race")
+//            binding.raceTitle.setText(race.title)
+//            binding.raceDescription.setText(race.description)
+//            binding.raceDatePicker.setText(race.raceDate)
+//            binding.menuAutocomplete.setText(race.raceDistance)
+//            binding.btnAdd.setText("Edit Race")
 
             if (race.raceDate.substring(0,2).contains("/")) {
                 race.raceDate = '0' + race.raceDate
@@ -97,14 +126,14 @@ class RaceActivity : AppCompatActivity() {
                 Picasso.get().setLoggingEnabled(true);
                 Picasso.get()
                     .load(race.image.toUri())
-                    .into(binding.imageView)
-
-                val params = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    800
-                )
-                binding.imageView.layoutParams = params
-                binding.imageView.visibility = View.VISIBLE
+//                    .into(binding.imageView)
+//
+//                val params = LinearLayout.LayoutParams(
+//                    LinearLayout.LayoutParams.MATCH_PARENT,
+//                    800
+//                )
+//                binding.imageView.layoutParams = params
+//                binding.imageView.visibility = View.VISIBLE
             }
         }
 
@@ -113,98 +142,98 @@ class RaceActivity : AppCompatActivity() {
 
         val count = Math.random()
 
-        binding.raceDatePicker.setOnClickListener {
-
-            picker.show(supportFragmentManager, count.toString())
-        }
+//        binding.raceDatePicker.setOnClickListener {
+//
+//            picker.show(supportFragmentManager, count.toString())
+//        }
 
         picker.addOnPositiveButtonClickListener {
             val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
             calendar.time = Date(it)
 
-            binding.raceDatePicker.setText("${calendar.get(Calendar.DAY_OF_MONTH)}/" +
-                    "${calendar.get(Calendar.MONTH) + 1}/${calendar.get(Calendar.YEAR)}")
+//            binding.raceDatePicker.setText("${calendar.get(Calendar.DAY_OF_MONTH)}/" +
+//                    "${calendar.get(Calendar.MONTH) + 1}/${calendar.get(Calendar.YEAR)}")
         }
 
         val items = listOf("1km", "5km", "8km", "10km", "Half Marathon (21km)", "Marathon (42km)")
-        val adapter = ArrayAdapter(this, R.layout.race_length_list_item, items)
+//        val adapter = ArrayAdapter(this, R.layout.race_length_list_item, items)
 
-        binding.menuAutocomplete.setAdapter(adapter)
-
-
-        binding.btnAdd.setOnClickListener() {
-            race.title = binding.raceTitle.text.toString()
-            race.description = binding.raceDescription.text.toString()
-            race.raceDate = binding.raceDatePicker.text.toString()
-            race.raceDistance = binding.menuAutocomplete.text.toString()
-            race.location = location
-            val i = Intent(this, RaceListActivity::class.java)
+//        binding.menuAutocomplete.setAdapter(adapter)
 
 
-
-            if (race.title.isNotEmpty() && race.raceDate.isNotEmpty() && !intent.hasExtra("race_edit")) {
-                app.races.create(race.copy())
-                setResult(RESULT_OK)
-                finish()
-                startActivity(i)
-            }
-            else if (race.title.isNotEmpty() && intent.hasExtra("race_edit")) {
-                app.races.update(race);
-                setResult(RESULT_OK)
-                finish()
-                startActivity(i)
-            }
-            else {
-                Snackbar.make(it,"Please Enter a title", Snackbar.LENGTH_LONG)
-                    .show()
-            }
-        }
+//        binding.btnAdd.setOnClickListener() {
+//            race.title = binding.raceTitle.text.toString()
+//            race.description = binding.raceDescription.text.toString()
+//            race.raceDate = binding.raceDatePicker.text.toString()
+//            race.raceDistance = binding.menuAutocomplete.text.toString()
+//            race.location = location
+//            val i = Intent(this, RaceListActivity::class.java)
+//
+//
+//
+//            if (race.title.isNotEmpty() && race.raceDate.isNotEmpty() && !intent.hasExtra("race_edit")) {
+//                app.races.create(race.copy())
+//                setResult(RESULT_OK)
+//                finish()
+//                startActivity(i)
+//            }
+//            else if (race.title.isNotEmpty() && intent.hasExtra("race_edit")) {
+//                app.races.update(race);
+//                setResult(RESULT_OK)
+//                finish()
+//                startActivity(i)
+//            }
+//            else {
+//                Snackbar.make(it,"Please Enter a title", Snackbar.LENGTH_LONG)
+//                    .show()
+//            }
+//        }
 
 
         val getImage = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val data: Intent? = result.data
                 val takenImage = data?.extras?.get("data") as Bitmap
-                binding.imageView.setImageBitmap(takenImage)
+//                binding.imageView.setImageBitmap(takenImage)
                 val imageUri = takenImage.saveImage(applicationContext)
 
                 if (imageUri != null) {
                     FirebaseStorageManager().uploadImage(imageUri, race)
                 }
 
-                val params = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    800
-                )
-                binding.imageView.layoutParams = params
-                binding.imageView.visibility = View.VISIBLE
+//                val params = LinearLayout.LayoutParams(
+//                    LinearLayout.LayoutParams.MATCH_PARENT,
+//                    800
+//                )
+//                binding.imageView.layoutParams = params
+//                binding.imageView.visibility = View.VISIBLE
 
             }
         }
 
 
-        binding.takePictureButton.setOnClickListener() {
-            i("Capture image")
-            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+//        binding.takePictureButton.setOnClickListener() {
+//            i("Capture image")
+//            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+//
+////            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+//                getImage.launch(takePictureIntent)
+//           // }
+//        }
 
-//            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                getImage.launch(takePictureIntent)
-           // }
-        }
-
-        binding.uploadPictureButton.setOnClickListener {
-            i("Select image")
-            showImagePicker(imageIntentLauncher)
-        }
+//        binding.uploadPictureButton.setOnClickListener {
+//            i("Select image")
+//            showImagePicker(imageIntentLauncher)
+//        }
 
 
 
-        binding.raceLocation.setOnClickListener {
-            i ("Set Location Pressed")
-            val launcherIntent = Intent(this, MapActivity::class.java)
-                .putExtra("location", location)
-            mapIntentLauncher.launch(launcherIntent)
-        }
+//        binding.raceLocation.setOnClickListener {
+//            i ("Set Location Pressed")
+//            val launcherIntent = Intent(this, MapActivity::class.java)
+//                .putExtra("location", location)
+//            mapIntentLauncher.launch(launcherIntent)
+//        }
 
         registerMapCallback()
 
@@ -212,6 +241,11 @@ class RaceActivity : AppCompatActivity() {
 
 
 
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.nav_host_fragment)
+        return NavigationUI.navigateUp(navController, drawerLayout)
     }
 
     fun Bitmap.saveImage(context: Context): Uri? {
@@ -307,10 +341,10 @@ class RaceActivity : AppCompatActivity() {
 
                             FirebaseStorageManager().uploadImage(result.data!!.data!!, race)
 
-                            Picasso.get()
-                                .load(race.image)
-                                .into(binding.imageView)
-                            binding.imageView.visibility = View.VISIBLE
+//                            Picasso.get()
+//                                .load(race.image)
+//                                .into(binding.imageView)
+//                            binding.imageView.visibility = View.VISIBLE
                         } // end of if
                     }
                     RESULT_CANCELED -> { } else -> { }

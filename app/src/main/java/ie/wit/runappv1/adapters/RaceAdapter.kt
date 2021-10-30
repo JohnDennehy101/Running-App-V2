@@ -26,7 +26,7 @@ class RaceAdapter constructor(private var races: List<RaceModel>, private val li
 
     override fun getItemCount(): Int = races.size
 
-    class MainHolder(private val binding : CardRaceBinding) :
+    inner class MainHolder(val binding : CardRaceBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(race: RaceModel, listener: RaceListener) {

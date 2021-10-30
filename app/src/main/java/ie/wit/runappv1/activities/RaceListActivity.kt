@@ -14,7 +14,11 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.SearchView
+import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.navigation.*
+import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.navigation.NavigationView
 
@@ -39,8 +43,10 @@ class RaceListActivity : AppCompatActivity(), RaceListener {
         super.onCreate(savedInstanceState)
         binding = ActivityRaceListBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.toolbar.title = title
-        setSupportActionBar(binding.toolbar)
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+//        binding.toolbar.title = title
+//        setSupportActionBar(binding.toolbar)
 
         app = application as MainApp
         races = app.races.findAll() as MutableList<RaceModel>
@@ -54,14 +60,19 @@ class RaceListActivity : AppCompatActivity(), RaceListener {
         binding.recyclerView.adapter = RaceAdapter(filteredRaces,this)
 
         val drawerLayout : DrawerLayout = findViewById(R.id.drawerLayout)
-        val navView : NavigationView = findViewById(R.id.nav_view)
+//        val navView : NavigationView = findViewById(R.id.nav_view)
 
-        toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
-        drawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
+//        toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
+//        drawerLayout.addDrawerListener(toggle)
+//        toggle.syncState()
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         actionBar?.setDisplayHomeAsUpEnabled(true)
+
+        val navController = findNavController(R.id.nav_host_fragment)
+        NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout)
+        val navView = binding.navView
+        navView.setupWithNavController(navController)
 
         if (intent.hasExtra("race_delete")) {
             println("WORKING")
@@ -70,33 +81,34 @@ class RaceListActivity : AppCompatActivity(), RaceListener {
 
 
 
-        navView.setNavigationItemSelectedListener {
-            val mapListIntent = Intent(this, MapListActivity::class.java)
-            when(it.itemId) {
-                R.id.item_home -> Toast.makeText(applicationContext, "Clicked home", Toast.LENGTH_SHORT).show()
-                R.id.item_map -> startActivity(mapListIntent)
-                R.id.item_logout -> Toast.makeText(applicationContext, "Clicked home", Toast.LENGTH_SHORT).show()
-            }
-            true
-        }
+
+//        navView.setNavigationItemSelectedListener {
+//            val mapListIntent = Intent(this, MapListActivity::class.java)
+//            when(it.itemId) {
+////                R.id.item_home -> Toast.makeText(applicationContext, "Clicked home", Toast.LENGTH_SHORT).show()
+//                R.id.item_map -> startActivity(mapListIntent)
+//                R.id.item_logout -> Toast.makeText(applicationContext, "Clicked home", Toast.LENGTH_SHORT).show()
+//            }
+//            true
+//        }
 
         registerRefreshCallback()
 
 
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (toggle.onOptionsItemSelected(item)) {
-            return true
-        }
-        when (item.itemId) {
-            R.id.item_add -> {
-                val launcherIntent = Intent(this, RaceActivity::class.java)
-                refreshIntentLauncher.launch(launcherIntent)
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        if (toggle.onOptionsItemSelected(item)) {
+//            return true
+//        }
+//        when (item.itemId) {
+//            R.id.item_add -> {
+//                val launcherIntent = Intent(this, RaceActivity::class.java)
+//                refreshIntentLauncher.launch(launcherIntent)
+//            }
+//        }
+//        return super.onOptionsItemSelected(item)
+//    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)

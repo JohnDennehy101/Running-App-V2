@@ -3,14 +3,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <item
-        android:id="@+id/item_home"
-        android:title="@string/menu_home"
-        android:icon="@drawable/ic_baseline_home_24"/>
-    <item
-        android:id="@+id/item_map"
-        android:title="@string/menu_map"
-        android:icon="@drawable/ic_baseline_map_24"/>
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/reportFragment"
+            android:title="@string/menu_home"
+            android:icon="@drawable/ic_baseline_home_24"/>
+        <item
+            android:id="@+id/item_map"
+            android:title="@string/menu_map"
+            android:icon="@drawable/ic_baseline_map_24"/>
+    </group>
+
+
     <item android:title="Profile">
         <menu>
             <item
