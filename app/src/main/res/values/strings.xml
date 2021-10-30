@@ -17,4 +17,6 @@
     <string name="nav_header_title">DonationX (Lab)</string>
     <string name="nav_header_subtitle">voteforhomer@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
+    <string name="action_add_race">Add Race</string>
+    <string name="action_report">Created Races</string>
 </resources>

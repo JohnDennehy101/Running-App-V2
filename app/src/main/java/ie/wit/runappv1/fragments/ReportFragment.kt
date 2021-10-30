@@ -46,9 +46,6 @@ class ReportFragment : Fragment(), RaceListener  {
 
         filteredRaces = races.toMutableList()
 
-        println("FILTERED REACES ")
-        println(filteredRaces.size)
-
         registerRefreshCallback()
 
 
@@ -62,16 +59,11 @@ class ReportFragment : Fragment(), RaceListener  {
         _fragBinding = FragmentReportBinding.inflate(inflater, container, false)
 
         val root = fragBinding.root
+        activity?.title = getString(R.string.action_report)
 
-        val layoutManager = LinearLayoutManager(context)
-
-//        fragBinding.test.setText("GREAST")
         fragBinding.recyclerView.setLayoutManager(LinearLayoutManager(activity))
         fragBinding.recyclerView.adapter = RaceAdapter(filteredRaces, this)
 
-//        fragBinding.recyclerView.layoutManager = layoutManager
-//
-//        fragBinding.recyclerView.adapter = RaceAdapter(filteredRaces,this)
         return root
     }
 
@@ -111,5 +103,10 @@ class ReportFragment : Fragment(), RaceListener  {
         refreshIntentLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult())
             { fragBinding.recyclerView.adapter?.notifyDataSetChanged() }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _fragBinding = null
     }
 }
