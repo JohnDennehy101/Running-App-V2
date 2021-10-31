@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_raceFragment_to_reportFragment"
             app:destination="@id/reportFragment" />
+        <action
+            android:id="@+id/action_raceFragment_to_mapListFragment"
+            app:destination="@id/mapListFragment" />
     </fragment>
     <fragment
         android:id="@+id/reportFragment"
@@ -21,6 +24,15 @@
         tools:layout="@layout/fragment_report" >
         <action
             android:id="@+id/action_reportFragment_to_raceFragment"
+            app:destination="@id/raceFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mapListFragment"
+        android:name="ie.wit.runappv1.fragments.MapListFragment"
+        android:label="fragment_map_list"
+        tools:layout="@layout/fragment_map_list" >
+        <action
+            android:id="@+id/action_mapListFragment_to_raceFragment"
             app:destination="@id/raceFragment" />
     </fragment>
 </navigation>
