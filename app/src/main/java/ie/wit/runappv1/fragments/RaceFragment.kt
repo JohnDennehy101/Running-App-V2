@@ -20,7 +20,6 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import ie.wit.runappv1.R
-import ie.wit.runappv1.activities.MapActivity
 import ie.wit.runappv1.activities.RaceListActivity
 import ie.wit.runappv1.databinding.FragmentRaceBinding
 import ie.wit.runappv1.helpers.*
@@ -169,16 +168,31 @@ class RaceFragment : Fragment() {
 
 
 
-            if (race.title.isNotEmpty() && race.raceDate.isNotEmpty() && editRace == null) {
+            if (race.title.isNotEmpty() && race.description.isNotEmpty() && race.raceDate.isNotEmpty() && race.raceDistance.isNotEmpty() && editRace == null) {
+                if (race.image.isEmpty()) {
+                    race.image = "https://firebasestorage.googleapis.com/v0/b/runningappv1.appspot.com/o/images%2FSun%20Oct%2031%2016%3A52%3A53%20GMT%202021.png?alt=media&token=dec24aa1-37e6-423c-a002-6405ea9dcb97"
+                }
                 app.races.create(race.copy())
                 it.findNavController().navigate(R.id.action_raceFragment_to_reportFragment)
             }
-            else if (race.title.isNotEmpty() && editRace != null) {
+            else if (race.title.isNotEmpty() && race.description.isNotEmpty() && race.raceDate.isNotEmpty() && race.raceDistance.isNotEmpty() && editRace != null) {
                 app.races.update(race);
                 it.findNavController().navigate(R.id.action_raceFragment_to_reportFragment)
             }
-            else {
-                Snackbar.make(it,"Please Enter a title", Snackbar.LENGTH_LONG)
+            else if (race.title.isEmpty()) {
+                Snackbar.make(it,"Please enter a title", Snackbar.LENGTH_LONG)
+                    .show()
+            }
+            else if (race.description.isEmpty()) {
+                Snackbar.make(it,"Please enter a description", Snackbar.LENGTH_LONG)
+                    .show()
+            }
+            else if (race.raceDate.isEmpty()) {
+                Snackbar.make(it,"Please provide a race date", Snackbar.LENGTH_LONG)
+                    .show()
+            }
+            else if (race.raceDistance.isEmpty()) {
+                Snackbar.make(it,"Please provide a race distance", Snackbar.LENGTH_LONG)
                     .show()
             }
         }

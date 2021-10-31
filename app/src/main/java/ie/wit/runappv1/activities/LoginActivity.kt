@@ -5,8 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import at.favre.lib.crypto.bcrypt.BCrypt
+import com.google.android.material.snackbar.Snackbar
 import ie.wit.runappv1.R
 import ie.wit.runappv1.main.MainApp
 import ie.wit.runappv1.databinding.LoginBinding
@@ -14,23 +14,16 @@ import ie.wit.runappv1.databinding.LoginBinding
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: LoginBinding
-//    private var requestCodeValue : Int = 55
-//    var race = RaceModel()
     lateinit var app: MainApp
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = LoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-//        binding.toolbarAdd.title = title
-//        setSupportActionBar(binding.toolbarAdd)
 
         app = application as MainApp
 
         binding.loginButton.setOnClickListener() {
-//            if (binding.userName.text.trim().isNotEmpty() && binding.password.text.trim()
-//                    .isNotEmpty()
-//            ) {
 
                 val userCheck = app.users.findOne(binding.userName.text.toString())
 
@@ -44,16 +37,18 @@ class LoginActivity : AppCompatActivity() {
                         startActivity(i)
                     }
                     else {
-                        Toast.makeText(this, "Password is incorrect", Toast.LENGTH_SHORT).show()
+                        Snackbar.make(it,"Incorrect password, please try again.", Snackbar.LENGTH_LONG).show()
                     }
                 }
 
+                else if (binding.userName.text.toString().length == 0 && binding.password.text.toString().length == 0)
+                {
+                    Snackbar.make(it,"Please provide a username and password", Snackbar.LENGTH_LONG).show()
+                }
+                else {
+                    Snackbar.make(it,"No user record found for that email", Snackbar.LENGTH_LONG).show()
+                }
 
-//
-
-//            } else {
-//                Toast.makeText(this, "Username and password required", Toast.LENGTH_SHORT).show()
-//            }
         }
 
         binding.registerLink.setOnClickListener() {
@@ -63,8 +58,6 @@ class LoginActivity : AppCompatActivity() {
         }
 
     }
-
-
 
         override fun onCreateOptionsMenu(menu: Menu): Boolean {
             menuInflater.inflate(R.menu.menu_race, menu)
@@ -79,6 +72,4 @@ class LoginActivity : AppCompatActivity() {
             }
             return super.onOptionsItemSelected(item)
         }
-
-
 }

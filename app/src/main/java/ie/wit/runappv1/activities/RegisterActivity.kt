@@ -5,8 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import at.favre.lib.crypto.bcrypt.BCrypt
+import com.google.android.material.snackbar.Snackbar
 import ie.wit.runappv1.R
 import ie.wit.runappv1.main.MainApp
 import ie.wit.runappv1.databinding.RegisterBinding
@@ -22,30 +22,49 @@ class RegisterActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = RegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
-//        binding.toolbarAdd.title = title
-//        setSupportActionBar(binding.toolbarAdd)
 
         app = application as MainApp
 
         binding.registerButton.setOnClickListener() {
-//            if (binding.userName.text.trim().isNotEmpty() && binding.password.text.trim()
-//                    .isNotEmpty() && binding.email.text.trim().isNotEmpty() && binding.password.text == binding.confirmPassword.text
-//            ) {
+            user.userName = binding.userName.text.toString()
+            user.email = binding.email.text.toString()
+
+            println(binding.password.text.toString().isNotEmpty())
+
+
+            if (binding.password.text.toString().isNotEmpty() && binding.password.text.toString() == binding.confirmPassword.text.toString()) {
                 val passHash = BCrypt.withDefaults().hashToString(12, binding.password.text.toString().toCharArray())
-                user.userName = binding.userName.text.toString()
-                user.email = binding.email.text.toString()
                 user.passwordHash = passHash.toCharArray()
+            }
+            else if (!binding.password.text.toString().isNotEmpty()) {
+                Snackbar.make(it,"Please provide a password", Snackbar.LENGTH_LONG).show()
+            }
+            else {
+                Snackbar.make(it,"Password field does not match confirmation password field, please try again.", Snackbar.LENGTH_LONG).show()
+            }
 
-                app.users.create(user.copy())
-                val i = Intent(this, RaceListActivity::class.java)
-                setResult(RESULT_OK)
-                finish()
-                startActivity(i)
+
+               if (user.userName.length == 0) {
+                   Snackbar.make(it,"Please provide a username", Snackbar.LENGTH_LONG).show()
+               }
+               else if (user.email.length == 0) {
+                   Snackbar.make(it,"Please provide an email", Snackbar.LENGTH_LONG).show()
+               }
+               else if (user.passwordHash.toString().length == 0) {
+                   Snackbar.make(it,"Please provide a password", Snackbar.LENGTH_LONG).show()
+               }
 
 
-//            } else {
-//                Toast.makeText(this, "Username and password required", Toast.LENGTH_SHORT).show()
-//            }
+                if (user.userName.length > 0 && user.email.length > 0 && user.passwordHash.isNotEmpty()) {
+                    app.users.create(user.copy())
+                    Snackbar.make(it,"User successfully created", Snackbar.LENGTH_LONG).show()
+                    val i = Intent(this, RaceActivity::class.java)
+                    setResult(RESULT_OK)
+                    finish()
+                    startActivity(i)
+                }
+
+
         }
 
         binding.loginLink.setOnClickListener() {
