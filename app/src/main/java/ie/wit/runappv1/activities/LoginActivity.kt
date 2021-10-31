@@ -32,6 +32,7 @@ class LoginActivity : AppCompatActivity() {
 
                     if (passwordHash.verified) {
                         val i = Intent(this, RaceActivity::class.java)
+                        i.putExtra("user", userCheck)
                         setResult(RESULT_OK)
                         finish()
                         startActivity(i)
