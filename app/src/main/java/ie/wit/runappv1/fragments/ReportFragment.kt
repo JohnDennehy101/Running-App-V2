@@ -10,6 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.os.bundleOf
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import ie.wit.runappv1.R
 import ie.wit.runappv1.activities.RaceActivity
@@ -17,6 +19,8 @@ import ie.wit.runappv1.activities.RaceListActivity
 import ie.wit.runappv1.databinding.FragmentReportBinding
 import ie.wit.runappv1.main.MainApp
 import ie.wit.runappv1.models.RaceModel
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment.findNavController
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -88,16 +92,19 @@ class ReportFragment : Fragment(), RaceListener  {
     }
 
     override fun onRaceClick(race: RaceModel) {
-//        val launcherIntent = Intent(this, RaceActivity::class.java)
-//        launcherIntent.putExtra("race_edit", race)
-//        refreshIntentLauncher.launch(launcherIntent)
+        val editRaceAction = ReportFragmentDirections.actionReportFragmentToRaceFragment(race)
+        requireView().findNavController().navigate(editRaceAction)
     }
 
     override fun onRaceDeleteClick(race: RaceModel) {
-//        val launcherIntent = Intent(this, RaceListActivity::class.java)
-//        launcherIntent.putExtra("race_delete", true)
-//        app.races.delete(race)
-//        refreshIntentLauncher.launch(launcherIntent)
+
+        app.races.delete(race)
+
+        requireView().findNavController().run {
+            popBackStack()
+            navigate(R.id.reportFragment)
+        }
+
     }
     private fun registerRefreshCallback() {
         refreshIntentLauncher =

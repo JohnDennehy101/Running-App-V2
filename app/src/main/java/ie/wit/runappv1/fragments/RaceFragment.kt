@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -44,45 +45,15 @@ class RaceFragment : Fragment() {
     var location = Location(52.245696, -7.139102, 7f)
     private lateinit var imageIntentLauncher : ActivityResultLauncher<Intent>
     private lateinit var mapIntentLauncher : ActivityResultLauncher<Intent>
+    val args: RaceFragmentArgs by navArgs()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        val builder : MaterialDatePicker.Builder<Long> = MaterialDatePicker.Builder.datePicker()
-
-        val bundle = this.arguments
-
-
 
         registerImagePickerCallback()
         app = activity?.application as MainApp
-
-
-//        if (requireActivity().intent.hasExtra("race_edit")) {
-//            race = requireActivity().intent.extras?.getParcelable("race_edit")!!
-//            location = race.location
-//
-//            if (race.raceDate.substring(0,2).contains("/")) {
-//                race.raceDate = '0' + race.raceDate
-//            }
-//
-//
-//            var formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")
-//            var date = LocalDateTime.parse(race.raceDate + " 01:00:01", formatter)
-//            val instant: Instant = date.atZone(ZoneId.systemDefault()).toInstant()
-//            val timeInMillis: Long = instant.toEpochMilli()
-//
-//
-//            builder.setSelection(timeInMillis)
-//
-//        }
-
-
-
         registerMapCallback()
-
-
-
         setHasOptionsMenu(true)
     }
 
@@ -94,8 +65,36 @@ class RaceFragment : Fragment() {
         _fragBinding = FragmentRaceBinding.inflate(inflater, container, false)
         val builder : MaterialDatePicker.Builder<Long> = MaterialDatePicker.Builder.datePicker()
 
+        val editRace = args?.editRace
+
         val root = fragBinding.root
         activity?.title = getString(R.string.action_add_race)
+
+
+        if (editRace != null) {
+            race = editRace
+            location = editRace.location
+
+            fragBinding.raceTitle.setText(race.title)
+            fragBinding.raceDescription.setText(race.description)
+            fragBinding.raceDatePicker.setText(race.raceDate)
+            fragBinding.menuAutocomplete.setText(race.raceDistance)
+            fragBinding.btnAdd.setText("Edit Race")
+
+            if (race.image.length > 0) {
+                Picasso.get().setLoggingEnabled(true);
+                Picasso.get()
+                    .load(race.image.toUri())
+                    .into(fragBinding.imageView)
+
+                val params = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    800
+                )
+                fragBinding.imageView.layoutParams = params
+                fragBinding.imageView.visibility = View.VISIBLE
+            }
+        }
 
         val items = listOf("1km", "5km", "8km", "10km", "Half Marathon (21km)", "Marathon (42km)")
 
@@ -103,25 +102,7 @@ class RaceFragment : Fragment() {
             limitRange().build()
         )
 
-        fragBinding.raceTitle.setText(race.title)
-        fragBinding.raceDescription.setText(race.description)
-        fragBinding.raceDatePicker.setText(race.raceDate)
-        fragBinding.menuAutocomplete.setText(race.raceDistance)
-        fragBinding.btnAdd.setText("Edit Race")
 
-        if (race.image.length > 0) {
-            Picasso.get().setLoggingEnabled(true);
-            Picasso.get()
-                .load(race.image.toUri())
-                .into(fragBinding.imageView)
-
-            val params = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                800
-            )
-            fragBinding.imageView.layoutParams = params
-            fragBinding.imageView.visibility = View.VISIBLE
-        }
 
         val picker : MaterialDatePicker<Long> = builder.build()
 
@@ -197,11 +178,11 @@ class RaceFragment : Fragment() {
 
 
 
-            if (race.title.isNotEmpty() && race.raceDate.isNotEmpty() && !requireActivity().intent.hasExtra("race_edit")) {
+            if (race.title.isNotEmpty() && race.raceDate.isNotEmpty() && editRace == null) {
                 app.races.create(race.copy())
                 it.findNavController().navigate(R.id.action_raceFragment_to_reportFragment)
             }
-            else if (race.title.isNotEmpty() && requireActivity().intent.hasExtra("race_edit")) {
+            else if (race.title.isNotEmpty() && editRace != null) {
                 app.races.update(race);
                 it.findNavController().navigate(R.id.action_raceFragment_to_reportFragment)
             }

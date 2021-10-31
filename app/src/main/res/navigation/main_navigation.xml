@@ -16,6 +16,12 @@
         <action
             android:id="@+id/action_raceFragment_to_mapListFragment"
             app:destination="@id/mapListFragment" />
+        <argument
+            android:name="edit_race"
+            app:argType="ie.wit.runappv1.models.RaceModel"
+            app:nullable="true"
+            android:defaultValue="@null"
+           />
     </fragment>
     <fragment
         android:id="@+id/reportFragment"
@@ -25,6 +31,9 @@
         <action
             android:id="@+id/action_reportFragment_to_raceFragment"
             app:destination="@id/raceFragment" />
+        <action
+            android:id="@+id/action_reportFragment_to_reportFragment"
+            app:destination="@id/reportFragment" />
     </fragment>
     <fragment
         android:id="@+id/mapListFragment"
