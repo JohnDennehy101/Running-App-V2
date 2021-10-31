@@ -154,9 +154,8 @@ class RaceFragment : Fragment() {
 
         fragBinding.raceLocation.setOnClickListener {
             i ("Set Location Pressed")
-            val launcherIntent = Intent(activity, MapActivity::class.java)
-                .putExtra("location", location)
-            mapIntentLauncher.launch(launcherIntent)
+            val setLocationAction = RaceFragmentDirections.actionRaceFragmentToMapFragment(location)
+            requireView().findNavController().navigate(setLocationAction)
         }
 
 

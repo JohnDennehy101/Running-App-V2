@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/raceFragment"
         android:name="ie.wit.runappv1.fragments.RaceFragment"
-        android:label="fragment_race"
+        android:label="Add Race"
         tools:layout="@layout/fragment_race" >
         <action
             android:id="@+id/action_raceFragment_to_reportFragment"
@@ -22,11 +22,19 @@
             app:nullable="true"
             android:defaultValue="@null"
            />
+        <action
+            android:id="@+id/action_raceFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
+        <argument
+            android:name="location"
+            app:argType="ie.wit.runappv1.models.Location"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
     <fragment
         android:id="@+id/reportFragment"
         android:name="ie.wit.runappv1.fragments.ReportFragment"
-        android:label="fragment_report"
+        android:label="List of Added Races"
         tools:layout="@layout/fragment_report" >
         <action
             android:id="@+id/action_reportFragment_to_raceFragment"
@@ -38,10 +46,24 @@
     <fragment
         android:id="@+id/mapListFragment"
         android:name="ie.wit.runappv1.fragments.MapListFragment"
-        android:label="fragment_map_list"
+        android:label="List of Added Races - Map"
         tools:layout="@layout/fragment_map_list" >
         <action
             android:id="@+id/action_mapListFragment_to_raceFragment"
             app:destination="@id/raceFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="ie.wit.runappv1.fragments.MapFragment"
+        android:label="Add Race Location"
+        tools:layout="@layout/fragment_map" >
+        <action
+            android:id="@+id/action_mapFragment_to_raceFragment"
+            app:destination="@id/raceFragment" />
+        <argument
+            android:name="location"
+            app:argType="ie.wit.runappv1.models.Location"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
 </navigation>

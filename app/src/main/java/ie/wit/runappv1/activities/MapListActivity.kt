@@ -13,7 +13,6 @@ import ie.wit.runappv1.models.RaceModel
 class MapListActivity : AppCompatActivity() {
 
     lateinit var app: MainApp
-    private lateinit var map: GoogleMap
     private lateinit var races: List<RaceModel>
 
     private lateinit var binding: ActivityMapListBinding
