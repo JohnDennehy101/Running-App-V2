@@ -4,23 +4,18 @@ import RaceAdapter
 import RaceListener
 import android.content.Intent
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.os.bundleOf
+import androidx.appcompat.widget.SearchView
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import ie.wit.runappv1.R
-import ie.wit.runappv1.activities.RaceActivity
-import ie.wit.runappv1.activities.RaceListActivity
 import ie.wit.runappv1.databinding.FragmentReportBinding
 import ie.wit.runappv1.main.MainApp
 import ie.wit.runappv1.models.RaceModel
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment.findNavController
+import java.util.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -41,7 +36,7 @@ class ReportFragment : Fragment(), RaceListener  {
     private lateinit var refreshIntentLauncher : ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+
 
         app = activity?.application as MainApp
         setHasOptionsMenu(true)
@@ -51,6 +46,10 @@ class ReportFragment : Fragment(), RaceListener  {
         filteredRaces = races.toMutableList()
 
         registerRefreshCallback()
+
+        super.onCreate(savedInstanceState)
+
+
 
 
     }
@@ -89,6 +88,41 @@ class ReportFragment : Fragment(), RaceListener  {
                     putString(ARG_PARAM2, param2)
                 }
             }
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu, menuInflater: MenuInflater) {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        val item = menu?.findItem(R.id.item_search)
+        val searchView = item?.actionView as SearchView
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                TODO("Not yet implemented")
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                filteredRaces.clear()
+                val searchText = newText!!.lowercase(Locale.getDefault())
+
+                if (searchText.length > 0) {
+                    races.forEach {
+
+                        if (it.title.lowercase(Locale.getDefault()).contains(searchText.lowercase())) {
+                            filteredRaces.add(it)
+                        }
+
+                    }
+                    fragBinding.recyclerView.adapter?.notifyDataSetChanged()
+                }
+                else {
+                    filteredRaces.clear()
+                    filteredRaces.addAll(races)
+                    fragBinding.recyclerView.adapter?.notifyDataSetChanged()
+                }
+                return false
+            }
+
+        })
     }
 
     override fun onRaceClick(race: RaceModel) {

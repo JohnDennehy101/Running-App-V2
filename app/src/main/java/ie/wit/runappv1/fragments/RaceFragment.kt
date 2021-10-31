@@ -16,7 +16,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.NavigationUI
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
@@ -28,10 +27,6 @@ import ie.wit.runappv1.helpers.*
 import ie.wit.runappv1.main.MainApp
 import ie.wit.runappv1.models.Location
 import ie.wit.runappv1.models.RaceModel
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 import java.util.*
 import timber.log.Timber.i
 
@@ -149,10 +144,7 @@ class RaceFragment : Fragment() {
         fragBinding.takePictureButton.setOnClickListener() {
             i("Capture image")
             val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-
-//            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
                 getImage.launch(takePictureIntent)
-           // }
         }
 
         fragBinding.uploadPictureButton.setOnClickListener {
@@ -256,11 +248,15 @@ class RaceFragment : Fragment() {
 
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_fragments, menu)
+        inflater.inflate(R.menu.menu_race, menu)
         super.onCreateOptionsMenu(menu, inflater)
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.item_cancel -> { requireView().findNavController().navigate(R.id.reportFragment) }
+        }
         return NavigationUI.onNavDestinationSelected(item,
             requireView().findNavController()) || super.onOptionsItemSelected(item)
     }
