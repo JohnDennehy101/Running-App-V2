@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginTop="20dp"
     tools:context=".fragments.RaceFragment">
 
     <ScrollView
@@ -18,53 +19,86 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-
-
-
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="20dp">
 
-                <EditText
-                    android:id="@+id/raceTitle"
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/edRaceTitle"
                     android:layout_width="match_parent"
-                    android:layout_height="45dp"
-                    android:layout_margin="8dp"
-                    android:hint="Enter Title"
-                    android:inputType="text"
-                    android:maxLength="25"
-                    android:maxLines="1"
-                    android:padding="8dp"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textSize="14sp" />
+                    android:layout_height="50dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
 
-                <EditText
-                    android:id="@+id/raceDescription"
+                    android:layout_margin="8dp"
+
+                    android:hint=" "
+                >
+
+                    <EditText
+                        android:id="@+id/raceTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:hint="Enter Title"
+                        android:inputType="text"
+                        android:maxLength="25"
+                        android:maxLines="1"
+                        android:padding="8dp"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="14sp" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/edRaceDescription"
                     android:layout_width="match_parent"
-                    android:layout_height="45dp"
+                    android:layout_height="50dp"
                     android:layout_margin="8dp"
-                    android:hint="Enter Description"
-                    android:inputType="text"
-                    android:maxLength="25"
-                    android:maxLines="1"
-                    android:padding="8dp"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textSize="14sp" />
 
-                <TextView
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:hint=" "
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <EditText
+                        android:id="@+id/raceDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:hint="Enter Description"
+                        android:inputType="text"
+                        android:maxLength="25"
+                        android:maxLines="1"
+                        android:padding="8dp"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="14sp" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/raceDatePicker"
                     android:layout_width="match_parent"
-                    android:layout_height="45dp"
+                    android:layout_height="50dp"
                     android:layout_margin="8dp"
-                    android:hint="Select Rate Date:"
-                    android:maxLength="25"
                     android:background="@drawable/edit_text_border"
-                    android:maxLines="1"
+                    android:hint="Select Rate Date"
+                    android:layout_gravity="center_vertical"
                     android:padding="8dp"
+                    android:paddingStart="15dp"
+                    android:paddingTop="32dp"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="14sp" />
+
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/raceDistanceSelector"
@@ -74,12 +108,14 @@
                     android:padding="8dp"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    android:hint="Select Race Length">
+                    android:hint=" "
+                    android:textSize="14sp">
 
                     <AutoCompleteTextView
                         android:id="@+id/menuAutocomplete"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:hint="Select Race Length"
                         android:inputType="none" />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -151,12 +187,6 @@
                     android:textSize="16sp"/>
 
 
-
-
-
-
-
-
                 <Button
                     android:id="@+id/btnAdd"
                     android:layout_width="match_parent"
@@ -166,7 +196,7 @@
                     android:paddingTop="8dp"
                     android:paddingBottom="8dp"
                     android:stateListAnimator="@null"
-                    android:text="Test"
+                    android:text="Add Race"
                     android:textColor="@color/colorPrimary"
                     android:textSize="16sp" />
             </LinearLayout>
