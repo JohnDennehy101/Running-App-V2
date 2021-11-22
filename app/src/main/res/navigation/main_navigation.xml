@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/raceFragment"
-        android:name="ie.wit.runappv1.fragments.RaceFragment"
+        android:name="ie.wit.runappv2.fragments.RaceFragment"
         android:label="Add Race"
         tools:layout="@layout/fragment_race" >
         <action
@@ -18,7 +18,7 @@
             app:destination="@id/mapListFragment" />
         <argument
             android:name="edit_race"
-            app:argType="ie.wit.runappv1.models.RaceModel"
+            app:argType="ie.wit.runappv2.models.RaceModel"
             app:nullable="true"
             android:defaultValue="@null"
            />
@@ -27,13 +27,13 @@
             app:destination="@id/mapFragment" />
         <argument
             android:name="location"
-            app:argType="ie.wit.runappv1.models.Location"
+            app:argType="ie.wit.runappv2.models.Location"
             app:nullable="true"
             android:defaultValue="@null" />
     </fragment>
     <fragment
         android:id="@+id/reportFragment"
-        android:name="ie.wit.runappv1.fragments.ReportFragment"
+        android:name="ie.wit.runappv2.fragments.ReportFragment"
         android:label="List of Added Races"
         tools:layout="@layout/fragment_report" >
         <action
@@ -45,7 +45,7 @@
     </fragment>
     <fragment
         android:id="@+id/mapListFragment"
-        android:name="ie.wit.runappv1.fragments.MapListFragment"
+        android:name="ie.wit.runappv2.fragments.MapListFragment"
         android:label="List of Added Races - Map"
         tools:layout="@layout/fragment_map_list" >
         <action
@@ -54,7 +54,7 @@
     </fragment>
     <fragment
         android:id="@+id/mapFragment"
-        android:name="ie.wit.runappv1.fragments.MapFragment"
+        android:name="ie.wit.runappv2.fragments.MapFragment"
         android:label="Add Race Location"
         tools:layout="@layout/fragment_map" >
         <action
@@ -62,7 +62,7 @@
             app:destination="@id/raceFragment" />
         <argument
             android:name="location"
-            app:argType="ie.wit.runappv1.models.Location"
+            app:argType="ie.wit.runappv2.models.Location"
             app:nullable="true"
             android:defaultValue="@null" />
     </fragment>
