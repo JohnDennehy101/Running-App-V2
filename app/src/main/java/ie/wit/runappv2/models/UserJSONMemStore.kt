@@ -9,7 +9,7 @@ import timber.log.Timber.i
 import java.lang.reflect.Type
 import java.util.*
 
-class UserJSONMemStore : UserJSONStore {
+object UserJSONMemStore : UserJSONStore {
 
     var users =
         mutableListOf<UserModel>()
@@ -18,18 +18,7 @@ class UserJSONMemStore : UserJSONStore {
 
     val combinedDataModel = UnifiedModel()
 
-    val context: Context
-
     val listType = object : TypeToken<ArrayList<Any>>() {}.type
-
-    constructor (context: Context, test: Boolean) {
-        this.context = context
-        if (!test) {
-            if (exists(context, JSON_FILE)) {
-                deserialize()
-            }
-        }
-    }
 
     override fun findAll(): List<UserModel> {
         return users
@@ -72,14 +61,14 @@ class UserJSONMemStore : UserJSONStore {
         val combinedData = mutableListOf(combinedDataModel)
 
         val jsonString = gsonBuilder.toJson(combinedData, listType)
-        write(context, JSON_FILE, jsonString)
+        //write(context, JSON_FILE, jsonString)
     }
 
     private fun deserialize() {
-        val jsonString = read(context, JSON_FILE)
+       // val jsonString = read(context, JSON_FILE)
         val collectionType: Type = object : TypeToken<List<UnifiedModel?>?>() {}.type
-        val dataResponse : ArrayList<UnifiedModel> = Gson().fromJson(jsonString, collectionType)
-        users = dataResponse.get(0).users!!
-        races = dataResponse.get(0).races!!
+       // val dataResponse : ArrayList<UnifiedModel> = Gson().fromJson(jsonString, collectionType)
+       // users = dataResponse.get(0).users!!
+       // races = dataResponse.get(0).races!!
     }
 }

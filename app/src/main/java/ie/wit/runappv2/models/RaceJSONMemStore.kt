@@ -19,23 +19,10 @@ fun generateRandomId(): Long {
     return Random().nextLong()
 }
 
-class RaceJSONMemStore : RaceJSONStore {
-    val context: Context
+object RaceJSONMemStore : RaceJSONStore {
 
     var races = mutableListOf<RaceModel>()
     var users = mutableListOf<UserModel>()
-
-
-
-    constructor (context: Context, test: Boolean) {
-        this.context = context
-        if (!test) {
-            if (exists(context, JSON_FILE)) {
-                deserialize()
-            }
-        }
-
-    }
 
     override fun findAll(): List<RaceModel> {
         return races
@@ -88,16 +75,16 @@ class RaceJSONMemStore : RaceJSONStore {
 
         val combinedData = mutableListOf(combinedDataModel)
         val jsonString = gsonBuilder.toJson(combinedData, listType)
-        write(context, JSON_FILE, jsonString)
+        //write(context, JSON_FILE, jsonString)
     }
 
     private fun deserialize() {
-        val jsonString = read(context, JSON_FILE)
+        //val jsonString = read(context, JSON_FILE)
         val collectionType: Type = object : TypeToken<List<UnifiedModel?>?>() {}.type
-        val dataResponse : ArrayList<UnifiedModel> = Gson().fromJson(jsonString, collectionType)
+        //val dataResponse : ArrayList<UnifiedModel> = Gson().fromJson(jsonString, collectionType)
 
-        races = dataResponse.get(0).races!!
-        users = dataResponse.get(0).users!!
+        //races = dataResponse.get(0).races!!
+        //users = dataResponse.get(0).users!!
     }
 }
 

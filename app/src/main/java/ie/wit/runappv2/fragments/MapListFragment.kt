@@ -26,7 +26,7 @@ class MapListFragment : Fragment(), OnMapReadyCallback {
 
     private var _fragBinding: FragmentMapListBinding? = null
     private val fragBinding get() = _fragBinding!!
-    private lateinit var races : MutableList<RaceModel>
+    //private lateinit var races : MutableList<RaceModel>
     lateinit var app: MainApp
     private lateinit var map: GoogleMap
 
@@ -35,7 +35,7 @@ class MapListFragment : Fragment(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         app = activity?.application  as MainApp
 
-        races = app.races.findAll() as MutableList<RaceModel>
+        //races = app.races.findAll() as MutableList<RaceModel>
 
         super.onCreate(savedInstanceState)
 
@@ -69,7 +69,7 @@ class MapListFragment : Fragment(), OnMapReadyCallback {
 
         val loc = LatLng(53.534046, -7.599592)
 
-        for (race in races) {
+        /*for (race in races) {
             val locationCoordinates = LatLng(race.location.lat, race.location.lng)
             val options = MarkerOptions()
                 .title(race.title)
@@ -78,7 +78,7 @@ class MapListFragment : Fragment(), OnMapReadyCallback {
                 .position(locationCoordinates)
             map.addMarker(options)
 
-        }
+        }*/
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 6.5F))
     }
 

@@ -12,7 +12,7 @@ import ie.wit.runappv2.models.RaceModel
 class MapListActivity : AppCompatActivity() {
 
     lateinit var app: MainApp
-    private lateinit var races: List<RaceModel>
+    //private lateinit var races: List<RaceModel>
 
     private lateinit var binding: ActivityMapListBinding
     private lateinit var drawerLayout: DrawerLayout
@@ -25,7 +25,7 @@ class MapListActivity : AppCompatActivity() {
 
         app = application as MainApp
 
-        races = app.races.findAll()
+        //races = app.races.findAll()
 
         val navController = findNavController(R.id.nav_host_fragment)
         NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout)

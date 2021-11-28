@@ -56,7 +56,7 @@ class RegisterActivity : AppCompatActivity() {
 
 
                 if (user.userName.length > 0 && user.email.length > 0 && user.passwordHash.isNotEmpty()) {
-                    app.users.create(user.copy())
+                    //app.users.create(user.copy())
                     Snackbar.make(it,"User successfully created", Snackbar.LENGTH_LONG).show()
                     val i = Intent(this, RaceActivity::class.java)
                     i.putExtra("user", user)

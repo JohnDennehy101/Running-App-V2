@@ -33,7 +33,7 @@
     </fragment>
     <fragment
         android:id="@+id/reportFragment"
-        android:name="ie.wit.runappv2.fragments.ReportFragment"
+        android:name="ie.wit.runappv2.ui.report.RaceListFragment"
         android:label="List of Added Races"
         tools:layout="@layout/fragment_report" >
         <action

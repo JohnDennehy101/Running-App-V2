@@ -25,32 +25,33 @@ class LoginActivity : AppCompatActivity() {
 
         binding.loginButton.setOnClickListener() {
 
-                val userCheck = app.users.findOne(binding.userName.text.toString())
+            //Rework with Firebase
+                //val userCheck = app.users.findOne(binding.userName.text.toString())
 
-                if (userCheck != null) {
-                    var passwordHash = BCrypt.verifyer().verify(binding.password.text.trim().toString().toCharArray(), userCheck.passwordHash)
+               // if (userCheck != null) {
+                    //var passwordHash = BCrypt.verifyer().verify(binding.password.text.trim().toString().toCharArray(), userCheck.passwordHash)
 
-                    if (passwordHash.verified) {
+                    //if (passwordHash.verified) {
                         val i = Intent(this, RaceActivity::class.java)
-                        i.putExtra("user", userCheck)
+                        //i.putExtra("user", userCheck)
                         setResult(RESULT_OK)
                         finish()
                         startActivity(i)
-                    }
-                    else {
-                        Snackbar.make(it,"Incorrect password, please try again.", Snackbar.LENGTH_LONG).show()
-                    }
+                    //}
+                    //else {
+                     //   Snackbar.make(it,"Incorrect password, please try again.", Snackbar.LENGTH_LONG).show()
+                    //}
                 }
 
-                else if (binding.userName.text.toString().length == 0 && binding.password.text.toString().length == 0)
+               /* else if (binding.userName.text.toString().length == 0 && binding.password.text.toString().length == 0)
                 {
                     Snackbar.make(it,"Please provide a username and password", Snackbar.LENGTH_LONG).show()
                 }
                 else {
                     Snackbar.make(it,"No user record found for that email", Snackbar.LENGTH_LONG).show()
-                }
+                }*/
 
-        }
+        //}
 
         binding.registerLink.setOnClickListener() {
             val intent = Intent(this, RegisterActivity::class.java)

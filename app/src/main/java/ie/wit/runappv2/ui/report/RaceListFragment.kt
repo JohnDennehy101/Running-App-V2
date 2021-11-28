@@ -1,4 +1,4 @@
-package ie.wit.runappv2.fragments
+package ie.wit.runappv2.ui.report
 
 import RaceAdapter
 import RaceListener
@@ -16,24 +16,19 @@ import ie.wit.runappv2.databinding.FragmentReportBinding
 import ie.wit.runappv2.main.MainApp
 import ie.wit.runappv2.models.RaceModel
 import java.util.*
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import ie.wit.runappv2.models.RaceJSONMemStore
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [ReportFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class ReportFragment : Fragment(), RaceListener  {
+class RaceListFragment : Fragment(), RaceListener  {
     private lateinit var filteredRaces : MutableList<RaceModel>
     private var _fragBinding: FragmentReportBinding? = null
     private val fragBinding get() = _fragBinding!!
     private lateinit var races : MutableList<RaceModel>
     lateinit var app: MainApp
     private lateinit var refreshIntentLauncher : ActivityResultLauncher<Intent>
+    private lateinit var raceListViewModel: RaceListViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -41,15 +36,13 @@ class ReportFragment : Fragment(), RaceListener  {
         app = activity?.application as MainApp
         setHasOptionsMenu(true)
 
-        races = app.races.findAll() as MutableList<RaceModel>
+        races = RaceJSONMemStore.findAll() as MutableList<RaceModel>
 
         filteredRaces = races.toMutableList()
 
         registerRefreshCallback()
 
         super.onCreate(savedInstanceState)
-
-
 
 
     }
@@ -64,31 +57,19 @@ class ReportFragment : Fragment(), RaceListener  {
         val root = fragBinding.root
         activity?.title = getString(R.string.action_report)
 
+        raceListViewModel = ViewModelProvider(this).get(RaceListViewModel::class.java)
+        raceListViewModel.observableRacesList.observe(viewLifecycleOwner, Observer {
+                races ->
+            races?.let { render(races) }
+        })
+
         fragBinding.recyclerView.setLayoutManager(LinearLayoutManager(activity))
         fragBinding.recyclerView.adapter = RaceAdapter(filteredRaces, this)
 
         return root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ReportFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ReportFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
+
 
 
     override fun onCreateOptionsMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -126,13 +107,13 @@ class ReportFragment : Fragment(), RaceListener  {
     }
 
     override fun onRaceClick(race: RaceModel) {
-        val editRaceAction = ReportFragmentDirections.actionReportFragmentToRaceFragment(race)
+        val editRaceAction = RaceListFragmentDirections.actionReportFragmentToRaceFragment(race)
         requireView().findNavController().navigate(editRaceAction)
     }
 
     override fun onRaceDeleteClick(race: RaceModel) {
 
-        app.races.delete(race)
+        RaceJSONMemStore.delete(race)
 
         requireView().findNavController().run {
             popBackStack()
@@ -144,6 +125,22 @@ class ReportFragment : Fragment(), RaceListener  {
         refreshIntentLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult())
             { fragBinding.recyclerView.adapter?.notifyDataSetChanged() }
+    }
+
+    private fun render(racesList: List<RaceModel>) {
+        fragBinding.recyclerView.adapter = RaceAdapter(racesList, this)
+        if (racesList.isEmpty()) {
+            fragBinding.recyclerView.visibility = View.GONE
+            fragBinding.racesNotFound.visibility = View.VISIBLE
+        } else {
+            fragBinding.recyclerView.visibility = View.VISIBLE
+            fragBinding.racesNotFound.visibility = View.GONE
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        raceListViewModel.load()
     }
 
     override fun onDestroyView() {

@@ -20,7 +20,7 @@ class RaceActivity : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
     var race = RaceModel()
     lateinit var app: MainApp
-    lateinit var user: UserModel
+    //lateinit var user: UserModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,14 +40,14 @@ class RaceActivity : AppCompatActivity() {
         val navigationView  = navView
         val headerView = navigationView.getHeaderView(0)
 
-       if (intent.hasExtra("user")) {
+       /*if (intent.hasExtra("user")) {
            user =  intent.extras?.getParcelable("user")!!
        }
         val navUsername : TextView = headerView.findViewById(R.id.userName)
         val navEmail : TextView = headerView.findViewById(R.id.email)
 
         navUsername.setText(user.userName)
-        navEmail.setText(user.email)
+        navEmail.setText(user.email)*/
 
         navView.setupWithNavController(navController)
 

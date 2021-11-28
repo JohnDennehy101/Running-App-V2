@@ -9,14 +9,14 @@ class MainApp : Application() {
 
     val race = RaceModel()
 
-    lateinit var users: UserJSONStore
+    //lateinit var users: UserJSONStore
 
-    lateinit var races: RaceJSONStore
+    //lateinit var races: RaceJSONStore
 
     override fun onCreate() {
         super.onCreate()
-        users = UserJSONMemStore(applicationContext, false)
-        races = RaceJSONMemStore(applicationContext, false)
+        //users = UserJSONMemStore(applicationContext, false)
+        //races = RaceJSONMemStore(applicationContext, false)
         Timber.plant(Timber.DebugTree())
         i("App started")
     }
