@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_navigation"
-    app:startDestination="@id/raceFragment">
+    app:startDestination="@id/reportFragment">
 
     <fragment
         android:id="@+id/raceFragment"
@@ -39,9 +39,6 @@
         <action
             android:id="@+id/action_reportFragment_to_raceFragment"
             app:destination="@id/raceFragment" />
-        <action
-            android:id="@+id/action_reportFragment_to_reportFragment"
-            app:destination="@id/reportFragment" />
     </fragment>
     <fragment
         android:id="@+id/mapListFragment"
