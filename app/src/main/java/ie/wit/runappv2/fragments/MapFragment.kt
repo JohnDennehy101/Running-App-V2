@@ -24,7 +24,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerDragListen
     private val fragBinding get() = _fragBinding!!
     lateinit var app: MainApp
     private lateinit var map: GoogleMap
-    val args: RaceFragmentArgs by navArgs()
+    //val args: RaceFragmentArgs by navArgs()
     var location = Location()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,7 +49,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerDragListen
         _fragBinding = FragmentMapListBinding.inflate(inflater, container, false)
         val root = fragBinding.root
 
-        location = args?.location!!
+        //location = args?.location!!
 
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="20dp"
-    tools:context=".fragments.RaceFragment">
+    tools:context=".ui.race.RaceFragment">
 
     <ScrollView
         android:layout_width="match_parent"

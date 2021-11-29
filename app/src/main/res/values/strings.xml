@@ -20,4 +20,5 @@
     <string name="action_add_race">Add Race</string>
     <string name="action_report">Created Races</string>
     <string name="racesNotFound">No Added Races Yet...</string>
+    <string name="raceError">Error adding race</string>
 </resources>

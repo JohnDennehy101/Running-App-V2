@@ -1,4 +1,4 @@
-package ie.wit.runappv2.fragments
+package ie.wit.runappv2.ui.race
 
 import android.app.Activity
 import android.content.Intent
@@ -8,11 +8,13 @@ import android.provider.MediaStore
 import android.view.*
 import android.widget.ArrayAdapter
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.NavigationUI
@@ -22,13 +24,24 @@ import com.squareup.picasso.Picasso
 import ie.wit.runappv2.R
 import ie.wit.runappv2.activities.RaceListActivity
 import ie.wit.runappv2.databinding.FragmentRaceBinding
-import ie.wit.runappv2.helpers.*
+import ie.wit.runappv2.ui.race.RaceFragmentArgs
+import ie.wit.runappv2.ui.race.RaceFragmentDirections
+import ie.wit.runappv2.helpers.FirebaseStorageManager
+import ie.wit.runappv2.helpers.limitRange
+import ie.wit.runappv2.helpers.saveImage
+import ie.wit.runappv2.helpers.showImagePicker
 import ie.wit.runappv2.main.MainApp
 import ie.wit.runappv2.models.Location
 import ie.wit.runappv2.models.RaceModel
+import timber.log.Timber
 import java.util.*
-import timber.log.Timber.i
 
+import androidx.navigation.findNavController
+import ie.wit.runappv2.ui.race.RaceViewModel
+import androidx.lifecycle.Observer
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.NavHostFragment.findNavController
 
 class RaceFragment : Fragment() {
 
@@ -40,10 +53,14 @@ class RaceFragment : Fragment() {
     private lateinit var imageIntentLauncher : ActivityResultLauncher<Intent>
     private lateinit var mapIntentLauncher : ActivityResultLauncher<Intent>
     val args: RaceFragmentArgs by navArgs()
+    private lateinit var raceViewModel: RaceViewModel
+    lateinit var navController: NavController
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
 
         registerImagePickerCallback()
         app = activity?.application as MainApp
@@ -63,6 +80,11 @@ class RaceFragment : Fragment() {
 
         val root = fragBinding.root
         activity?.title = getString(R.string.action_add_race)
+
+        raceViewModel = ViewModelProvider(this).get(RaceViewModel::class.java)
+        raceViewModel.observableStatus.observe(viewLifecycleOwner, Observer {
+                status -> status?.let { render(status) }
+        })
 
 
         if (editRace != null) {
@@ -141,30 +163,41 @@ class RaceFragment : Fragment() {
         }
 
         fragBinding.takePictureButton.setOnClickListener() {
-            i("Capture image")
+            Timber.i("Capture image")
             val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                getImage.launch(takePictureIntent)
+            getImage.launch(takePictureIntent)
         }
 
         fragBinding.uploadPictureButton.setOnClickListener {
-            i("Select image")
+            Timber.i("Select image")
             showImagePicker(imageIntentLauncher)
         }
 
         fragBinding.raceLocation.setOnClickListener {
-            i ("Set Location Pressed")
+            Timber.i("Set Location Pressed")
             val setLocationAction = RaceFragmentDirections.actionRaceFragmentToMapFragment(location)
             requireView().findNavController().navigate(setLocationAction)
         }
 
+        setAddOrUpdateRaceButtonListener(fragBinding, editRace)
 
-        fragBinding.btnAdd.setOnClickListener() {
+
+
+
+
+
+        return root
+    }
+
+    fun setAddOrUpdateRaceButtonListener (layout: FragmentRaceBinding, editRace : RaceModel?) {
+
+        layout.btnAdd.setOnClickListener() {
             race.title = fragBinding.raceTitle.text.toString()
             race.description = fragBinding.raceDescription.text.toString()
             race.raceDate = fragBinding.raceDatePicker.text.toString()
             race.raceDistance = fragBinding.menuAutocomplete.text.toString()
             race.location = location
-            val i = Intent(context, RaceListActivity::class.java)
+
 
 
 
@@ -172,6 +205,7 @@ class RaceFragment : Fragment() {
                 if (race.image.isEmpty()) {
                     race.image = "https://firebasestorage.googleapis.com/v0/b/runningappv1.appspot.com/o/images%2FSun%20Oct%2031%2016%3A52%3A53%20GMT%202021.png?alt=media&token=dec24aa1-37e6-423c-a002-6405ea9dcb97"
                 }
+                raceViewModel.addRace(race.copy())
                 //app.races.create(race.copy())
                 it.findNavController().navigate(R.id.action_raceFragment_to_reportFragment)
             }
@@ -197,26 +231,6 @@ class RaceFragment : Fragment() {
             }
         }
 
-
-
-        return root
-    }
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment RaceFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            RaceFragment().apply {
-
-            }
     }
 
     private fun registerImagePickerCallback() {
@@ -226,7 +240,7 @@ class RaceFragment : Fragment() {
                 when(result.resultCode){
                     AppCompatActivity.RESULT_OK -> {
                         if (result.data != null) {
-                            i("Got Result ${result.data!!.data}")
+                            Timber.i("Got Result ${result.data!!.data}")
                             race.image = result.data!!.data!!.toString()
 
                             FirebaseStorageManager().uploadImage(result.data!!.data!!, race)
@@ -242,6 +256,18 @@ class RaceFragment : Fragment() {
             }
     }
 
+    private fun render(status: Boolean) {
+        when (status) {
+            true -> {
+                view?.let {
+                    //Uncomment this if you want to immediately return to Report
+                   //navController.popBackStack()
+                }
+            }
+            false -> Toast.makeText(context,getString(R.string.raceError), Toast.LENGTH_LONG).show()
+        }
+    }
+
     private fun registerMapCallback() {
         mapIntentLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult())
@@ -249,9 +275,9 @@ class RaceFragment : Fragment() {
                 when (result.resultCode) {
                     AppCompatActivity.RESULT_OK -> {
                         if (result.data != null) {
-                            i("Got Location ${result.data.toString()}")
+                            Timber.i("Got Location ${result.data.toString()}")
                             location = result.data!!.extras?.getParcelable("location")!!
-                            i("Location == $location")
+                            Timber.i("Location == $location")
                         } // end of if
                     }
                     AppCompatActivity.RESULT_CANCELED -> { } else -> { }
@@ -272,6 +298,11 @@ class RaceFragment : Fragment() {
         }
         return NavigationUI.onNavDestinationSelected(item,
             requireView().findNavController()) || super.onOptionsItemSelected(item)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val raceListViewModel = ViewModelProvider(this).get(RaceViewModel::class.java)
     }
 
     override fun onDestroyView() {
