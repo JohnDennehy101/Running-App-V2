@@ -45,7 +45,7 @@
     </fragment>
     <fragment
         android:id="@+id/mapListFragment"
-        android:name="ie.wit.runappv2.fragments.MapListFragment"
+        android:name="ie.wit.runappv2.ui.maplist.MapListFragment"
         android:label="List of Added Races - Map"
         tools:layout="@layout/fragment_map_list" >
         <action
@@ -54,7 +54,7 @@
     </fragment>
     <fragment
         android:id="@+id/mapFragment"
-        android:name="ie.wit.runappv2.fragments.MapFragment"
+        android:name="ie.wit.runappv2.ui.map.MapFragment"
         android:label="Add Race Location"
         tools:layout="@layout/fragment_map" >
         <action

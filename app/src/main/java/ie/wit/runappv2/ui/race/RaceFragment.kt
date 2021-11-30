@@ -22,33 +22,24 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import ie.wit.runappv2.R
-import ie.wit.runappv2.activities.RaceListActivity
 import ie.wit.runappv2.databinding.FragmentRaceBinding
-import ie.wit.runappv2.ui.race.RaceFragmentArgs
-import ie.wit.runappv2.ui.race.RaceFragmentDirections
 import ie.wit.runappv2.helpers.FirebaseStorageManager
 import ie.wit.runappv2.helpers.limitRange
 import ie.wit.runappv2.helpers.saveImage
 import ie.wit.runappv2.helpers.showImagePicker
-import ie.wit.runappv2.main.MainApp
 import ie.wit.runappv2.models.Location
 import ie.wit.runappv2.models.RaceModel
 import timber.log.Timber
 import java.util.*
-
-import androidx.navigation.findNavController
-import ie.wit.runappv2.ui.race.RaceViewModel
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.NavHostFragment.findNavController
 
 class RaceFragment : Fragment() {
 
     var race = RaceModel()
     private var _fragBinding: FragmentRaceBinding? = null
     private val fragBinding get() = _fragBinding!!
-    lateinit var app: MainApp
     var location = Location(52.245696, -7.139102, 7f)
     private lateinit var imageIntentLauncher : ActivityResultLauncher<Intent>
     private lateinit var mapIntentLauncher : ActivityResultLauncher<Intent>
@@ -63,7 +54,6 @@ class RaceFragment : Fragment() {
         navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
 
         registerImagePickerCallback()
-        app = activity?.application as MainApp
         registerMapCallback()
         setHasOptionsMenu(true)
     }

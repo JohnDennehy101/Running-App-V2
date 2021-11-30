@@ -13,7 +13,6 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import ie.wit.runappv2.R
 import ie.wit.runappv2.databinding.FragmentReportBinding
-import ie.wit.runappv2.main.MainApp
 import ie.wit.runappv2.models.RaceModel
 import java.util.*
 import androidx.lifecycle.Observer
@@ -26,25 +25,19 @@ class RaceListFragment : Fragment(), RaceListener  {
     private var _fragBinding: FragmentReportBinding? = null
     private val fragBinding get() = _fragBinding!!
     private lateinit var races : MutableList<RaceModel>
-    lateinit var app: MainApp
     private lateinit var refreshIntentLauncher : ActivityResultLauncher<Intent>
     private lateinit var raceListViewModel: RaceListViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
+        races = mutableListOf<RaceModel>()
+        filteredRaces = mutableListOf<RaceModel>()
 
-        app = activity?.application as MainApp
         setHasOptionsMenu(true)
-
-        races = RaceJSONMemStore.findAll() as MutableList<RaceModel>
-
-        filteredRaces = races.toMutableList()
 
         registerRefreshCallback()
 
         super.onCreate(savedInstanceState)
-
-
     }
 
     override fun onCreateView(
@@ -61,6 +54,7 @@ class RaceListFragment : Fragment(), RaceListener  {
         raceListViewModel.observableRacesList.observe(viewLifecycleOwner, Observer {
                 races ->
             races?.let { render(races) }
+            races?.let {updateRaceValues(races)}
         })
 
         fragBinding.recyclerView.setLayoutManager(LinearLayoutManager(activity))
@@ -127,8 +121,14 @@ class RaceListFragment : Fragment(), RaceListener  {
             { fragBinding.recyclerView.adapter?.notifyDataSetChanged() }
     }
 
+    fun updateRaceValues (racesList: List<RaceModel>) {
+        races = racesList.toMutableList()
+        filteredRaces = racesList.toMutableList()
+    }
+
     private fun render(racesList: List<RaceModel>) {
         fragBinding.recyclerView.adapter = RaceAdapter(racesList, this)
+        filteredRaces = racesList.toMutableList()
         if (racesList.isEmpty()) {
             fragBinding.recyclerView.visibility = View.GONE
             fragBinding.racesNotFound.visibility = View.VISIBLE
