@@ -37,6 +37,8 @@ object RaceJSONMemStore : RaceJSONStore {
         race.id = generateRandomId()
         races.add(race.copy())
 
+        FirebaseRealtimeDatabaseHelper().uploadRace(race.copy())
+
         if (!test) {
             serialize()
         }
