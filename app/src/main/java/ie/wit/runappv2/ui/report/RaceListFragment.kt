@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import ie.wit.runappv2.models.RaceJSONMemStore
 import ie.wit.runappv2.utils.SwipeToDeleteCallback
+import ie.wit.runappv2.utils.SwipeToEditCallback
 
 
 class RaceListFragment : Fragment(), RaceListener  {
@@ -74,6 +75,15 @@ class RaceListFragment : Fragment(), RaceListener  {
         }
         val itemTouchDeleteHelper = ItemTouchHelper(swipeDeleteHandler)
         itemTouchDeleteHelper.attachToRecyclerView(fragBinding.recyclerView)
+
+
+        val swipeEditHandler = object : SwipeToEditCallback(requireContext()) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                onRaceClick(viewHolder.itemView.tag as RaceModel)
+            }
+        }
+        val itemTouchEditHelper = ItemTouchHelper(swipeEditHandler)
+        itemTouchEditHelper.attachToRecyclerView(fragBinding.recyclerView)
 
         return root
     }

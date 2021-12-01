@@ -35,6 +35,7 @@ class RaceAdapter constructor(private var races: ArrayList<RaceModel>, private v
 
         fun bind(race: RaceModel, listener: RaceListener) {
             //binding.root.tag = race._id
+            binding.root.tag = race
             binding.raceTitle.text = race.title
             binding.raceDescription.text = race.description
             binding.raceDate.text = race.raceDate
