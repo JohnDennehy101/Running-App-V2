@@ -5,5 +5,5 @@ interface RaceJSONStore {
     fun findOne(id: Long) : RaceModel?
     fun create(race: RaceModel, test: Boolean = false)
     fun update(race: RaceModel, test: Boolean = false)
-    fun delete(race: RaceModel, test: Boolean = false)
+    fun delete(id: String, test: Boolean = false)
 }

@@ -8,7 +8,7 @@ import com.squareup.picasso.Picasso
 import ie.wit.runappv2.databinding.CardRaceBinding
 import ie.wit.runappv2.models.RaceModel
 
-class RaceAdapter constructor(private var races: List<RaceModel>, private val listener: RaceListener) :
+class RaceAdapter constructor(private var races: ArrayList<RaceModel>, private val listener: RaceListener) :
     RecyclerView.Adapter<RaceAdapter.MainHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainHolder {
@@ -23,12 +23,18 @@ class RaceAdapter constructor(private var races: List<RaceModel>, private val li
         holder.bind(race, listener)
     }
 
+    fun removeAt(position: Int) {
+        races.removeAt(position)
+        notifyItemRemoved(position)
+    }
+
     override fun getItemCount(): Int = races.size
 
     inner class MainHolder(val binding : CardRaceBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(race: RaceModel, listener: RaceListener) {
+            //binding.root.tag = race._id
             binding.raceTitle.text = race.title
             binding.raceDescription.text = race.description
             binding.raceDate.text = race.raceDate

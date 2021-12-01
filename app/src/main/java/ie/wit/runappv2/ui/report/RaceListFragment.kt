@@ -17,7 +17,10 @@ import ie.wit.runappv2.models.RaceModel
 import java.util.*
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import ie.wit.runappv2.models.RaceJSONMemStore
+import ie.wit.runappv2.utils.SwipeToDeleteCallback
 
 
 class RaceListFragment : Fragment(), RaceListener  {
@@ -53,12 +56,24 @@ class RaceListFragment : Fragment(), RaceListener  {
         raceListViewModel = ViewModelProvider(this).get(RaceListViewModel::class.java)
         raceListViewModel.observableRacesList.observe(viewLifecycleOwner, Observer {
                 races ->
-            races?.let { render(races) }
-            races?.let {updateRaceValues(races)}
+            races?.let { render(races as ArrayList<RaceModel>) }
+            races?.let {updateRaceValues(races as ArrayList<RaceModel>)}
         })
 
         fragBinding.recyclerView.setLayoutManager(LinearLayoutManager(activity))
-        fragBinding.recyclerView.adapter = RaceAdapter(filteredRaces, this)
+        fragBinding.recyclerView.adapter = RaceAdapter(filteredRaces as ArrayList<RaceModel>, this)
+
+        val swipeDeleteHandler = object : SwipeToDeleteCallback(requireContext()) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                //showLoader(loader,"Deleting Donation")
+                val adapter = fragBinding.recyclerView.adapter as RaceAdapter
+                adapter.removeAt(viewHolder.adapterPosition)
+                raceListViewModel.delete(viewHolder.itemView.tag as String)
+                //hideLoader(loader)
+            }
+        }
+        val itemTouchDeleteHelper = ItemTouchHelper(swipeDeleteHandler)
+        itemTouchDeleteHelper.attachToRecyclerView(fragBinding.recyclerView)
 
         return root
     }
@@ -107,7 +122,7 @@ class RaceListFragment : Fragment(), RaceListener  {
 
     override fun onRaceDeleteClick(race: RaceModel) {
 
-        RaceJSONMemStore.delete(race)
+        //RaceJSONMemStore.delete(race)
 
         requireView().findNavController().run {
             popBackStack()
@@ -121,12 +136,12 @@ class RaceListFragment : Fragment(), RaceListener  {
             { fragBinding.recyclerView.adapter?.notifyDataSetChanged() }
     }
 
-    fun updateRaceValues (racesList: List<RaceModel>) {
+    fun updateRaceValues (racesList: ArrayList<RaceModel>) {
         races = racesList.toMutableList()
         filteredRaces = racesList.toMutableList()
     }
 
-    private fun render(racesList: List<RaceModel>) {
+    private fun render(racesList: ArrayList<RaceModel>) {
         fragBinding.recyclerView.adapter = RaceAdapter(racesList, this)
         filteredRaces = racesList.toMutableList()
         if (racesList.isEmpty()) {

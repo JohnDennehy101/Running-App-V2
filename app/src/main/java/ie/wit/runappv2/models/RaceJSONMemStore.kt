@@ -43,12 +43,19 @@ object RaceJSONMemStore : RaceJSONStore {
 
     }
 
-    override fun delete(race: RaceModel, test: Boolean) {
-        var foundRace = findOne(race.id!!)
-        races.remove(foundRace)
-        if (!test) {
-            serialize()
-        }
+//    override fun delete(race: RaceModel, test: Boolean) {
+//        var foundRace = findOne(race.id!!)
+//        races.remove(foundRace)
+//        if (!test) {
+//            serialize()
+//        }
+//
+//    }
+
+
+    override fun delete(id: String, boolean: Boolean) {
+        //To make call to Firebase
+        println(id)
 
     }
 
