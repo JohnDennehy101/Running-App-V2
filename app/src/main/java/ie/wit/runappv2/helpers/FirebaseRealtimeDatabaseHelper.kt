@@ -16,9 +16,7 @@ class FirebaseRealtimeDatabaseHelper {
 
     fun uploadRace (race: RaceModel) : RaceModel {
 
-        val date = Date().toString()
-
-        mDatabaseRef.child(date).setValue(race).addOnSuccessListener {
+        mDatabaseRef.child(race.id.toString()).setValue(race).addOnSuccessListener {
 
         }.addOnFailureListener {
 
@@ -43,5 +41,9 @@ class FirebaseRealtimeDatabaseHelper {
 
         })
         return list
+    }
+
+    fun deleteRace (id : String) {
+        mDatabaseRef.child(id).removeValue()
     }
 }

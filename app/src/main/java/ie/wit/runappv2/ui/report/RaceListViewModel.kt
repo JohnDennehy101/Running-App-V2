@@ -27,7 +27,8 @@ class RaceListViewModel : ViewModel() {
 
     fun delete(id: String) {
         try {
-            RaceJSONMemStore.delete(id)
+            firebaseDbHelper.deleteRace(id)
+            //RaceJSONMemStore.delete(id)
             Timber.i("Firebase Delete Success")
         }
         catch (e: Exception) {

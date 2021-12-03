@@ -80,11 +80,12 @@ class RaceListFragment : Fragment(), RaceListener  {
 
         val swipeDeleteHandler = object : SwipeToDeleteCallback(requireContext()) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                //showLoader(loader,"Deleting Donation")
+                Loader().showLoader(loader,"Deleting Race")
                 val adapter = fragBinding.recyclerView.adapter as RaceAdapter
                 adapter.removeAt(viewHolder.adapterPosition)
-                raceListViewModel.delete(viewHolder.itemView.tag as String)
-                //hideLoader(loader)
+                val race : RaceModel = viewHolder.itemView.tag as RaceModel
+                raceListViewModel.delete(race.id.toString())
+                Loader().hideLoader(loader)
             }
         }
         val itemTouchDeleteHelper = ItemTouchHelper(swipeDeleteHandler)
@@ -161,6 +162,7 @@ class RaceListFragment : Fragment(), RaceListener  {
     override fun onRaceDeleteClick(race: RaceModel) {
 
         //RaceJSONMemStore.delete(race)
+        raceListViewModel.delete(race.id.toString())
 
         requireView().findNavController().run {
             popBackStack()
