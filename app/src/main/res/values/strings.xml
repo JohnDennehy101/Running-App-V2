@@ -21,4 +21,5 @@
     <string name="action_report">Created Races</string>
     <string name="racesNotFound">No Added Races Yet...</string>
     <string name="raceError">Error adding race</string>
+    <string name="messageLoading">Please wait while the existing races are loading...</string>
 </resources>

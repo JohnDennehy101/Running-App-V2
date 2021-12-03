@@ -8,6 +8,7 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import android.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,8 +20,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import ie.wit.runappv2.utils.SwipeToDeleteCallback
-import ie.wit.runappv2.utils.SwipeToEditCallback
+import ie.wit.runappv2.utils.*
 
 
 class RaceListFragment : Fragment(), RaceListener  {
@@ -30,6 +30,7 @@ class RaceListFragment : Fragment(), RaceListener  {
     //private lateinit var races : MutableList<RaceModel>
     private lateinit var refreshIntentLauncher : ActivityResultLauncher<Intent>
     private lateinit var raceListViewModel: RaceListViewModel
+    lateinit var loader : AlertDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -50,14 +51,27 @@ class RaceListFragment : Fragment(), RaceListener  {
         // Inflate the layout for this fragment
         _fragBinding = FragmentReportBinding.inflate(inflater, container, false)
 
+        loader = Loader().createLoader(requireActivity())
+
+
+
+
+
         val root = fragBinding.root
         activity?.title = getString(R.string.action_report)
 
+        Loader().showLoader(loader,"Downloading Races")
+
         raceListViewModel = ViewModelProvider(this).get(RaceListViewModel::class.java)
+
+
 
         raceListViewModel.racesListLiveData.observe(viewLifecycleOwner, Observer {
                 races ->
-            races?.let { render(races as ArrayList<RaceModel>) }
+            races?.let {
+                render(races as ArrayList<RaceModel>)
+                Loader().hideLoader(loader)
+            }
             races?.let {updateRaceValues(races as ArrayList<RaceModel>)}
         })
 
@@ -172,8 +186,8 @@ class RaceListFragment : Fragment(), RaceListener  {
             fragBinding.recyclerView.visibility = View.GONE
             fragBinding.racesNotFound.visibility = View.VISIBLE
         } else {
-            fragBinding.recyclerView.visibility = View.VISIBLE
             fragBinding.racesNotFound.visibility = View.GONE
+            fragBinding.recyclerView.visibility = View.VISIBLE
         }
     }
 
