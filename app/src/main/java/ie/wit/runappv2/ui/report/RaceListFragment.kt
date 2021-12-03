@@ -19,23 +19,22 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import ie.wit.runappv2.models.RaceJSONMemStore
 import ie.wit.runappv2.utils.SwipeToDeleteCallback
 import ie.wit.runappv2.utils.SwipeToEditCallback
 
 
 class RaceListFragment : Fragment(), RaceListener  {
-    private lateinit var filteredRaces : MutableList<RaceModel>
+    //private lateinit var filteredRaces : MutableList<RaceModel>
     private var _fragBinding: FragmentReportBinding? = null
     private val fragBinding get() = _fragBinding!!
-    private lateinit var races : MutableList<RaceModel>
+    //private lateinit var races : MutableList<RaceModel>
     private lateinit var refreshIntentLauncher : ActivityResultLauncher<Intent>
     private lateinit var raceListViewModel: RaceListViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        races = mutableListOf<RaceModel>()
-        filteredRaces = mutableListOf<RaceModel>()
+        //races = mutableListOf<RaceModel>()
+        //filteredRaces = mutableListOf<RaceModel>()
 
         setHasOptionsMenu(true)
 
@@ -55,14 +54,15 @@ class RaceListFragment : Fragment(), RaceListener  {
         activity?.title = getString(R.string.action_report)
 
         raceListViewModel = ViewModelProvider(this).get(RaceListViewModel::class.java)
-        raceListViewModel.observableRacesList.observe(viewLifecycleOwner, Observer {
+
+        raceListViewModel.racesListLiveData.observe(viewLifecycleOwner, Observer {
                 races ->
             races?.let { render(races as ArrayList<RaceModel>) }
             races?.let {updateRaceValues(races as ArrayList<RaceModel>)}
         })
 
         fragBinding.recyclerView.setLayoutManager(LinearLayoutManager(activity))
-        fragBinding.recyclerView.adapter = RaceAdapter(filteredRaces as ArrayList<RaceModel>, this)
+        //fragBinding.recyclerView.adapter = RaceAdapter(filteredRaces as ArrayList<RaceModel>, this)
 
         val swipeDeleteHandler = object : SwipeToDeleteCallback(requireContext()) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
@@ -88,6 +88,20 @@ class RaceListFragment : Fragment(), RaceListener  {
         return root
     }
 
+    companion object {
+        @JvmStatic
+        fun newInstance() =
+            RaceListFragment().apply {
+                arguments = Bundle().apply { }
+            }
+    }
+
+    override fun onResume() {
+        super.onResume()
+    }
+
+
+
 
 
 
@@ -101,22 +115,22 @@ class RaceListFragment : Fragment(), RaceListener  {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                filteredRaces.clear()
+                //filteredRaces.clear()
                 val searchText = newText!!.lowercase(Locale.getDefault())
 
                 if (searchText.length > 0) {
-                    races.forEach {
+                    /*races.forEach {
 
                         if (it.title.lowercase(Locale.getDefault()).contains(searchText.lowercase())) {
                             filteredRaces.add(it)
                         }
 
-                    }
+                    }*/
                     fragBinding.recyclerView.adapter?.notifyDataSetChanged()
                 }
                 else {
-                    filteredRaces.clear()
-                    filteredRaces.addAll(races)
+                   // filteredRaces.clear()
+                    //filteredRaces.addAll(races)
                     fragBinding.recyclerView.adapter?.notifyDataSetChanged()
                 }
                 return false
@@ -147,13 +161,13 @@ class RaceListFragment : Fragment(), RaceListener  {
     }
 
     fun updateRaceValues (racesList: ArrayList<RaceModel>) {
-        races = racesList.toMutableList()
-        filteredRaces = racesList.toMutableList()
+        //races = racesList.toMutableList()
+        //filteredRaces = racesList.toMutableList()
     }
 
     private fun render(racesList: ArrayList<RaceModel>) {
         fragBinding.recyclerView.adapter = RaceAdapter(racesList, this)
-        filteredRaces = racesList.toMutableList()
+        //filteredRaces = racesList.toMutableList()
         if (racesList.isEmpty()) {
             fragBinding.recyclerView.visibility = View.GONE
             fragBinding.racesNotFound.visibility = View.VISIBLE
@@ -163,10 +177,7 @@ class RaceListFragment : Fragment(), RaceListener  {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        raceListViewModel.load()
-    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

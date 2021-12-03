@@ -25,6 +25,9 @@ object RaceJSONMemStore : RaceJSONStore {
     var users = mutableListOf<UserModel>()
 
     override fun findAll(): List<RaceModel> {
+        //var test : ArrayList<RaceModel> = FirebaseRealtimeDatabaseHelper().getUploadedRaces()
+        println("TESTING")
+        //println(test)
         return races
     }
 

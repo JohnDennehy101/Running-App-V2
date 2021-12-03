@@ -1,10 +1,19 @@
 package ie.wit.runappv2.helpers
-import com.google.firebase.database.FirebaseDatabase
+import android.util.Log
+import androidx.lifecycle.MutableLiveData
+import com.google.firebase.database.*
 import ie.wit.runappv2.models.RaceModel
 import java.util.*
+import com.google.firebase.database.DataSnapshot
+
+
+
 
 class FirebaseRealtimeDatabaseHelper {
     private val mDatabaseRef = FirebaseDatabase.getInstance("https://runningappv1-default-rtdb.europe-west1.firebasedatabase.app").getReference("races")
+    private var list: ArrayList<RaceModel> = ArrayList()
+
+
     fun uploadRace (race: RaceModel) : RaceModel {
 
         val date = Date().toString()
@@ -16,5 +25,23 @@ class FirebaseRealtimeDatabaseHelper {
         }
         return race
 
+    }
+    fun getUploadedRaces(liveData : MutableLiveData<List<RaceModel>>) : ArrayList<RaceModel> {
+
+        mDatabaseRef.addValueEventListener(object : ValueEventListener {
+            override fun onCancelled(p0 : DatabaseError) {
+                Log.e("Cancel", p0.toString())
+            }
+            override fun onDataChange (snapshot: DataSnapshot) {
+               list = ArrayList<RaceModel>()
+                val racesList : List<RaceModel> = snapshot.children.map { it ->
+                    it.getValue(RaceModel::class.java)!!
+                }
+
+                liveData.postValue(racesList)
+            }
+
+        })
+        return list
     }
 }
