@@ -65,18 +65,22 @@ object RaceJSONMemStore : RaceJSONStore {
     }
 
     override fun update(race: RaceModel, test: Boolean) {
-        var foundRace = findOne(race.id!!)
-        if (foundRace != null) {
-            foundRace.title = race.title
-            foundRace.description = race.description
-            foundRace.raceDate = race.raceDate
-            foundRace.raceDistance = race.raceDistance
-            foundRace.image = race.image
-            foundRace.location = race.location
-        }
-        if (!test) {
-            serialize()
-        }
+//        var foundRace = findOne(race.id!!)
+
+        FirebaseRealtimeDatabaseHelper().updateRace(race.copy())
+
+
+//        if (foundRace != null) {
+//            foundRace.title = race.title
+//            foundRace.description = race.description
+//            foundRace.raceDate = race.raceDate
+//            foundRace.raceDistance = race.raceDistance
+//            foundRace.image = race.image
+//            foundRace.location = race.location
+//        }
+//        if (!test) {
+//            serialize()
+//        }
 
     }
 

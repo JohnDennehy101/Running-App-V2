@@ -46,4 +46,8 @@ class FirebaseRealtimeDatabaseHelper {
     fun deleteRace (id : String) {
         mDatabaseRef.child(id).removeValue()
     }
+
+    fun updateRace (race : RaceModel) {
+        mDatabaseRef.child(race.id.toString()).setValue(race)
+    }
 }

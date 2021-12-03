@@ -21,4 +21,12 @@ class RaceViewModel : ViewModel()  {
             false
         }
     }
+
+    fun updateRace(race: RaceModel) {
+        try {
+           RaceJSONMemStore.update(race)
+        } catch (e: IllegalArgumentException) {}
+
+
+    }
 }

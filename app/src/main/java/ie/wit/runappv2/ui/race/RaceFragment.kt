@@ -201,6 +201,7 @@ class RaceFragment : Fragment() {
             }
             else if (race.title.isNotEmpty() && race.description.isNotEmpty() && race.raceDate.isNotEmpty() && race.raceDistance.isNotEmpty() && editRace != null) {
                 //app.races.update(race);
+                    raceViewModel.updateRace(race.copy())
                 it.findNavController().navigate(R.id.action_raceFragment_to_reportFragment)
             }
             else if (race.title.isEmpty()) {
