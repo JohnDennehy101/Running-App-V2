@@ -21,6 +21,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import ie.wit.runappv2.utils.*
+import android.widget.Switch
+import android.widget.CompoundButton
+import android.widget.Toast
+
+
+
 
 
 class RaceListFragment : Fragment(), RaceListener  {
@@ -123,6 +129,20 @@ class RaceListFragment : Fragment(), RaceListener  {
     override fun onCreateOptionsMenu(menu: Menu, menuInflater: MenuInflater) {
         menuInflater.inflate(R.menu.menu_main, menu)
         val item = menu?.findItem(R.id.item_search)
+        val menuSwitch =
+            menu.findItem(R.id.switch_action_bar).actionView.findViewById(R.id.menuSwitch) as Switch
+
+
+        menuSwitch.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                println("WOEKINF SWITCH")
+                Toast.makeText(context, "Switch is working", Toast.LENGTH_SHORT).show()
+            }
+        })
+
+
+
+
         val searchView = item?.actionView as SearchView
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
