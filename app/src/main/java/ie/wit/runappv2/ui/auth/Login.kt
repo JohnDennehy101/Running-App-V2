@@ -7,7 +7,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import ie.wit.runappv2.databinding.LoginBinding
-import ie.wit.runappv2.ui.report.RaceListFragment
 import timber.log.Timber
 import androidx.lifecycle.Observer
 import ie.wit.runappv2.R
@@ -27,11 +26,11 @@ class Login : AppCompatActivity() {
             signIn(loginBinding.fieldEmail.text.toString(),
                 loginBinding.fieldPassword.text.toString())
         }
-        loginBinding.emailCreateAccountButton.setOnClickListener {
-            //Change this to redirect to register activity
-            createAccount(loginBinding.fieldEmail.text.toString(),
-                loginBinding.fieldPassword.text.toString())
+
+        loginBinding.registerLink.setOnClickListener {
+            startActivity(Intent(this, Register::class.java))
         }
+
     }
 
     public override fun onStart() {
@@ -51,13 +50,6 @@ class Login : AppCompatActivity() {
         super.onBackPressed()
         Toast.makeText(this,"Click again to Close App...", Toast.LENGTH_SHORT).show()
         finish()
-    }
-
-    private fun createAccount(email: String, password: String) {
-        Timber.d("createAccount:$email")
-        if (!validateForm()) { return }
-
-        loginRegisterViewModel.register(email,password)
     }
 
     private fun signIn(email: String, password: String) {

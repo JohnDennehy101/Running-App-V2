@@ -1,126 +1,138 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/login_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ie.wit.runappv2.activities.RegisterActivity">
+    android:background="@color/grey_100"
+    android:orientation="vertical"
+    android:weightSum="4">
 
-    <TextView
-        android:id="@+id/registerText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="54dp"
-        android:text="Register"
-        android:textColor="@color/black"
-        android:textSize="16dp"
-        android:textStyle="bold"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2.7"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
 
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <ImageView
+            android:id="@+id/icon"
+            style="@style/ThemeOverlay.FirebaseIcon"
+            android:layout_width="286dp"
+            android:layout_height="325dp"
+            android:contentDescription="@string/desc_firebase_lockup"
+            android:src="@drawable/ic_baseline_supervised_user_circle_24" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@id/edUsername"
+
+    </LinearLayout>
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="0.4"
+        android:background="@color/white"
+        android:gravity="center">
 
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
-        android:hint="Username"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.356">
+        <TextView
+            android:id="@+id/titleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/title_bottom_margin"
+            android:text="@string/register_message"
+            android:textColor="@color/grey_500"
+            android:theme="@style/ThemeOverlay.MyTitleText" />
 
-        <EditText
-            android:id="@+id/userName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </com.google.android.material.textfield.TextInputLayout>
+    </RelativeLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/edUserEmail"
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edUsername"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
-        android:hint="Email">
-        <EditText
-            android:id="@+id/email"
+        android:layout_weight="0.9"
+        android:background="@color/white"
+        android:gravity="center_vertical">
+
+
+        <LinearLayout
+            android:id="@+id/emailUsernameFields"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textEmailAddress"/>
-    </com.google.android.material.textfield.TextInputLayout>
+            android:orientation="horizontal"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
 
+            <EditText
+                android:id="@+id/fieldEmail"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/hint_email"
+                android:inputType="textEmailAddress" />
+        </LinearLayout>
 
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/edPassword"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edUserEmail"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
-        android:hint="Password">
-    <EditText
-        android:id="@+id/password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPassword"/>
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/edConfirmPassword"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edPassword"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
-        android:hint="Confirm Password">
-        <EditText
-            android:id="@+id/confirmPassword"
+        <LinearLayout
+            android:id="@+id/emailPasswordFields2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"/>
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_below="@+id/emailUsernameFields"
+            android:orientation="horizontal"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
 
-    <Button
-        android:id="@+id/registerButton"
+            <EditText
+                android:id="@+id/fieldPassword"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/hint_password"
+                android:inputType="textPassword" />
+
+            <EditText
+                android:id="@+id/fieldConfirmPassword"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/hint_reenter_password"
+                android:inputType="textPassword" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/emailPasswordButtons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/emailPasswordFields2"
+            android:orientation="horizontal"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
+
+            <Button
+                android:id="@+id/emailCreateAccountButton"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/create_account"
+                android:theme="@style/ThemeOverlay.MyDarkButton" />
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        app:layout_constraintTop_toBottomOf="@+id/edConfirmPassword"
         android:layout_height="wrap_content"
-        android:text="Register"
-        android:background="@color/colorAccent"
-        android:textColor="@color/white"
-        android:layout_margin="30dp"/>
+        android:layout_weight="0.2"
+        android:background="@color/white"
+        android:gravity="center">
 
-    <TextView
-        android:id="@+id/loginLink"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:text="Login"
-        android:textSize="16dp"
-        android:textColor="@color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/registerButton"
-        android:padding="10dp"/>
+        <TextView
+            android:id="@+id/loginLink"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="Back to Login"
+            android:textSize="16dp"
+            android:textColor="@color/black"
+            android:padding="10dp"/>
 
+    </RelativeLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
