@@ -71,6 +71,13 @@ class FirebaseRealtimeDatabaseHelper {
     }
 
     fun updateRace (race : RaceModel) {
-        mDatabaseRef.child(race.id.toString()).setValue(race)
+        mDatabaseRef.child(race.id.toString()).child("title").setValue(race.title)
+        mDatabaseRef.child(race.id.toString()).child("description").setValue(race.description)
+        mDatabaseRef.child(race.id.toString()).child("image").setValue(race.image)
+        mDatabaseRef.child(race.id.toString()).child("location").setValue(race.location)
+        mDatabaseRef.child(race.id.toString()).child("raceDate").setValue(race.raceDate)
+        mDatabaseRef.child(race.id.toString()).child("raceDistance").setValue(race.raceDistance)
+        mDatabaseRef.child(race.id.toString()).child("updatedUser").setValue(race.updatedUser)
+
     }
 }

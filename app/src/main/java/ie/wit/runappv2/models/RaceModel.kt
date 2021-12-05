@@ -11,7 +11,9 @@ data class RaceModel(
     var raceDate: String = "",
     var raceDistance: String = "",
     var image: String = "",
-    var location: Location = Location(0.0,0.0,0f)
+    var location: Location = Location(0.0,0.0,0f),
+    var createdUser : String = "",
+    var updatedUser : String = ""
 ) : Parcelable
 
 

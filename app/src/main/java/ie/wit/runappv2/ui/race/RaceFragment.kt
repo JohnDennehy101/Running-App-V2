@@ -34,6 +34,8 @@ import java.util.*
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 
 class RaceFragment : Fragment() {
 
@@ -75,6 +77,8 @@ class RaceFragment : Fragment() {
         raceViewModel.observableStatus.observe(viewLifecycleOwner, Observer {
                 status -> status?.let { render(status) }
         })
+
+        val currentUser = FirebaseAuth.getInstance().currentUser
 
 
         if (editRace != null) {
@@ -169,7 +173,7 @@ class RaceFragment : Fragment() {
             requireView().findNavController().navigate(setLocationAction)
         }
 
-        setAddOrUpdateRaceButtonListener(fragBinding, editRace)
+        setAddOrUpdateRaceButtonListener(fragBinding, editRace, currentUser)
 
 
 
@@ -179,7 +183,17 @@ class RaceFragment : Fragment() {
         return root
     }
 
-    fun setAddOrUpdateRaceButtonListener (layout: FragmentRaceBinding, editRace : RaceModel?) {
+
+    fun setAddOrUpdateRaceButtonListener (
+        layout: FragmentRaceBinding,
+        editRace: RaceModel?,
+        currentUser: FirebaseUser?
+    ) {
+
+        //val currentUser = loginRegisterViewModel.getCurrentUser()
+
+        println(currentUser)
+        println(currentUser?.email!!)
 
         layout.btnAdd.setOnClickListener() {
             race.title = fragBinding.raceTitle.text.toString()
@@ -187,6 +201,7 @@ class RaceFragment : Fragment() {
             race.raceDate = fragBinding.raceDatePicker.text.toString()
             race.raceDistance = fragBinding.menuAutocomplete.text.toString()
             race.location = location
+            //race.createdUser =
 
 
 
@@ -195,12 +210,14 @@ class RaceFragment : Fragment() {
                 if (race.image.isEmpty()) {
                     race.image = "https://firebasestorage.googleapis.com/v0/b/runningappv1.appspot.com/o/images%2FSun%20Oct%2031%2016%3A52%3A53%20GMT%202021.png?alt=media&token=dec24aa1-37e6-423c-a002-6405ea9dcb97"
                 }
+                race.createdUser = currentUser?.email!!
                 raceViewModel.addRace(race.copy())
                 //app.races.create(race.copy())
                 it.findNavController().navigate(R.id.action_raceFragment_to_reportFragment)
             }
             else if (race.title.isNotEmpty() && race.description.isNotEmpty() && race.raceDate.isNotEmpty() && race.raceDistance.isNotEmpty() && editRace != null) {
                 //app.races.update(race);
+                    race.updatedUser = currentUser?.email!!
                     raceViewModel.updateRace(race.copy())
                 it.findNavController().navigate(R.id.action_raceFragment_to_reportFragment)
             }
