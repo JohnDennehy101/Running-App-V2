@@ -30,18 +30,13 @@ import android.widget.Toast
 
 
 class RaceListFragment : Fragment(), RaceListener  {
-    //private lateinit var filteredRaces : MutableList<RaceModel>
     private var _fragBinding: FragmentReportBinding? = null
     private val fragBinding get() = _fragBinding!!
-    //private lateinit var races : MutableList<RaceModel>
     private lateinit var refreshIntentLauncher : ActivityResultLauncher<Intent>
     private lateinit var raceListViewModel: RaceListViewModel
     lateinit var loader : AlertDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
-        //races = mutableListOf<RaceModel>()
-        //filteredRaces = mutableListOf<RaceModel>()
 
         setHasOptionsMenu(true)
 
@@ -59,10 +54,6 @@ class RaceListFragment : Fragment(), RaceListener  {
 
         loader = Loader().createLoader(requireActivity())
 
-
-
-
-
         val root = fragBinding.root
         activity?.title = getString(R.string.action_report)
 
@@ -78,11 +69,9 @@ class RaceListFragment : Fragment(), RaceListener  {
                 render(races as ArrayList<RaceModel>)
                 Loader().hideLoader(loader)
             }
-            races?.let {updateRaceValues(races as ArrayList<RaceModel>)}
         })
 
         fragBinding.recyclerView.setLayoutManager(LinearLayoutManager(activity))
-        //fragBinding.recyclerView.adapter = RaceAdapter(filteredRaces as ArrayList<RaceModel>, this)
 
         val swipeDeleteHandler = object : SwipeToDeleteCallback(requireContext()) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
@@ -122,13 +111,10 @@ class RaceListFragment : Fragment(), RaceListener  {
     }
 
 
-
-
-
-
     override fun onCreateOptionsMenu(menu: Menu, menuInflater: MenuInflater) {
         menuInflater.inflate(R.menu.menu_main, menu)
         val item = menu?.findItem(R.id.item_search)
+
         val menuSwitch =
             menu.findItem(R.id.switch_action_bar).actionView.findViewById(R.id.menuSwitch) as Switch
 
@@ -141,8 +127,6 @@ class RaceListFragment : Fragment(), RaceListener  {
         })
 
 
-
-
         val searchView = item?.actionView as SearchView
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -150,23 +134,14 @@ class RaceListFragment : Fragment(), RaceListener  {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                //filteredRaces.clear()
                 val searchText = newText!!.lowercase(Locale.getDefault())
 
                 if (searchText.length > 0) {
-                    /*races.forEach {
-
-                        if (it.title.lowercase(Locale.getDefault()).contains(searchText.lowercase())) {
-                            filteredRaces.add(it)
-                        }
-
-                    }*/
+                    raceListViewModel.filter(searchText)
                     fragBinding.recyclerView.adapter?.notifyDataSetChanged()
                 }
                 else {
-                   // filteredRaces.clear()
-                    //filteredRaces.addAll(races)
-                    fragBinding.recyclerView.adapter?.notifyDataSetChanged()
+                    raceListViewModel.load()
                 }
                 return false
             }
@@ -196,14 +171,8 @@ class RaceListFragment : Fragment(), RaceListener  {
             { fragBinding.recyclerView.adapter?.notifyDataSetChanged() }
     }
 
-    fun updateRaceValues (racesList: ArrayList<RaceModel>) {
-        //races = racesList.toMutableList()
-        //filteredRaces = racesList.toMutableList()
-    }
-
     private fun render(racesList: ArrayList<RaceModel>) {
         fragBinding.recyclerView.adapter = RaceAdapter(racesList, this)
-        //filteredRaces = racesList.toMutableList()
         if (racesList.isEmpty()) {
             fragBinding.recyclerView.visibility = View.GONE
             fragBinding.racesNotFound.visibility = View.VISIBLE

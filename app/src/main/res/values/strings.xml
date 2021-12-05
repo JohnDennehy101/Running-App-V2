@@ -19,7 +19,7 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_add_race">Add Race</string>
     <string name="action_report">Created Races</string>
-    <string name="racesNotFound">No Added Races Yet...</string>
+    <string name="racesNotFound">No Races Found...</string>
     <string name="raceError">Error adding race</string>
     <string name="messageLoading">Please wait while the existing races are loading...</string>
     <string name="desc_firebase_lockup">Firebase logo and name</string>

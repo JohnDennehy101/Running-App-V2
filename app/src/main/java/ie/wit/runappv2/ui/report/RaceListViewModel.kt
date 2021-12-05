@@ -25,6 +25,10 @@ class RaceListViewModel : ViewModel() {
         firebaseDbHelper.getUploadedRaces(_racesListLiveData)
     }
 
+    fun filter(searchText : String) {
+        firebaseDbHelper.getFilteredRaces(_racesListLiveData, searchText)
+    }
+
     fun delete(id: String) {
         try {
             firebaseDbHelper.deleteRace(id)
