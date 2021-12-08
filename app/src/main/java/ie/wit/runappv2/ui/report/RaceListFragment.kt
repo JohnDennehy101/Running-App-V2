@@ -24,9 +24,8 @@ import ie.wit.runappv2.utils.*
 import android.widget.Switch
 import android.widget.CompoundButton
 import android.widget.Toast
-
-
-
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 
 
 class RaceListFragment : Fragment(), RaceListener  {
@@ -35,6 +34,7 @@ class RaceListFragment : Fragment(), RaceListener  {
     private lateinit var refreshIntentLauncher : ActivityResultLauncher<Intent>
     private lateinit var raceListViewModel: RaceListViewModel
     lateinit var loader : AlertDialog
+    var currentUserEmail : String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -56,6 +56,8 @@ class RaceListFragment : Fragment(), RaceListener  {
 
         val root = fragBinding.root
         activity?.title = getString(R.string.action_report)
+
+        currentUserEmail = FirebaseAuth.getInstance().currentUser?.email!!
 
         Loader().showLoader(loader,"Downloading Races")
 
@@ -121,8 +123,12 @@ class RaceListFragment : Fragment(), RaceListener  {
 
         menuSwitch.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                println("WOEKINF SWITCH")
-                Toast.makeText(context, "Switch is working", Toast.LENGTH_SHORT).show()
+                raceListViewModel.getRacesCreatedByCurrentUser(currentUserEmail)
+                fragBinding.recyclerView.adapter?.notifyDataSetChanged()
+            }
+            else {
+                raceListViewModel.load()
+                fragBinding.recyclerView.adapter?.notifyDataSetChanged()
             }
         })
 

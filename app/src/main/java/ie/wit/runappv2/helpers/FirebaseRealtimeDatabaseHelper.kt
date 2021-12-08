@@ -66,6 +66,29 @@ class FirebaseRealtimeDatabaseHelper {
         return racesList
     }
 
+    fun getUserCreatedRaces(liveData : MutableLiveData<List<RaceModel>>, email : String) : ArrayList<RaceModel> {
+        val racesList = ArrayList<RaceModel>()
+
+        mDatabaseRef.addValueEventListener(object : ValueEventListener {
+            override fun onCancelled(p0 : DatabaseError) {
+                Log.e("Cancel", p0.toString())
+            }
+            override fun onDataChange (snapshot: DataSnapshot) {
+                for (item in snapshot.children) {
+
+                    val race : RaceModel = item.getValue(RaceModel::class.java)!!
+                    if (race.createdUser.lowercase(Locale.getDefault()).equals(email.lowercase())) {
+                        racesList.add(race)
+                    }
+                }
+
+                liveData.postValue(racesList)
+            }
+
+        })
+        return racesList
+    }
+
     fun deleteRace (id : String) {
         mDatabaseRef.child(id).removeValue()
     }

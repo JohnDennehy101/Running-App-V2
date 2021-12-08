@@ -190,10 +190,6 @@ class RaceFragment : Fragment() {
         currentUser: FirebaseUser?
     ) {
 
-        //val currentUser = loginRegisterViewModel.getCurrentUser()
-
-        println(currentUser)
-        println(currentUser?.email!!)
 
         layout.btnAdd.setOnClickListener() {
             race.title = fragBinding.raceTitle.text.toString()
