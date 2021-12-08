@@ -3,15 +3,14 @@ package ie.wit.runappv2.ui.report
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import ie.wit.runappv2.helpers.FirebaseRealtimeDatabaseHelper
-import ie.wit.runappv2.models.RaceJSONMemStore
 import ie.wit.runappv2.models.RaceModel
 import timber.log.Timber
 import java.lang.Exception
+import ie.wit.runappv2.firebase.FirebaseDBManager
 
 class RaceListViewModel : ViewModel() {
 
-    private val firebaseDbHelper = FirebaseRealtimeDatabaseHelper()
+    //private val firebaseDbHelper = FirebaseRealtimeDatabaseHelper()
 
 
     private val _racesListLiveData = MutableLiveData<List<RaceModel>>()
@@ -22,20 +21,24 @@ class RaceListViewModel : ViewModel() {
     }
 
     fun load() {
-        firebaseDbHelper.getUploadedRaces(_racesListLiveData)
+        FirebaseDBManager.getUploadedRaces(_racesListLiveData)
+        //firebaseDbHelper.getUploadedRaces(_racesListLiveData)
     }
 
     fun filter(searchText : String) {
-        firebaseDbHelper.getFilteredRaces(_racesListLiveData, searchText)
+        FirebaseDBManager.getFilteredRaces(_racesListLiveData, searchText)
+        //firebaseDbHelper.getFilteredRaces(_racesListLiveData, searchText)
     }
 
     fun getRacesCreatedByCurrentUser (email : String) {
-        firebaseDbHelper.getUserCreatedRaces(_racesListLiveData, email)
+        FirebaseDBManager.getUserCreatedRaces(_racesListLiveData, email)
+        //firebaseDbHelper.getUserCreatedRaces(_racesListLiveData, email)
     }
 
     fun delete(id: String) {
         try {
-            firebaseDbHelper.deleteRace(id)
+            FirebaseDBManager.deleteRace(id)
+            //firebaseDbHelper.deleteRace(id)
             //RaceJSONMemStore.delete(id)
             Timber.i("Firebase Delete Success")
         }

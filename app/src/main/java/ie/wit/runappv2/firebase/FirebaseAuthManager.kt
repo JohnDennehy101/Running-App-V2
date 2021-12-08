@@ -1,4 +1,4 @@
-package ie.wit.runappv2.helpers
+package ie.wit.runappv2.firebase
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData

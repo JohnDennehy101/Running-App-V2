@@ -3,7 +3,7 @@ package ie.wit.runappv2.ui.race
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import ie.wit.runappv2.models.RaceJSONMemStore
+import ie.wit.runappv2.firebase.FirebaseDBManager
 import ie.wit.runappv2.models.RaceModel
 
 class RaceViewModel : ViewModel()  {
@@ -15,7 +15,8 @@ class RaceViewModel : ViewModel()  {
 
     fun addRace(race: RaceModel) {
         status.value = try {
-            RaceJSONMemStore.create(race)
+            FirebaseDBManager.uploadRace(race)
+            //RaceJSONMemStore.create(race)
             true
         } catch (e: IllegalArgumentException) {
             false
@@ -24,7 +25,8 @@ class RaceViewModel : ViewModel()  {
 
     fun updateRace(race: RaceModel) {
         try {
-           RaceJSONMemStore.update(race)
+            FirebaseDBManager.updateRace(race)
+           //RaceJSONMemStore.update(race)
         } catch (e: IllegalArgumentException) {}
 
 

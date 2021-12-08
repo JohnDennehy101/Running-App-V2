@@ -23,7 +23,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import ie.wit.runappv2.R
 import ie.wit.runappv2.databinding.FragmentRaceBinding
-import ie.wit.runappv2.helpers.FirebaseStorageManager
+import ie.wit.runappv2.firebase.FirebaseStorageManager
 import ie.wit.runappv2.helpers.limitRange
 import ie.wit.runappv2.helpers.saveImage
 import ie.wit.runappv2.helpers.showImagePicker
@@ -143,7 +143,7 @@ class RaceFragment : Fragment() {
                 val imageUri = takenImage.saveImage(requireActivity().applicationContext)
 
                 if (imageUri != null) {
-                    FirebaseStorageManager().uploadImage(imageUri, race)
+                    FirebaseStorageManager.uploadImage(imageUri, race)
                 }
 
                 val params = LinearLayout.LayoutParams(
@@ -247,7 +247,7 @@ class RaceFragment : Fragment() {
                             Timber.i("Got Result ${result.data!!.data}")
                             race.image = result.data!!.data!!.toString()
 
-                            FirebaseStorageManager().uploadImage(result.data!!.data!!, race)
+                            FirebaseStorageManager.uploadImage(result.data!!.data!!, race)
 
                             Picasso.get()
                                 .load(race.image)

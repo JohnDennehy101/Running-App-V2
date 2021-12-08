@@ -4,15 +4,12 @@ import ie.wit.runappv2.R
 import ie.wit.runappv2.main.MainApp
 import ie.wit.runappv2.databinding.ActivityRaceBinding
 import ie.wit.runappv2.models.RaceModel
-import android.os.*
-import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import android.os.Bundle
 import androidx.navigation.ui.setupWithNavController
-import ie.wit.runappv2.models.UserModel
 
 
 class RaceActivity : AppCompatActivity() {

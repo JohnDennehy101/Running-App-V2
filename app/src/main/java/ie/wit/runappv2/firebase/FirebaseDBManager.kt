@@ -1,15 +1,15 @@
-package ie.wit.runappv2.helpers
+package ie.wit.runappv2.firebase
+
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.google.firebase.database.*
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import ie.wit.runappv2.models.RaceModel
 import java.util.*
-import com.google.firebase.database.DataSnapshot
 
-
-
-
-class FirebaseRealtimeDatabaseHelper {
+object FirebaseDBManager {
     private val mDatabaseRef = FirebaseDatabase.getInstance("https://runningappv1-default-rtdb.europe-west1.firebasedatabase.app").getReference("races")
     private var list: ArrayList<RaceModel> = ArrayList()
 
@@ -31,7 +31,7 @@ class FirebaseRealtimeDatabaseHelper {
                 Log.e("Cancel", p0.toString())
             }
             override fun onDataChange (snapshot: DataSnapshot) {
-               list = ArrayList<RaceModel>()
+                list = ArrayList<RaceModel>()
                 val racesList : List<RaceModel> = snapshot.children.map { it ->
                     it.getValue(RaceModel::class.java)!!
                 }

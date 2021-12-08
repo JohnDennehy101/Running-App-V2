@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseUser
-import ie.wit.runappv2.helpers.FirebaseAuthManager
+import ie.wit.runappv2.firebase.FirebaseAuthManager
 
 class LoginRegisterViewModel (app: Application) : AndroidViewModel(app) {
 

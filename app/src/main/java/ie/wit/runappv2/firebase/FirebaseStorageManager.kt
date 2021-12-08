@@ -1,13 +1,12 @@
-package ie.wit.runappv2.helpers
-import android.util.Log
+package ie.wit.runappv2.firebase
 
 import android.net.Uri
-
+import android.util.Log
 import com.google.firebase.storage.FirebaseStorage
 import ie.wit.runappv2.models.RaceModel
 import java.util.*
 
-class FirebaseStorageManager {
+object FirebaseStorageManager {
     private val mStorageRef = FirebaseStorage.getInstance().reference
     fun uploadImage(imageFileUri: Uri, race: RaceModel) : RaceModel {
 
@@ -27,7 +26,7 @@ class FirebaseStorageManager {
                 }
 
 
-                }
+            }
 
 
         }.addOnFailureListener {
