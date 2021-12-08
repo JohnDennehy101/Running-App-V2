@@ -3,6 +3,7 @@ package ie.wit.runappv2.ui.race
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.auth.FirebaseUser
 import ie.wit.runappv2.firebase.FirebaseDBManager
 import ie.wit.runappv2.models.RaceModel
 
@@ -13,18 +14,18 @@ class RaceViewModel : ViewModel()  {
     val observableStatus: LiveData<Boolean>
         get() = status
 
-    fun addRace(race: RaceModel) {
+    fun addRace(firebaseUser: MutableLiveData<FirebaseUser>, race: RaceModel) {
         status.value = try {
-            FirebaseDBManager.createRace(race)
+            FirebaseDBManager.createRace(firebaseUser, race)
             true
         } catch (e: IllegalArgumentException) {
             false
         }
     }
 
-    fun updateRace(race: RaceModel) {
+    fun updateRace(userId: String, raceId : String, race: RaceModel) {
         try {
-            FirebaseDBManager.updateRace(race)
+            FirebaseDBManager.updateRace(userId, raceId, race)
         } catch (e: IllegalArgumentException) {}
 
 

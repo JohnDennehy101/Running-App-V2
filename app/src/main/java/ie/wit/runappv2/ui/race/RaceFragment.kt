@@ -14,6 +14,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
@@ -36,6 +37,7 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import ie.wit.runappv2.ui.auth.LoggedInViewModel
 
 class RaceFragment : Fragment() {
 
@@ -48,6 +50,7 @@ class RaceFragment : Fragment() {
     val args: RaceFragmentArgs by navArgs()
     private lateinit var raceViewModel: RaceViewModel
     lateinit var navController: NavController
+    private val loggedInViewModel : LoggedInViewModel by activityViewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -207,14 +210,14 @@ class RaceFragment : Fragment() {
                     race.image = "https://firebasestorage.googleapis.com/v0/b/runningappv1.appspot.com/o/images%2FSun%20Oct%2031%2016%3A52%3A53%20GMT%202021.png?alt=media&token=dec24aa1-37e6-423c-a002-6405ea9dcb97"
                 }
                 race.createdUser = currentUser?.email!!
-                raceViewModel.addRace(race.copy())
+                raceViewModel.addRace(loggedInViewModel.liveFirebaseUser, race.copy())
                 //app.races.create(race.copy())
                 it.findNavController().navigate(R.id.action_raceFragment_to_reportFragment)
             }
             else if (race.title.isNotEmpty() && race.description.isNotEmpty() && race.raceDate.isNotEmpty() && race.raceDistance.isNotEmpty() && editRace != null) {
                 //app.races.update(race);
                     race.updatedUser = currentUser?.email!!
-                    raceViewModel.updateRace(race.copy())
+                    raceViewModel.updateRace(loggedInViewModel.liveFirebaseUser.value?.uid!!, race.uid.toString(),race.copy())
                 it.findNavController().navigate(R.id.action_raceFragment_to_reportFragment)
             }
             else if (race.title.isEmpty()) {

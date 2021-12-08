@@ -1,11 +1,14 @@
 package ie.wit.runappv2.models
 
 import android.os.Parcelable
+import com.google.firebase.database.Exclude
+import com.google.firebase.database.IgnoreExtraProperties
 import kotlinx.parcelize.Parcelize
 
+@IgnoreExtraProperties
 @Parcelize
 data class RaceModel(
-    var id: Long = 0,
+    var uid: String? = "",
     var title: String = "",
     var description: String = "",
     var raceDate: String = "",
@@ -15,6 +18,23 @@ data class RaceModel(
     var createdUser : String = "",
     var updatedUser : String = ""
 ) : Parcelable
+
+{
+    @Exclude
+    fun toMap(): Map<String, Any?> {
+        return mapOf(
+            "uid" to uid,
+            "title" to title,
+            "description" to description,
+            "raceDate" to raceDate,
+            "raceDistance" to raceDistance,
+            "image" to image,
+            "location" to location,
+            "createdUser" to createdUser,
+            "updatedUser" to updatedUser
+        )
+    }
+}
 
 
 

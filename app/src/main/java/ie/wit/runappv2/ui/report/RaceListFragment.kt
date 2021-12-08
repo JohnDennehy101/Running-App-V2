@@ -24,8 +24,10 @@ import ie.wit.runappv2.utils.*
 import android.widget.Switch
 import android.widget.CompoundButton
 import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import ie.wit.runappv2.ui.auth.LoggedInViewModel
 
 
 class RaceListFragment : Fragment(), RaceListener  {
@@ -35,6 +37,7 @@ class RaceListFragment : Fragment(), RaceListener  {
     private lateinit var raceListViewModel: RaceListViewModel
     lateinit var loader : AlertDialog
     var currentUserEmail : String = ""
+    private val loggedInViewModel : LoggedInViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -81,7 +84,7 @@ class RaceListFragment : Fragment(), RaceListener  {
                 val adapter = fragBinding.recyclerView.adapter as RaceAdapter
                 adapter.removeAt(viewHolder.adapterPosition)
                 val race : RaceModel = viewHolder.itemView.tag as RaceModel
-                raceListViewModel.delete(race.id.toString())
+                raceListViewModel.delete(race.uid.toString())
                 Loader().hideLoader(loader)
             }
         }
@@ -110,6 +113,13 @@ class RaceListFragment : Fragment(), RaceListener  {
 
     override fun onResume() {
         super.onResume()
+        Loader().showLoader(loader,"Downloading Races")
+        loggedInViewModel.liveFirebaseUser.observe(viewLifecycleOwner, Observer { firebaseUser ->
+            if (firebaseUser != null) {
+                raceListViewModel.liveFirebaseUser.value = firebaseUser
+                raceListViewModel.load()
+            }
+        })
     }
 
 
@@ -163,7 +173,7 @@ class RaceListFragment : Fragment(), RaceListener  {
     override fun onRaceDeleteClick(race: RaceModel) {
 
         //RaceJSONMemStore.delete(race)
-        raceListViewModel.delete(race.id.toString())
+        raceListViewModel.delete(race.uid.toString())
 
         requireView().findNavController().run {
             popBackStack()
