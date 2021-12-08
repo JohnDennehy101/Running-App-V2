@@ -75,8 +75,11 @@ class RaceListFragment : Fragment(), RaceListener  {
             races?.let {
                 render(races as ArrayList<RaceModel>)
                 Loader().hideLoader(loader)
+                checkSwipeRefresh()
             }
         })
+
+        setSwipeRefresh()
 
         fragBinding.recyclerView.setLayoutManager(LinearLayoutManager(activity))
 
@@ -204,6 +207,19 @@ class RaceListFragment : Fragment(), RaceListener  {
             fragBinding.racesNotFound.visibility = View.GONE
             fragBinding.recyclerView.visibility = View.VISIBLE
         }
+    }
+
+    fun setSwipeRefresh() {
+        fragBinding.swiperefresh.setOnRefreshListener {
+            fragBinding.swiperefresh.isRefreshing = true
+            Loader().showLoader(loader,"Downloading Races")
+            raceListViewModel.load()
+        }
+    }
+
+    fun checkSwipeRefresh() {
+        if (fragBinding.swiperefresh.isRefreshing)
+            fragBinding.swiperefresh.isRefreshing = false
     }
 
 
