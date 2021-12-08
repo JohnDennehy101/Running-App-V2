@@ -25,9 +25,11 @@ import android.widget.Switch
 import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import ie.wit.runappv2.ui.auth.LoggedInViewModel
+import androidx.navigation.fragment.findNavController
 
 
 class RaceListFragment : Fragment(), RaceListener  {
@@ -99,6 +101,12 @@ class RaceListFragment : Fragment(), RaceListener  {
         }
         val itemTouchEditHelper = ItemTouchHelper(swipeEditHandler)
         itemTouchEditHelper.attachToRecyclerView(fragBinding.recyclerView)
+
+        val fab: FloatingActionButton = fragBinding.fab
+        fab.setOnClickListener {
+            val action = RaceListFragmentDirections.actionReportFragmentToRaceFragment()
+            findNavController().navigate(action)
+        }
 
         return root
     }
