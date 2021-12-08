@@ -45,13 +45,14 @@ class MapListFragment : Fragment(), OnMapReadyCallback {
         val root = fragBinding.root
 
         mapListViewModel = ViewModelProvider(this).get(MapListViewModel::class.java)
-        mapListViewModel.observableRacesList.observe(viewLifecycleOwner, Observer {
+        mapListViewModel.racesListLiveData.observe(viewLifecycleOwner, Observer {
                 races ->
             races?.let { updateRaceValues(races) }
+            val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+            mapFragment.getMapAsync(this)
         })
 
-        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
-        mapFragment.getMapAsync(this)
+
 
         return root
     }

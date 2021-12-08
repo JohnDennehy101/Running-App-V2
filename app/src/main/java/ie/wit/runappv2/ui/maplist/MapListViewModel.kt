@@ -3,21 +3,19 @@ package ie.wit.runappv2.ui.maplist
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import ie.wit.runappv2.firebase.FirebaseDBManager
 import ie.wit.runappv2.models.RaceModel
 
 class MapListViewModel : ViewModel()  {
 
-    private val racesList = MutableLiveData<List<RaceModel>>()
-
-
-    val observableRacesList: LiveData<List<RaceModel>>
-        get() = racesList
+    private val _racesListLiveData = MutableLiveData<List<RaceModel>>()
+    val racesListLiveData : LiveData<List<RaceModel>> = _racesListLiveData
 
     init {
         load()
     }
 
     fun load() {
-        //racesList.value = RaceJSONMemStore.findAll()
+        FirebaseDBManager.getUploadedRaces(_racesListLiveData)
     }
 }

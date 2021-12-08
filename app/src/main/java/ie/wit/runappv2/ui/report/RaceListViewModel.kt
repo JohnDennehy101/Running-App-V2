@@ -10,8 +10,6 @@ import ie.wit.runappv2.firebase.FirebaseDBManager
 
 class RaceListViewModel : ViewModel() {
 
-    //private val firebaseDbHelper = FirebaseRealtimeDatabaseHelper()
-
 
     private val _racesListLiveData = MutableLiveData<List<RaceModel>>()
     val racesListLiveData : LiveData<List<RaceModel>> = _racesListLiveData
@@ -22,24 +20,19 @@ class RaceListViewModel : ViewModel() {
 
     fun load() {
         FirebaseDBManager.getUploadedRaces(_racesListLiveData)
-        //firebaseDbHelper.getUploadedRaces(_racesListLiveData)
     }
 
     fun filter(searchText : String) {
         FirebaseDBManager.getFilteredRaces(_racesListLiveData, searchText)
-        //firebaseDbHelper.getFilteredRaces(_racesListLiveData, searchText)
     }
 
     fun getRacesCreatedByCurrentUser (email : String) {
         FirebaseDBManager.getUserCreatedRaces(_racesListLiveData, email)
-        //firebaseDbHelper.getUserCreatedRaces(_racesListLiveData, email)
     }
 
     fun delete(id: String) {
         try {
             FirebaseDBManager.deleteRace(id)
-            //firebaseDbHelper.deleteRace(id)
-            //RaceJSONMemStore.delete(id)
             Timber.i("Firebase Delete Success")
         }
         catch (e: Exception) {
