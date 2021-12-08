@@ -1,14 +1,14 @@
-package ie.wit.runappv2.activities
+package ie.wit.runappv2.ui.splashscreen
+
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import androidx.appcompat.app.AppCompatActivity
 import ie.wit.runappv2.R
 import ie.wit.runappv2.ui.auth.Login
 
-class SplashActivity : AppCompatActivity() {
-
+class SplashScreen : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,4 +19,5 @@ class SplashActivity : AppCompatActivity() {
             finish()
         }, 3000)
     }
+
 }

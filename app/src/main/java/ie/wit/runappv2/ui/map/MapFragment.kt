@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -16,10 +17,11 @@ import ie.wit.runappv2.R
 import ie.wit.runappv2.databinding.FragmentMapListBinding
 import ie.wit.runappv2.models.Location
 import androidx.navigation.fragment.navArgs
+import ie.wit.runappv2.databinding.FragmentMapBinding
 import ie.wit.runappv2.ui.race.RaceFragmentArgs
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerDragListener {
-    private var _fragBinding: FragmentMapListBinding? = null
+    private var _fragBinding: FragmentMapBinding? = null
     private val fragBinding get() = _fragBinding!!
     private lateinit var map: GoogleMap
     val args: RaceFragmentArgs by navArgs()
@@ -35,7 +37,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerDragListen
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _fragBinding = FragmentMapListBinding.inflate(inflater, container, false)
+        _fragBinding = FragmentMapBinding.inflate(inflater, container, false)
         val root = fragBinding.root
 
         location = args?.location!!

@@ -74,6 +74,8 @@ object FirebaseDBManager : RaceStore {
                 for (item in snapshot.children) {
 
                     val race : RaceModel = item.getValue(RaceModel::class.java)!!
+                    println("RACE")
+                    println(race)
                     if (race.title.lowercase(Locale.getDefault()).contains(searchText.lowercase())) {
                         racesList.add(race)
                     }

@@ -45,6 +45,7 @@ class RaceListFragment : Fragment(), RaceListener  {
 
         setHasOptionsMenu(true)
 
+
         registerRefreshCallback()
 
         super.onCreate(savedInstanceState)
