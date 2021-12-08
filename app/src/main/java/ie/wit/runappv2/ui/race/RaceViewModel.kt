@@ -15,7 +15,7 @@ class RaceViewModel : ViewModel()  {
 
     fun addRace(race: RaceModel) {
         status.value = try {
-            FirebaseDBManager.uploadRace(race)
+            FirebaseDBManager.createRace(race)
             true
         } catch (e: IllegalArgumentException) {
             false

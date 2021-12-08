@@ -7,24 +7,25 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import ie.wit.runappv2.models.RaceModel
+import ie.wit.runappv2.models.RaceStore
 import java.util.*
 
-object FirebaseDBManager {
+object FirebaseDBManager : RaceStore {
     private val mDatabaseRef = FirebaseDatabase.getInstance("https://runningappv1-default-rtdb.europe-west1.firebasedatabase.app").getReference("races")
     private var list: ArrayList<RaceModel> = ArrayList()
 
 
-    fun uploadRace (race: RaceModel) : RaceModel {
+    override fun createRace (race: RaceModel) {
 
         mDatabaseRef.child(race.id.toString()).setValue(race).addOnSuccessListener {
 
         }.addOnFailureListener {
 
         }
-        return race
+
 
     }
-    fun getUploadedRaces(liveData : MutableLiveData<List<RaceModel>>) : ArrayList<RaceModel> {
+    override fun getUploadedRaces(liveData : MutableLiveData<List<RaceModel>>) {
 
         mDatabaseRef.addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0 : DatabaseError) {
@@ -40,10 +41,9 @@ object FirebaseDBManager {
             }
 
         })
-        return list
     }
 
-    fun getFilteredRaces(liveData : MutableLiveData<List<RaceModel>>, searchText : String) : ArrayList<RaceModel> {
+    override fun getFilteredRaces(liveData : MutableLiveData<List<RaceModel>>, searchText : String) {
         val racesList = ArrayList<RaceModel>()
 
         mDatabaseRef.addValueEventListener(object : ValueEventListener {
@@ -63,10 +63,9 @@ object FirebaseDBManager {
             }
 
         })
-        return racesList
     }
 
-    fun getUserCreatedRaces(liveData : MutableLiveData<List<RaceModel>>, email : String) : ArrayList<RaceModel> {
+    override fun getUserCreatedRaces(liveData : MutableLiveData<List<RaceModel>>, email : String) {
         val racesList = ArrayList<RaceModel>()
 
         mDatabaseRef.addValueEventListener(object : ValueEventListener {
@@ -86,14 +85,13 @@ object FirebaseDBManager {
             }
 
         })
-        return racesList
     }
 
-    fun deleteRace (id : String) {
+    override fun deleteRace (id : String) {
         mDatabaseRef.child(id).removeValue()
     }
 
-    fun updateRace (race : RaceModel) {
+    override fun updateRace (race : RaceModel) {
         mDatabaseRef.child(race.id.toString()).child("title").setValue(race.title)
         mDatabaseRef.child(race.id.toString()).child("description").setValue(race.description)
         mDatabaseRef.child(race.id.toString()).child("image").setValue(race.image)
