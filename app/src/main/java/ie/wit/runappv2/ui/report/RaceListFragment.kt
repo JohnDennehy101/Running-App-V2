@@ -79,6 +79,30 @@ class RaceListFragment : Fragment(), RaceListener  {
             }
         })
 
+        fragBinding.toggleAllRacesButtonGroup.addOnButtonCheckedListener {
+            toggleButtonGroup, checkedId, isChecked ->
+            if (isChecked) {
+
+                when (checkedId) {
+                    R.id.allRacesToggleButton -> println("ALL races")
+                    R.id.userRacesToggleButton -> println("USER races")
+                }
+
+            }
+        }
+
+        fragBinding.toggleFavouritesButtonGroup.addOnButtonCheckedListener {
+                toggleButtonGroup, checkedId, isChecked ->
+            if (isChecked) {
+
+                when (checkedId) {
+                    R.id.allRaceRecordsButton -> println("ALL races")
+                    R.id.userFavouritesButton -> println("USER favourited races")
+                }
+
+            }
+        }
+
         setSwipeRefresh()
 
         fragBinding.recyclerView.setLayoutManager(LinearLayoutManager(activity))
