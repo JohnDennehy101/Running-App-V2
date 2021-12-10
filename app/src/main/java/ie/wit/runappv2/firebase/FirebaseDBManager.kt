@@ -37,12 +37,6 @@ object FirebaseDBManager : RaceStore {
 
         database.updateChildren(childAdd)
 
-//        database.child(race.uid.toString()).setValue(race).addOnSuccessListener {
-//
-//        }.addOnFailureListener {
-//
-//        }
-
 
     }
     override fun getUploadedRaces(liveData : MutableLiveData<List<RaceModel>>) {
@@ -74,8 +68,6 @@ object FirebaseDBManager : RaceStore {
                 for (item in snapshot.children) {
 
                     val race : RaceModel = item.getValue(RaceModel::class.java)!!
-                    println("RACE")
-                    println(race)
                     if (race.title.lowercase(Locale.getDefault()).contains(searchText.lowercase())) {
                         racesList.add(race)
                     }
@@ -87,7 +79,7 @@ object FirebaseDBManager : RaceStore {
         })
     }
 
-    override fun getUserCreatedRaces(liveData : MutableLiveData<List<RaceModel>>, userId: String, email : String) {
+    override fun getUserCreatedRaces(liveData : MutableLiveData<List<RaceModel>>, userId: String) {
         val racesList = ArrayList<RaceModel>()
 
         database.child("user-races").child(userId).addValueEventListener(object : ValueEventListener {
@@ -96,11 +88,8 @@ object FirebaseDBManager : RaceStore {
             }
             override fun onDataChange (snapshot: DataSnapshot) {
                 for (item in snapshot.children) {
-
                     val race : RaceModel = item.getValue(RaceModel::class.java)!!
-                    if (race.createdUser.lowercase(Locale.getDefault()).equals(email.lowercase())) {
-                        racesList.add(race)
-                    }
+                    racesList.add(race)
                 }
 
                 database.child("user-races").child(userId)
@@ -140,10 +129,11 @@ object FirebaseDBManager : RaceStore {
                 Log.e("Cancel", p0.toString())
             }
             override fun onDataChange (snapshot: DataSnapshot) {
-                val firebaseRaceRecord : RaceModel = snapshot.getValue(RaceModel::class.java)!!
-                val checkFirebaseFavouritedUserIds = firebaseRaceRecord.favouritedBy.find {it == firebaseUserId}
+                if (snapshot.exists()) {
+                    val firebaseRaceRecord : RaceModel = snapshot.getValue(RaceModel::class.java)!!
+                    val checkFirebaseFavouritedUserIds = firebaseRaceRecord.favouritedBy.find {it == firebaseUserId}
 
-                println(checkFirebaseFavouritedUserIds)
+                    println(checkFirebaseFavouritedUserIds)
 
                     if (favouriteStatus && checkFirebaseFavouritedUserIds == null) {
                         firebaseRaceRecord.favouritedBy.add(firebaseUserId)
@@ -153,11 +143,68 @@ object FirebaseDBManager : RaceStore {
                         firebaseRaceRecord.favouritedBy.remove(firebaseUserId)
                     }
 
-                val childUpdate : MutableMap<String, Any?> = HashMap()
-                childUpdate["races/$uid"] = firebaseRaceRecord
-                database.updateChildren(childUpdate)
-                database.child("races").child(uid.toString())
+                    val childUpdate : MutableMap<String, Any?> = HashMap()
+                    childUpdate["races/$uid"] = firebaseRaceRecord
+                    database.updateChildren(childUpdate)
+                    database.child("races").child(uid.toString())
+                        .removeEventListener(this)
+                }
+
+            }
+
+        })
+
+        database.child("user-races").child(firebaseUserId).child(uid.toString()).addValueEventListener(object : ValueEventListener {
+            override fun onCancelled(p0 : DatabaseError) {
+                Log.e("Cancel", p0.toString())
+            }
+            override fun onDataChange (snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    val firebaseRaceRecord : RaceModel = snapshot.getValue(RaceModel::class.java)!!
+                    val checkFirebaseFavouritedUserIds = firebaseRaceRecord.favouritedBy.find {it == firebaseUserId}
+
+
+                    if (favouriteStatus && checkFirebaseFavouritedUserIds == null) {
+                        firebaseRaceRecord.favouritedBy.add(firebaseUserId)
+                    }
+                    else if (!favouriteStatus && checkFirebaseFavouritedUserIds != null) {
+                        firebaseRaceRecord.favouritedBy.remove(firebaseUserId)
+                    }
+
+                    val childUpdate : MutableMap<String, Any?> = HashMap()
+                    childUpdate["user-races/$firebaseUserId/$uid"] = firebaseRaceRecord
+                    database.updateChildren(childUpdate)
+                    database.child("user-races").child(firebaseUserId).child(uid.toString())
+                        .removeEventListener(this)
+                }
+
+            }
+
+        })
+    }
+    override fun getUserFavouritedRaces (liveData : MutableLiveData<List<RaceModel>>, userId: String) {
+        val racesList = ArrayList<RaceModel>()
+
+        database.child("races").addValueEventListener(object : ValueEventListener {
+            override fun onCancelled(p0 : DatabaseError) {
+                Log.e("Cancel", p0.toString())
+            }
+            override fun onDataChange (snapshot: DataSnapshot) {
+                for (item in snapshot.children) {
+
+                    val race : RaceModel = item.getValue(RaceModel::class.java)!!
+                    if (race.favouritedBy.size > 0) {
+                        for (id in race.favouritedBy) {
+                            if (id == userId) {
+                                racesList.add(race)
+                            }
+                        }
+                    }
+                }
+
+                database.child("races")
                     .removeEventListener(this)
+                liveData.postValue(racesList)
             }
 
         })

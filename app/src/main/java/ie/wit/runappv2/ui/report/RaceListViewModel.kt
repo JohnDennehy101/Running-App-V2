@@ -29,8 +29,8 @@ class RaceListViewModel : ViewModel() {
         FirebaseDBManager.getFilteredRaces(_racesListLiveData, searchText)
     }
 
-    fun getRacesCreatedByCurrentUser (email : String) {
-        FirebaseDBManager.getUserCreatedRaces(_racesListLiveData, liveFirebaseUser.value?.uid!!, email)
+    fun getRacesCreatedByCurrentUser () {
+        FirebaseDBManager.getUserCreatedRaces(_racesListLiveData, liveFirebaseUser.value?.uid!!)
     }
 
     fun delete(raceId: String) {
@@ -46,6 +46,14 @@ class RaceListViewModel : ViewModel() {
     fun setRaceFavouriteState (race : RaceModel, favouriteStatus : Boolean) {
         try {
             FirebaseDBManager.setUserFavouriteRaceState(race, favouriteStatus, liveFirebaseUser.value?.uid!!)
+        }
+        catch (e: Exception) {
+            Timber.i("Firebase race favourite status update error : $e.message")
+        }
+    }
+    fun getUserFavourites () {
+        try {
+            FirebaseDBManager.getUserFavouritedRaces(_racesListLiveData, liveFirebaseUser.value?.uid!!)
         }
         catch (e: Exception) {
             Timber.i("Firebase race favourite status update error : $e.message")

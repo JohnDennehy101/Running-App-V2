@@ -14,78 +14,79 @@
         android:layout_width="380dp"
         android:layout_height="170dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="60dp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.466"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.055">
+        app:layout_constraintVertical_bias="0.015">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/filterFunctionalityCardTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Filter Races"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textColor="@color/color_primary"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Filter Races"
-            app:layout_constraintVertical_bias="0.055"/>
+            <TextView
+                android:id="@+id/filterFunctionalityCardTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Filter Races"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColor="@color/color_primary"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.055"
+                tools:text="Filter Races" />
 
-        <com.google.android.material.button.MaterialButtonToggleGroup
-            android:id="@+id/toggleAllRacesButtonGroup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:singleSelection="true"
-            app:selectionRequired="true"
-            app:checkedButton="@id/allRacesToggleButton">
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/toggleAllRacesButtonGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:checkedButton="@id/allRacesToggleButton"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:selectionRequired="true"
+                app:singleSelection="true">
 
-            <Button
-                android:id="@+id/allRacesToggleButton"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="All Races"
-                tools:layout_editor_absoluteX="164dp"
-                tools:layout_editor_absoluteY="167dp" />
+                <Button
+                    android:id="@+id/allRacesToggleButton"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="All Races"
+                    tools:layout_editor_absoluteX="164dp"
+                    tools:layout_editor_absoluteY="167dp" />
 
-            <Button
-                android:id="@+id/userRacesToggleButton"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="User Races"
-                tools:layout_editor_absoluteX="164dp"
-                tools:layout_editor_absoluteY="266dp" />
+                <Button
+                    android:id="@+id/userRacesToggleButton"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="User Races"
+                    tools:layout_editor_absoluteX="164dp"
+                    tools:layout_editor_absoluteY="266dp" />
 
-        </com.google.android.material.button.MaterialButtonToggleGroup>
+            </com.google.android.material.button.MaterialButtonToggleGroup>
 
             <com.google.android.material.button.MaterialButtonToggleGroup
                 android:id="@+id/toggleFavouritesButtonGroup"
                 android:layout_width="wrap_content"
+                android:visibility="invisible"
                 android:layout_height="wrap_content"
+                app:checkedButton="@id/allRaceRecordsButton"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/toggleAllRacesButtonGroup"
-                app:singleSelection="true"
                 app:selectionRequired="true"
-                app:checkedButton="@id/allRaceRecordsButton">
+                app:singleSelection="true">
 
                 <Button
                     android:id="@+id/allRaceRecordsButton"
@@ -116,7 +117,6 @@
         android:layout_width="402dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -130,7 +130,6 @@
         android:id="@+id/recyclerView"
         android:layout_width="401dp"
         android:layout_height="0dp"
-        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
 
         app:layout_constraintStart_toStartOf="parent"

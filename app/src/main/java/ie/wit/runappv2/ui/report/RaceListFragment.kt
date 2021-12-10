@@ -23,12 +23,19 @@ import androidx.recyclerview.widget.RecyclerView
 import ie.wit.runappv2.utils.*
 import android.widget.Switch
 import android.widget.CompoundButton
+import android.widget.ImageView
 import android.widget.ToggleButton
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import ie.wit.runappv2.ui.auth.LoggedInViewModel
 import androidx.navigation.fragment.findNavController
+
+
+
+
+
+
 
 
 class RaceListFragment : Fragment(), RaceListener  {
@@ -39,6 +46,7 @@ class RaceListFragment : Fragment(), RaceListener  {
     lateinit var loader : AlertDialog
     var currentUserEmail : String = ""
     private val loggedInViewModel : LoggedInViewModel by activityViewModels()
+    var menuSwitch : Switch? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -68,6 +76,7 @@ class RaceListFragment : Fragment(), RaceListener  {
 
         raceListViewModel = ViewModelProvider(this).get(RaceListViewModel::class.java)
 
+        fragBinding.filterFunctionalityCard.visibility = View.GONE
 
 
         raceListViewModel.racesListLiveData.observe(viewLifecycleOwner, Observer {
@@ -84,8 +93,17 @@ class RaceListFragment : Fragment(), RaceListener  {
             if (isChecked) {
 
                 when (checkedId) {
-                    R.id.allRacesToggleButton -> println("ALL races")
-                    R.id.userRacesToggleButton -> println("USER races")
+                    R.id.allRacesToggleButton -> {
+                        raceListViewModel.load()
+                        fragBinding.toggleFavouritesButtonGroup.clearChecked()
+                        fragBinding.toggleFavouritesButtonGroup.check(R.id.allRaceRecordsButton)
+                        fragBinding.toggleFavouritesButtonGroup.visibility = View.INVISIBLE
+                    }
+                    R.id.userRacesToggleButton -> {
+                        raceListViewModel.getRacesCreatedByCurrentUser()
+                        fragBinding.toggleFavouritesButtonGroup.visibility = View.VISIBLE
+                    }
+
                 }
 
             }
@@ -96,8 +114,8 @@ class RaceListFragment : Fragment(), RaceListener  {
             if (isChecked) {
 
                 when (checkedId) {
-                    R.id.allRaceRecordsButton -> println("ALL races")
-                    R.id.userFavouritesButton -> println("USER favourited races")
+                    R.id.allRaceRecordsButton -> raceListViewModel.load()
+                    R.id.userFavouritesButton -> raceListViewModel.getUserFavourites()
                 }
 
             }
@@ -135,6 +153,9 @@ class RaceListFragment : Fragment(), RaceListener  {
             findNavController().navigate(action)
         }
 
+
+
+
         return root
     }
 
@@ -162,16 +183,20 @@ class RaceListFragment : Fragment(), RaceListener  {
         menuInflater.inflate(R.menu.menu_main, menu)
         val item = menu?.findItem(R.id.item_search)
 
-        val menuSwitch =
+        menuSwitch =
             menu.findItem(R.id.switch_action_bar).actionView.findViewById(R.id.menuSwitch) as Switch
 
 
-        menuSwitch.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { _, isChecked ->
+        menuSwitch!!.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                raceListViewModel.getRacesCreatedByCurrentUser(currentUserEmail)
-                fragBinding.recyclerView.adapter?.notifyDataSetChanged()
+
+                fragBinding.filterFunctionalityCard.visibility = View.VISIBLE
+                //raceListViewModel.getRacesCreatedByCurrentUser(currentUserEmail)
+                //fragBinding.recyclerView.adapter?.notifyDataSetChanged()
             }
             else {
+                fragBinding.filterFunctionalityCard.visibility = View.INVISIBLE
+                fragBinding.filterFunctionalityCard.visibility = View.GONE
                 raceListViewModel.load()
                 fragBinding.recyclerView.adapter?.notifyDataSetChanged()
             }
@@ -188,10 +213,13 @@ class RaceListFragment : Fragment(), RaceListener  {
                 val searchText = newText!!.lowercase(Locale.getDefault())
 
                 if (searchText.length > 0) {
+                    menuSwitch?.visibility = View.GONE
+                    fragBinding.filterFunctionalityCard.visibility = View.GONE
                     raceListViewModel.filter(searchText)
                     fragBinding.recyclerView.adapter?.notifyDataSetChanged()
                 }
                 else {
+                    menuSwitch?.visibility = View.VISIBLE
                     raceListViewModel.load()
                 }
                 return false
