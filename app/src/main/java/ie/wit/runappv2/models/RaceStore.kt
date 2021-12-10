@@ -10,4 +10,5 @@ interface RaceStore {
     fun getUserCreatedRaces(liveData : MutableLiveData<List<RaceModel>>, userId: String, email : String)
     fun deleteRace (userId: String, raceId: String)
     fun updateRace (userId : String, raceId : String, race : RaceModel)
+    fun setUserFavouriteRaceState (race : RaceModel, favouriteStatus : Boolean, firebaseUserId : String)
 }

@@ -23,11 +23,10 @@ import androidx.recyclerview.widget.RecyclerView
 import ie.wit.runappv2.utils.*
 import android.widget.Switch
 import android.widget.CompoundButton
-import android.widget.Toast
+import android.widget.ToggleButton
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import ie.wit.runappv2.ui.auth.LoggedInViewModel
 import androidx.navigation.fragment.findNavController
 
@@ -193,6 +192,12 @@ class RaceListFragment : Fragment(), RaceListener  {
         }
 
     }
+
+    override fun onRaceFavouriteClick(race: RaceModel, favButton: ToggleButton) {
+        raceListViewModel.setRaceFavouriteState(race, favButton.isChecked)
+        fragBinding.recyclerView.adapter?.notifyDataSetChanged()
+    }
+
     private fun registerRefreshCallback() {
         refreshIntentLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult())
@@ -200,7 +205,7 @@ class RaceListFragment : Fragment(), RaceListener  {
     }
 
     private fun render(racesList: ArrayList<RaceModel>) {
-        fragBinding.recyclerView.adapter = RaceAdapter(racesList, this)
+        fragBinding.recyclerView.adapter = RaceAdapter(racesList, this, raceListViewModel.liveFirebaseUser.value?.uid!!)
         if (racesList.isEmpty()) {
             fragBinding.recyclerView.visibility = View.GONE
             fragBinding.racesNotFound.visibility = View.VISIBLE

@@ -16,7 +16,8 @@ data class RaceModel(
     var image: String = "",
     var location: Location = Location(0.0,0.0,0f),
     var createdUser : String = "",
-    var updatedUser : String = ""
+    var updatedUser : String = "",
+    var favouritedBy : ArrayList <String> = ArrayList <String>()
 ) : Parcelable
 
 {
@@ -31,7 +32,8 @@ data class RaceModel(
             "image" to image,
             "location" to location,
             "createdUser" to createdUser,
-            "updatedUser" to updatedUser
+            "updatedUser" to updatedUser,
+            "favouritedBy" to favouritedBy
         )
     }
 }

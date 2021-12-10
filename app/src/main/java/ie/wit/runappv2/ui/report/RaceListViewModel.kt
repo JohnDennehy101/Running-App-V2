@@ -42,4 +42,13 @@ class RaceListViewModel : ViewModel() {
             Timber.i("Firebase Delete Error : $e.message")
         }
     }
+
+    fun setRaceFavouriteState (race : RaceModel, favouriteStatus : Boolean) {
+        try {
+            FirebaseDBManager.setUserFavouriteRaceState(race, favouriteStatus, liveFirebaseUser.value?.uid!!)
+        }
+        catch (e: Exception) {
+            Timber.i("Firebase race favourite status update error : $e.message")
+        }
+    }
 }

@@ -129,13 +129,37 @@ object FirebaseDBManager : RaceStore {
         childUpdate["user-races/$userId/$raceId"] = raceValues
 
         database.updateChildren(childUpdate)
-//        mDatabaseRef.child(race.id.toString()).child("title").setValue(race.title)
-//        mDatabaseRef.child(race.id.toString()).child("description").setValue(race.description)
-//        mDatabaseRef.child(race.id.toString()).child("image").setValue(race.image)
-//        mDatabaseRef.child(race.id.toString()).child("location").setValue(race.location)
-//        mDatabaseRef.child(race.id.toString()).child("raceDate").setValue(race.raceDate)
-//        mDatabaseRef.child(race.id.toString()).child("raceDistance").setValue(race.raceDistance)
-//        mDatabaseRef.child(race.id.toString()).child("updatedUser").setValue(race.updatedUser)
 
+    }
+
+    override fun setUserFavouriteRaceState (race : RaceModel, favouriteStatus : Boolean, firebaseUserId : String) {
+        val uid = race.uid
+
+        database.child("races").child(uid.toString()).addValueEventListener(object : ValueEventListener {
+            override fun onCancelled(p0 : DatabaseError) {
+                Log.e("Cancel", p0.toString())
+            }
+            override fun onDataChange (snapshot: DataSnapshot) {
+                val firebaseRaceRecord : RaceModel = snapshot.getValue(RaceModel::class.java)!!
+                val checkFirebaseFavouritedUserIds = firebaseRaceRecord.favouritedBy.find {it == firebaseUserId}
+
+                println(checkFirebaseFavouritedUserIds)
+
+                    if (favouriteStatus && checkFirebaseFavouritedUserIds == null) {
+                        firebaseRaceRecord.favouritedBy.add(firebaseUserId)
+                        println(firebaseRaceRecord)
+                    }
+                    else if (!favouriteStatus && checkFirebaseFavouritedUserIds != null) {
+                        firebaseRaceRecord.favouritedBy.remove(firebaseUserId)
+                    }
+
+                val childUpdate : MutableMap<String, Any?> = HashMap()
+                childUpdate["races/$uid"] = firebaseRaceRecord
+                database.updateChildren(childUpdate)
+                database.child("races").child(uid.toString())
+                    .removeEventListener(this)
+            }
+
+        })
     }
 }

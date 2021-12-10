@@ -8,7 +8,11 @@ import com.squareup.picasso.Picasso
 import ie.wit.runappv2.databinding.CardRaceBinding
 import ie.wit.runappv2.models.RaceModel
 
-class RaceAdapter constructor(private var races: ArrayList<RaceModel>, private val listener: RaceListener) :
+class RaceAdapter(
+    private var races: ArrayList<RaceModel>,
+    private val listener: RaceListener,
+    val firebaseUserId: String
+) :
     RecyclerView.Adapter<RaceAdapter.MainHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainHolder {
@@ -41,6 +45,14 @@ class RaceAdapter constructor(private var races: ArrayList<RaceModel>, private v
             binding.raceDate.text = race.raceDate
             binding.raceDistance.text = race.raceDistance
 
+            if (race.favouritedBy.size > 0) {
+                for (id in race.favouritedBy) {
+                    if (id == firebaseUserId) {
+                        binding.favButton.isChecked = true
+                    }
+                }
+            }
+
             val params = LinearLayout.LayoutParams(
                 200,
                 200
@@ -52,6 +64,7 @@ class RaceAdapter constructor(private var races: ArrayList<RaceModel>, private v
             Picasso.get().load(race.image.toUri()).resize(200,200).into(binding.imageIcon)
             binding.root.setOnClickListener { listener.onRaceClick(race) }
             binding.deleteRaceButton.setOnClickListener {listener.onRaceDeleteClick(race)}
+            binding.favButton.setOnClickListener{listener.onRaceFavouriteClick(race, binding.favButton)}
         }
     }
 }
