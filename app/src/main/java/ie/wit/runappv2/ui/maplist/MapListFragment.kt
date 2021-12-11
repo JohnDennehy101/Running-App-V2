@@ -16,6 +16,11 @@ import ie.wit.runappv2.R
 import ie.wit.runappv2.databinding.FragmentMapListBinding
 import ie.wit.runappv2.models.RaceModel
 import androidx.lifecycle.Observer
+import android.content.res.Resources
+
+import com.google.android.gms.maps.model.MapStyleOptions
+import ie.wit.runappv2.helpers.ThemePreferenceHelper
+import timber.log.Timber
 
 
 class MapListFragment : Fragment(), OnMapReadyCallback {
@@ -24,6 +29,7 @@ class MapListFragment : Fragment(), OnMapReadyCallback {
     private val fragBinding get() = _fragBinding!!
     private lateinit var races : MutableList<RaceModel>
     private lateinit var map: GoogleMap
+    private var nightThemeCheck : Boolean = false
 
     private lateinit var mapListViewModel: MapListViewModel
 
@@ -31,6 +37,8 @@ class MapListFragment : Fragment(), OnMapReadyCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         races = mutableListOf<RaceModel>()
+
+        nightThemeCheck = checkTheme()
 
         super.onCreate(savedInstanceState)
 
@@ -64,6 +72,39 @@ class MapListFragment : Fragment(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
 
+        if (nightThemeCheck) {
+            try {
+                // Customise the styling of the base map using a JSON object defined
+                // in a raw resource file.
+                val success = map.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                        context, ie.wit.runappv2.R.raw.style_night_map
+                    )
+                )
+                if (!success) {
+                    Timber.i("Styling parsing failed.")
+                }
+            } catch (e: Resources.NotFoundException) {
+                Timber.i("Styling Not Found.")
+            }
+        }
+        else {
+            try {
+                // Customise the styling of the base map using a JSON object defined
+                // in a raw resource file.
+                val success = map.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                        context, ie.wit.runappv2.R.raw.style_day_map
+                    )
+                )
+                if (!success) {
+                    Timber.i("Styling parsing failed.")
+                }
+            } catch (e: Resources.NotFoundException) {
+                Timber.i("Styling Not Found.")
+            }
+        }
+
         val loc = LatLng(53.534046, -7.599592)
 
         for (race in races) {
@@ -82,6 +123,16 @@ class MapListFragment : Fragment(), OnMapReadyCallback {
     override fun onDestroyView() {
         super.onDestroyView()
         _fragBinding = null
+    }
+
+    private fun checkTheme() : Boolean {
+
+        var nightThemeCheck : Boolean = false
+
+        if (ThemePreferenceHelper(context).darkMode == 1) {
+            nightThemeCheck = true
+        }
+        return nightThemeCheck
     }
 
 

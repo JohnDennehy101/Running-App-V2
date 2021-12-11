@@ -1,5 +1,6 @@
 package ie.wit.runappv2.ui.map
 
+import android.content.res.Resources
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,8 +18,11 @@ import ie.wit.runappv2.R
 import ie.wit.runappv2.databinding.FragmentMapListBinding
 import ie.wit.runappv2.models.Location
 import androidx.navigation.fragment.navArgs
+import com.google.android.gms.maps.model.MapStyleOptions
 import ie.wit.runappv2.databinding.FragmentMapBinding
+import ie.wit.runappv2.helpers.ThemePreferenceHelper
 import ie.wit.runappv2.ui.race.RaceFragmentArgs
+import timber.log.Timber
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerDragListener {
     private var _fragBinding: FragmentMapBinding? = null
@@ -26,10 +30,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerDragListen
     private lateinit var map: GoogleMap
     val args: RaceFragmentArgs by navArgs()
     var location = Location()
+    private var nightThemeCheck : Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
+        nightThemeCheck = checkTheme()
         super.onCreate(savedInstanceState)
+
 
     }
 
@@ -50,6 +57,39 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerDragListen
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
+
+        if (nightThemeCheck) {
+            try {
+                // Customise the styling of the base map using a JSON object defined
+                // in a raw resource file.
+                val success = map.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                        context, ie.wit.runappv2.R.raw.style_night_map
+                    )
+                )
+                if (!success) {
+                    Timber.i("Styling parsing failed.")
+                }
+            } catch (e: Resources.NotFoundException) {
+                Timber.i("Styling Not Found.")
+            }
+        }
+        else {
+            try {
+                // Customise the styling of the base map using a JSON object defined
+                // in a raw resource file.
+                val success = map.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                        context, ie.wit.runappv2.R.raw.style_day_map
+                    )
+                )
+                if (!success) {
+                    Timber.i("Styling parsing failed.")
+                }
+            } catch (e: Resources.NotFoundException) {
+                Timber.i("Styling Not Found.")
+            }
+        }
 
         val loc = LatLng(location.lat, location.lng)
         val options = MarkerOptions()
@@ -77,6 +117,16 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerDragListen
     override fun onDestroyView() {
         super.onDestroyView()
         _fragBinding = null
+    }
+
+    private fun checkTheme() : Boolean {
+
+        var nightThemeCheck : Boolean = false
+
+        if (ThemePreferenceHelper(context).darkMode == 1) {
+            nightThemeCheck = true
+        }
+        return nightThemeCheck
     }
 
 
