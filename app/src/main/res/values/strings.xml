@@ -40,4 +40,6 @@
     <string name="create_account">Create Account</string>
     <string name="sign_out">Sign Out</string>
     <string name="verify_email">Verify Email</string>
+    <string name="change_theme">Change Theme</string>
+    <string name="choose_theme_text">Choose Theme</string>
 </resources>

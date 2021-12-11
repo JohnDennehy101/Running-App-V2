@@ -52,7 +52,7 @@
                         android:maxLength="25"
                         android:maxLines="1"
                         android:padding="8dp"
-                        android:textColor="@color/colorPrimaryDark"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:textSize="14sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -74,30 +74,47 @@
                         android:id="@+id/raceDescription"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:hint="Enter Description"
                         android:inputType="text"
                         android:maxLength="25"
                         android:maxLines="1"
                         android:padding="8dp"
-                        android:textColor="@color/colorPrimaryDark"
                         android:textSize="14sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
 
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/raceDatePicker"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/edRaceDate"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_margin="8dp"
-                    android:background="@drawable/edit_text_border"
-                    android:hint="Select Rate Date"
-                    android:layout_gravity="center_vertical"
-                    android:padding="8dp"
-                    android:paddingStart="15dp"
-                    android:paddingTop="32dp"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textSize="14sp" />
+
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:hint=" "
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <EditText
+                        android:id="@+id/raceDatePicker"
+                        android:layout_width="match_parent"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_height="50dp"
+                        android:hint="Select Rate Date"
+                        android:layout_gravity="center_vertical"
+                        android:inputType="text"
+                        android:maxLength="25"
+                        android:maxLines="1"
+                        android:padding="8dp"
+                        android:textSize="14sp"
+                        android:clickable="false"
+                        android:cursorVisible="false"
+                        android:focusable="false"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
 
 
                 <com.google.android.material.textfield.TextInputLayout

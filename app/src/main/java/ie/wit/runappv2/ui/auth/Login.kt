@@ -5,11 +5,13 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.ViewModelProvider
 import ie.wit.runappv2.databinding.LoginBinding
 import timber.log.Timber
 import androidx.lifecycle.Observer
 import ie.wit.runappv2.R
+import ie.wit.runappv2.helpers.ThemePreferenceHelper
 import ie.wit.runappv2.ui.home.Home
 
 class Login : AppCompatActivity() {
@@ -18,9 +20,12 @@ class Login : AppCompatActivity() {
     private lateinit var loginBinding : LoginBinding
 
     public override fun onCreate(savedInstanceState: Bundle?) {
+        checkTheme()
         super.onCreate(savedInstanceState)
         loginBinding = LoginBinding.inflate(layoutInflater)
         setContentView(loginBinding.root)
+
+
 
         loginBinding.emailSignInButton.setOnClickListener {
             signIn(loginBinding.fieldEmail.text.toString(),
@@ -85,5 +90,23 @@ class Login : AppCompatActivity() {
             loginBinding.fieldPassword.error = null
         }
         return valid
+    }
+
+    private fun checkTheme() {
+        when (ThemePreferenceHelper(applicationContext).darkMode) {
+            0 -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                delegate.applyDayNight()
+            }
+            1 -> {
+                println("YES ADDING NIGHT")
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                delegate.applyDayNight()
+            }
+            2 -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                delegate.applyDayNight()
+            }
+        }
     }
 }

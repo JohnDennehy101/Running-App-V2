@@ -49,14 +49,14 @@ class RaceFragment : Fragment() {
     private lateinit var mapIntentLauncher : ActivityResultLauncher<Intent>
     val args: RaceFragmentArgs by navArgs()
     private lateinit var raceViewModel: RaceViewModel
-    lateinit var navController: NavController
+    //lateinit var navController: NavController
     private val loggedInViewModel : LoggedInViewModel by activityViewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
+        //navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
 
         registerImagePickerCallback()
         registerMapCallback()

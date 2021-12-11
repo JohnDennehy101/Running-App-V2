@@ -72,7 +72,7 @@ class RaceListFragment : Fragment(), RaceListener  {
 
         currentUserEmail = FirebaseAuth.getInstance().currentUser?.email!!
 
-        Loader().showLoader(loader,"Downloading Races")
+        Loader().showLoader(loader, "Downloading Races")
 
         raceListViewModel = ViewModelProvider(this).get(RaceListViewModel::class.java)
 
@@ -169,7 +169,10 @@ class RaceListFragment : Fragment(), RaceListener  {
 
     override fun onResume() {
         super.onResume()
-        Loader().showLoader(loader,"Downloading Races")
+        if (activity != null && requireActivity().isFinishing()) {
+            Loader().showLoader(loader,"Downloading Races")
+        }
+
         loggedInViewModel.liveFirebaseUser.observe(viewLifecycleOwner, Observer { firebaseUser ->
             if (firebaseUser != null) {
                 raceListViewModel.liveFirebaseUser.value = firebaseUser
