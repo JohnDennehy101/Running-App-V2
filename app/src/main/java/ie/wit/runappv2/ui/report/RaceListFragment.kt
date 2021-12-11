@@ -214,6 +214,7 @@ class RaceListFragment : Fragment(), RaceListener  {
 
                 if (searchText.length > 0) {
                     menuSwitch?.visibility = View.GONE
+                    menuSwitch?.isChecked = false
                     fragBinding.filterFunctionalityCard.visibility = View.GONE
                     raceListViewModel.filter(searchText)
                     fragBinding.recyclerView.adapter?.notifyDataSetChanged()
