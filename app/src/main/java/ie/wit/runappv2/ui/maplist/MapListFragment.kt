@@ -1,5 +1,6 @@
 package ie.wit.runappv2.ui.maplist
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,17 +11,18 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 import ie.wit.runappv2.R
 import ie.wit.runappv2.databinding.FragmentMapListBinding
 import ie.wit.runappv2.models.RaceModel
 import androidx.lifecycle.Observer
 import android.content.res.Resources
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.*
 
-import com.google.android.gms.maps.model.MapStyleOptions
 import ie.wit.runappv2.helpers.ThemePreferenceHelper
 import ie.wit.runappv2.ui.auth.LoggedInViewModel
 import timber.log.Timber
@@ -74,6 +76,15 @@ class MapListFragment : Fragment(), OnMapReadyCallback {
         races = racesList.toMutableList()
     }
 
+    private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor? {
+        return ContextCompat.getDrawable(context, vectorResId)?.run {
+            setBounds(0, 0, intrinsicWidth, intrinsicHeight)
+            val bitmap = Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, Bitmap.Config.ARGB_8888)
+            draw(Canvas(bitmap))
+            BitmapDescriptorFactory.fromBitmap(bitmap)
+        }
+    }
+
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
         val loggedInUserId : String = loggedInViewModel.liveFirebaseUser.value?.uid!!
@@ -116,13 +127,24 @@ class MapListFragment : Fragment(), OnMapReadyCallback {
         for (race in races) {
             val locationCoordinates = LatLng(race.location.lat, race.location.lng)
 
-            if (race.createdUser == loggedInUserId) {
+            val userFavouriteRaceCheck = race.favouritedBy.find {it == loggedInUserId}
+
+            if (race.createdUser == loggedInUserId && userFavouriteRaceCheck == null) {
                 val options = MarkerOptions()
                     .title(race.title)
                     .snippet("GPS : $locationCoordinates")
                     .draggable(false)
                     .position(locationCoordinates)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                map.addMarker(options)
+            }
+            else if (userFavouriteRaceCheck != null) {
+                val options = MarkerOptions()
+                    .title(race.title)
+                    .snippet("GPS : $locationCoordinates")
+                    .draggable(false)
+                    .position(locationCoordinates)
+                    .icon(bitmapDescriptorFromVector(requireContext(), R.drawable.ic_favourite_icon))
                 map.addMarker(options)
             }
             else {
