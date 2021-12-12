@@ -1,11 +1,14 @@
 package ie.wit.runappv2.ui.auth
 
 import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.text.TextUtils
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import ie.wit.runappv2.databinding.LoginBinding
 import timber.log.Timber
@@ -23,7 +26,10 @@ class Login : AppCompatActivity() {
         checkTheme()
         super.onCreate(savedInstanceState)
         loginBinding = LoginBinding.inflate(layoutInflater)
+
+
         setContentView(loginBinding.root)
+
 
 
 
@@ -34,6 +40,13 @@ class Login : AppCompatActivity() {
 
         loginBinding.registerLink.setOnClickListener {
             startActivity(Intent(this, Register::class.java))
+        }
+
+        if (ThemePreferenceHelper(applicationContext).darkMode == 1) {
+            loginBinding.relativeLayout.setBackgroundColor(Color.BLACK)
+            loginBinding.icon.setImageDrawable(ContextCompat.getDrawable(applicationContext, R.drawable.ic_baseline_supervised_user_circle_24_night_mode))
+            loginBinding.registerLink.setTextColor(Color.WHITE)
+            loginBinding.registerLink.setBackgroundColor(Color.BLACK)
         }
 
     }

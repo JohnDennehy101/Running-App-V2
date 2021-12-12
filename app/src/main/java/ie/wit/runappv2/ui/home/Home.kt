@@ -35,8 +35,9 @@ class Home : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         homeBinding = HomeBinding.inflate(layoutInflater)
-        setContentView(homeBinding.root)
         checkTheme()
+        setContentView(homeBinding.root)
+
         drawerLayout = homeBinding.drawerLayout
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
