@@ -1,16 +1,19 @@
 package ie.wit.runappv2.ui.auth
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.text.TextUtils
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import ie.wit.runappv2.R
 import ie.wit.runappv2.databinding.RegisterBinding
 import ie.wit.runappv2.ui.home.Home
 import timber.log.Timber
 import androidx.lifecycle.Observer
+import ie.wit.runappv2.helpers.ThemePreferenceHelper
 
 class Register : AppCompatActivity() {
 
@@ -27,6 +30,13 @@ class Register : AppCompatActivity() {
         }
         registerBinding.emailCreateAccountButton.setOnClickListener {
             createAccount(registerBinding.fieldEmail.text.toString(), registerBinding.fieldPassword.text.toString())
+        }
+
+        if (ThemePreferenceHelper(applicationContext).darkMode == 1) {
+            registerBinding.relativeLayout.setBackgroundColor(Color.BLACK)
+            registerBinding.icon.setImageDrawable(ContextCompat.getDrawable(applicationContext, R.drawable.ic_baseline_supervised_user_circle_24_night_mode))
+            registerBinding.loginLink.setTextColor(Color.WHITE)
+            registerBinding.loginLink.setBackgroundColor(Color.BLACK)
         }
     }
 
