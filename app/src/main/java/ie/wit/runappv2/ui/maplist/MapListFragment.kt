@@ -17,9 +17,12 @@ import ie.wit.runappv2.databinding.FragmentMapListBinding
 import ie.wit.runappv2.models.RaceModel
 import androidx.lifecycle.Observer
 import android.content.res.Resources
+import androidx.fragment.app.activityViewModels
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 
 import com.google.android.gms.maps.model.MapStyleOptions
 import ie.wit.runappv2.helpers.ThemePreferenceHelper
+import ie.wit.runappv2.ui.auth.LoggedInViewModel
 import timber.log.Timber
 
 
@@ -32,6 +35,7 @@ class MapListFragment : Fragment(), OnMapReadyCallback {
     private var nightThemeCheck : Boolean = false
 
     private lateinit var mapListViewModel: MapListViewModel
+    private val loggedInViewModel : LoggedInViewModel by activityViewModels()
 
 
 
@@ -62,6 +66,7 @@ class MapListFragment : Fragment(), OnMapReadyCallback {
 
 
 
+
         return root
     }
 
@@ -71,6 +76,7 @@ class MapListFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
+        val loggedInUserId : String = loggedInViewModel.liveFirebaseUser.value?.uid!!
 
         if (nightThemeCheck) {
             try {
@@ -109,12 +115,26 @@ class MapListFragment : Fragment(), OnMapReadyCallback {
 
         for (race in races) {
             val locationCoordinates = LatLng(race.location.lat, race.location.lng)
-            val options = MarkerOptions()
-                .title(race.title)
-                .snippet("GPS : $locationCoordinates")
-                .draggable(false)
-                .position(locationCoordinates)
-            map.addMarker(options)
+
+            if (race.createdUser == loggedInUserId) {
+                val options = MarkerOptions()
+                    .title(race.title)
+                    .snippet("GPS : $locationCoordinates")
+                    .draggable(false)
+                    .position(locationCoordinates)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                map.addMarker(options)
+            }
+            else {
+                val options = MarkerOptions()
+                    .title(race.title)
+                    .snippet("GPS : $locationCoordinates")
+                    .draggable(false)
+                    .position(locationCoordinates)
+                map.addMarker(options)
+            }
+
+
 
         }
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 6.5F))

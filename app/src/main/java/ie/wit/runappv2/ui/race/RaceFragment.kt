@@ -209,14 +209,14 @@ class RaceFragment : Fragment() {
                 if (race.image.isEmpty()) {
                     race.image = "https://firebasestorage.googleapis.com/v0/b/runningappv1.appspot.com/o/images%2FSun%20Oct%2031%2016%3A52%3A53%20GMT%202021.png?alt=media&token=dec24aa1-37e6-423c-a002-6405ea9dcb97"
                 }
-                race.createdUser = currentUser?.email!!
+                race.createdUser = loggedInViewModel.liveFirebaseUser.value?.uid!!
                 raceViewModel.addRace(loggedInViewModel.liveFirebaseUser, race.copy())
                 //app.races.create(race.copy())
                 it.findNavController().navigate(R.id.action_raceFragment_to_reportFragment)
             }
             else if (race.title.isNotEmpty() && race.description.isNotEmpty() && race.raceDate.isNotEmpty() && race.raceDistance.isNotEmpty() && editRace != null) {
                 //app.races.update(race);
-                    race.updatedUser = currentUser?.email!!
+                    race.updatedUser = loggedInViewModel.liveFirebaseUser.value?.uid!!
                     raceViewModel.updateRace(loggedInViewModel.liveFirebaseUser.value?.uid!!, race.uid.toString(),race.copy())
                 it.findNavController().navigate(R.id.action_raceFragment_to_reportFragment)
             }
