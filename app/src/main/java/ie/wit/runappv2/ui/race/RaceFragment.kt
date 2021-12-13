@@ -1,7 +1,10 @@
 package ie.wit.runappv2.ui.race
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
@@ -12,6 +15,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -35,8 +39,11 @@ import java.util.*
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import ie.wit.runappv2.helpers.checkLocationPermissions
 import ie.wit.runappv2.ui.auth.LoggedInViewModel
 
 class RaceFragment : Fragment() {
@@ -49,14 +56,12 @@ class RaceFragment : Fragment() {
     private lateinit var mapIntentLauncher : ActivityResultLauncher<Intent>
     val args: RaceFragmentArgs by navArgs()
     private lateinit var raceViewModel: RaceViewModel
-    //lateinit var navController: NavController
     private val loggedInViewModel : LoggedInViewModel by activityViewModels()
+    private lateinit var locationService: FusedLocationProviderClient
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        //navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
 
         registerImagePickerCallback()
         registerMapCallback()
@@ -72,6 +77,34 @@ class RaceFragment : Fragment() {
         val builder : MaterialDatePicker.Builder<Long> = MaterialDatePicker.Builder.datePicker()
 
         val editRace = args?.editRace
+
+
+        locationService = LocationServices.getFusedLocationProviderClient(requireActivity())
+
+        if (checkLocationPermissions(requireContext())) {
+            doSetCurrentLocation()
+        }
+        else {
+            var locationPermissionGranted = false
+            val permissionLauncher = registerForActivityResult(
+                ActivityResultContracts.RequestMultiplePermissions()
+            ) { isGranted ->
+
+                isGranted.entries.forEach {
+                    if (it.value == true) {
+                        locationPermissionGranted = true
+                    }
+                }
+
+                if (locationPermissionGranted) {
+                    doSetCurrentLocation()
+                }
+
+            }
+
+            permissionLauncher.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION))
+
+        }
 
         val root = fragBinding.root
         activity?.title = getString(R.string.action_add_race)
@@ -290,6 +323,14 @@ class RaceFragment : Fragment() {
                     AppCompatActivity.RESULT_CANCELED -> { } else -> { }
                 }
             }
+    }
+
+    @SuppressLint("MissingPermission")
+    fun doSetCurrentLocation() {
+        Timber.i("setting location from doSetLocation")
+        locationService.lastLocation.addOnSuccessListener {
+            location = Location(it.latitude, it.longitude)
+        }
     }
 
 
