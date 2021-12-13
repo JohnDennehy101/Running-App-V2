@@ -190,6 +190,18 @@
                     android:layout_margin="3dp"
                     />
 
+                <com.google.android.gms.maps.MapView
+                    android:id="@+id/mapView2"
+                    android:layout_width="match_parent"
+                    android:layout_height="162dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="10dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView" />
                 <Button
                     android:id="@+id/raceLocation"
                     android:layout_width="match_parent"
@@ -202,6 +214,8 @@
                     android:text="@string/button_location"
                     android:textColor="@color/colorPrimary"
                     android:textSize="16sp"/>
+
+
 
 
                 <Button

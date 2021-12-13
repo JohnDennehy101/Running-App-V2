@@ -4,7 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
+import android.content.res.Resources
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
@@ -15,7 +15,6 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -29,21 +28,21 @@ import com.squareup.picasso.Picasso
 import ie.wit.runappv2.R
 import ie.wit.runappv2.databinding.FragmentRaceBinding
 import ie.wit.runappv2.firebase.FirebaseStorageManager
-import ie.wit.runappv2.helpers.limitRange
-import ie.wit.runappv2.helpers.saveImage
-import ie.wit.runappv2.helpers.showImagePicker
 import ie.wit.runappv2.models.Location
 import ie.wit.runappv2.models.RaceModel
 import timber.log.Timber
 import java.util.*
 import androidx.lifecycle.Observer
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import ie.wit.runappv2.helpers.checkLocationPermissions
+import ie.wit.runappv2.helpers.*
 import ie.wit.runappv2.ui.auth.LoggedInViewModel
 
 class RaceFragment : Fragment() {
@@ -58,11 +57,14 @@ class RaceFragment : Fragment() {
     private lateinit var raceViewModel: RaceViewModel
     private val loggedInViewModel : LoggedInViewModel by activityViewModels()
     private lateinit var locationService: FusedLocationProviderClient
+    lateinit var map: GoogleMap
+    private var nightThemeCheck : Boolean = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        nightThemeCheck = checkTheme()
         registerImagePickerCallback()
         registerMapCallback()
         setHasOptionsMenu(true)
@@ -81,8 +83,8 @@ class RaceFragment : Fragment() {
 
         locationService = LocationServices.getFusedLocationProviderClient(requireActivity())
 
-        if (checkLocationPermissions(requireContext())) {
-            doSetCurrentLocation()
+        if (checkLocationPermissions(requireContext()) || editRace != null) {
+            setCurrentLocation()
         }
         else {
             var locationPermissionGranted = false
@@ -97,13 +99,19 @@ class RaceFragment : Fragment() {
                 }
 
                 if (locationPermissionGranted) {
-                    doSetCurrentLocation()
+                    setCurrentLocation()
                 }
 
             }
 
             permissionLauncher.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION))
 
+        }
+
+        fragBinding.mapView2.onCreate(savedInstanceState);
+        fragBinding.mapView2.getMapAsync {
+            map = it
+            configureMap(map, editRace, nightThemeCheck)
         }
 
         val root = fragBinding.root
@@ -233,9 +241,6 @@ class RaceFragment : Fragment() {
             race.raceDate = fragBinding.raceDatePicker.text.toString()
             race.raceDistance = fragBinding.menuAutocomplete.text.toString()
             race.location = location
-            //race.createdUser =
-
-
 
 
             if (race.title.isNotEmpty() && race.description.isNotEmpty() && race.raceDate.isNotEmpty() && race.raceDistance.isNotEmpty() && editRace == null) {
@@ -244,13 +249,11 @@ class RaceFragment : Fragment() {
                 }
                 race.createdUser = loggedInViewModel.liveFirebaseUser.value?.uid!!
                 raceViewModel.addRace(loggedInViewModel.liveFirebaseUser, race.copy())
-                //app.races.create(race.copy())
                 it.findNavController().navigate(R.id.action_raceFragment_to_reportFragment)
             }
             else if (race.title.isNotEmpty() && race.description.isNotEmpty() && race.raceDate.isNotEmpty() && race.raceDistance.isNotEmpty() && editRace != null) {
-                //app.races.update(race);
-                    race.updatedUser = loggedInViewModel.liveFirebaseUser.value?.uid!!
-                    raceViewModel.updateRace(loggedInViewModel.liveFirebaseUser.value?.uid!!, race.uid.toString(),race.copy())
+                race.updatedUser = loggedInViewModel.liveFirebaseUser.value?.uid!!
+                raceViewModel.updateRace(loggedInViewModel.liveFirebaseUser.value?.uid!!, race.uid.toString(),race.copy())
                 it.findNavController().navigate(R.id.action_raceFragment_to_reportFragment)
             }
             else if (race.title.isEmpty()) {
@@ -326,11 +329,73 @@ class RaceFragment : Fragment() {
     }
 
     @SuppressLint("MissingPermission")
-    fun doSetCurrentLocation() {
+    fun setCurrentLocation() {
         Timber.i("setting location from doSetLocation")
         locationService.lastLocation.addOnSuccessListener {
             location = Location(it.latitude, it.longitude)
         }
+    }
+
+    fun configureMap(m: GoogleMap, editRace: RaceModel?, nightThemeCheck: Boolean) {
+        map = m
+        if (nightThemeCheck) {
+            try {
+                // Customise the styling of the base map using a JSON object defined
+                // in a raw resource file.
+                val success = map.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                        context, ie.wit.runappv2.R.raw.style_night_map
+                    )
+                )
+                if (!success) {
+                    Timber.i("Styling parsing failed.")
+                }
+            } catch (e: Resources.NotFoundException) {
+                Timber.i("Styling Not Found.")
+            }
+        }
+        else {
+            try {
+                // Customise the styling of the base map using a JSON object defined
+                // in a raw resource file.
+                val success = map.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                        context, ie.wit.runappv2.R.raw.style_day_map
+                    )
+                )
+                if (!success) {
+                    Timber.i("Styling parsing failed.")
+                }
+            } catch (e: Resources.NotFoundException) {
+                Timber.i("Styling Not Found.")
+            }
+        }
+        locationUpdate(location.lat, location.lng, editRace)
+    }
+
+    private fun checkTheme() : Boolean {
+
+        var nightThemeCheck : Boolean = false
+
+        if (ThemePreferenceHelper(context).darkMode == 1) {
+            nightThemeCheck = true
+        }
+        return nightThemeCheck
+    }
+
+    fun locationUpdate(lat: Double, lng: Double, editRace: RaceModel?) {
+        map?.clear()
+        map?.uiSettings?.setZoomControlsEnabled(true)
+        var options : MarkerOptions?
+        if (editRace != null) {
+            options = MarkerOptions().title(editRace.title).position(LatLng(lat, lng))
+        }
+        else {
+            options = MarkerOptions().position(LatLng(lat, lng))
+        }
+
+        map?.addMarker(options)
+        map?.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lat, lng), 15f))
     }
 
 
@@ -350,11 +415,27 @@ class RaceFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        fragBinding.mapView2.onResume()
         val raceListViewModel = ViewModelProvider(this).get(RaceViewModel::class.java)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _fragBinding = null
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        fragBinding.mapView2.onDestroy()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        fragBinding.mapView2.onLowMemory()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        fragBinding.mapView2.onPause()
+    }
+
 }
