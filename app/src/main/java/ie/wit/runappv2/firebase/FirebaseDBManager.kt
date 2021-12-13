@@ -87,14 +87,16 @@ object FirebaseDBManager : RaceStore {
                 Log.e("Cancel", p0.toString())
             }
             override fun onDataChange (snapshot: DataSnapshot) {
-                for (item in snapshot.children) {
-                    val race : RaceModel = item.getValue(RaceModel::class.java)!!
-                    racesList.add(race)
-                }
+                if (snapshot.exists()) {
+                    for (item in snapshot.children) {
+                        val race: RaceModel = item.getValue(RaceModel::class.java)!!
+                        racesList.add(race)
+                    }
 
-                database.child("user-races").child(userId)
-                    .removeEventListener(this)
-                liveData.postValue(racesList)
+                    database.child("user-races").child(userId)
+                        .removeEventListener(this)
+                    liveData.postValue(racesList)
+                }
             }
 
         })

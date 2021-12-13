@@ -1,10 +1,8 @@
 package ie.wit.runappv2.ui.maplist
 
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -19,12 +17,16 @@ import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
+import android.view.*
+import android.widget.CompoundButton
+import android.widget.Switch
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import com.google.android.gms.maps.model.*
 
 import ie.wit.runappv2.helpers.ThemePreferenceHelper
 import ie.wit.runappv2.ui.auth.LoggedInViewModel
+import ie.wit.runappv2.utils.Loader
 import timber.log.Timber
 
 
@@ -35,14 +37,18 @@ class MapListFragment : Fragment(), OnMapReadyCallback {
     private lateinit var races : MutableList<RaceModel>
     private lateinit var map: GoogleMap
     private var nightThemeCheck : Boolean = false
-
+    var userSwitchChecked : Boolean = false
     private lateinit var mapListViewModel: MapListViewModel
     private val loggedInViewModel : LoggedInViewModel by activityViewModels()
+    var menuSwitch : Switch? = null
+    lateinit var loader : AlertDialog
 
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         races = mutableListOf<RaceModel>()
+
+        setHasOptionsMenu(true)
 
         nightThemeCheck = checkTheme()
 
@@ -58,6 +64,8 @@ class MapListFragment : Fragment(), OnMapReadyCallback {
         _fragBinding = FragmentMapListBinding.inflate(inflater, container, false)
         val root = fragBinding.root
 
+        loader = Loader().createLoader(requireActivity())
+
         mapListViewModel = ViewModelProvider(this).get(MapListViewModel::class.java)
         mapListViewModel.racesListLiveData.observe(viewLifecycleOwner, Observer {
                 races ->
@@ -70,6 +78,24 @@ class MapListFragment : Fragment(), OnMapReadyCallback {
 
 
         return root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, menuInflater: MenuInflater) {
+        menuInflater.inflate(R.menu.menu_map_list, menu)
+        menuSwitch =
+            menu.findItem(R.id.switch_action_bar).actionView.findViewById(R.id.menuSwitch) as Switch
+
+        menuSwitch!!.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                userSwitchChecked = true
+                Loader().showLoader(loader, "Downloading your created Races")
+                mapListViewModel.getRacesCreatedByCurrentUser()
+            } else {
+                userSwitchChecked = false
+                mapListViewModel.load()
+            }
+        })
+
     }
 
     fun updateRaceValues (racesList: List<RaceModel>) {
@@ -124,40 +150,72 @@ class MapListFragment : Fragment(), OnMapReadyCallback {
 
         val loc = LatLng(53.534046, -7.599592)
 
-        for (race in races) {
-            val locationCoordinates = LatLng(race.location.lat, race.location.lng)
+        if (!userSwitchChecked) {
+            for (race in races) {
+                val locationCoordinates = LatLng(race.location.lat, race.location.lng)
 
-            val userFavouriteRaceCheck = race.favouritedBy.find {it == loggedInUserId}
+                val userFavouriteRaceCheck = race.favouritedBy.find {it == loggedInUserId}
 
-            if (race.createdUser == loggedInUserId && userFavouriteRaceCheck == null) {
-                val options = MarkerOptions()
-                    .title(race.title)
-                    .snippet("GPS : $locationCoordinates")
-                    .draggable(false)
-                    .position(locationCoordinates)
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-                map.addMarker(options)
+                if (race.createdUser == loggedInUserId && userFavouriteRaceCheck == null) {
+                    val options = MarkerOptions()
+                        .title(race.title)
+                        .snippet("GPS : $locationCoordinates")
+                        .draggable(false)
+                        .position(locationCoordinates)
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                    map.addMarker(options)
+                }
+                else if (userFavouriteRaceCheck != null) {
+                    val options = MarkerOptions()
+                        .title(race.title)
+                        .snippet("GPS : $locationCoordinates")
+                        .draggable(false)
+                        .position(locationCoordinates)
+                        .icon(bitmapDescriptorFromVector(requireContext(), R.drawable.ic_favourite_icon))
+                    map.addMarker(options)
+                }
+                else {
+                    val options = MarkerOptions()
+                        .title(race.title)
+                        .snippet("GPS : $locationCoordinates")
+                        .draggable(false)
+                        .position(locationCoordinates)
+                    map.addMarker(options)
+                }
+        }
+
+        }
+        else {
+            map.clear()
+            for (race in races) {
+                val locationCoordinates = LatLng(race.location.lat, race.location.lng)
+
+                val userFavouriteRaceCheck = race.favouritedBy.find { it == loggedInUserId }
+
+                if (race.createdUser == loggedInUserId && userFavouriteRaceCheck == null) {
+                    val options = MarkerOptions()
+                        .title(race.title)
+                        .snippet("GPS : $locationCoordinates")
+                        .draggable(false)
+                        .position(locationCoordinates)
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                    map.addMarker(options)
+                } else if (userFavouriteRaceCheck != null) {
+                    val options = MarkerOptions()
+                        .title(race.title)
+                        .snippet("GPS : $locationCoordinates")
+                        .draggable(false)
+                        .position(locationCoordinates)
+                        .icon(
+                            bitmapDescriptorFromVector(
+                                requireContext(),
+                                R.drawable.ic_favourite_icon
+                            )
+                        )
+                    map.addMarker(options)
+                }
             }
-            else if (userFavouriteRaceCheck != null) {
-                val options = MarkerOptions()
-                    .title(race.title)
-                    .snippet("GPS : $locationCoordinates")
-                    .draggable(false)
-                    .position(locationCoordinates)
-                    .icon(bitmapDescriptorFromVector(requireContext(), R.drawable.ic_favourite_icon))
-                map.addMarker(options)
-            }
-            else {
-                val options = MarkerOptions()
-                    .title(race.title)
-                    .snippet("GPS : $locationCoordinates")
-                    .draggable(false)
-                    .position(locationCoordinates)
-                map.addMarker(options)
-            }
-
-
-
+            Loader().hideLoader(loader)
         }
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 6.5F))
     }
@@ -165,6 +223,20 @@ class MapListFragment : Fragment(), OnMapReadyCallback {
     override fun onDestroyView() {
         super.onDestroyView()
         _fragBinding = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (activity != null && requireActivity().isFinishing()) {
+            Loader().showLoader(loader,"Downloading Races")
+        }
+
+        loggedInViewModel.liveFirebaseUser.observe(viewLifecycleOwner, Observer { firebaseUser ->
+            if (firebaseUser != null) {
+                mapListViewModel.liveFirebaseUser.value = firebaseUser
+                mapListViewModel.load()
+            }
+        })
     }
 
     private fun checkTheme() : Boolean {
