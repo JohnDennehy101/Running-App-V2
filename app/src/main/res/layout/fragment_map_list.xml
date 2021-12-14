@@ -11,20 +11,65 @@
     android:name="com.google.android.gms.maps.SupportMapFragment"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    class="com.google.android.gms.maps.SupportMapFragment" />
+    class="com.google.android.gms.maps.SupportMapFragment">
+    <ToggleButton
+        android:id="@+id/favouritesButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left|top"
+        android:textSize="10dp"
+        android:textOff="Favourites"
+        android:textOn="Favourites"
+        android:background="@drawable/toggle_favourites_button"
+        android:padding="0dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="15dp"/>
+
+</fragment>
 
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/noRacesFoundLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp"
+        android:visibility="invisible"
+        android:background="?attr/colorOnPrimary">
     <TextView
         android:id="@+id/racesNotFound"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textAlignment="center"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         android:background="?attr/colorOnPrimary"
         android:visibility="invisible"
         android:text="@string/racesNotFound"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="@color/color_primary"
         tools:text="No added races." />
+
+        <Button
+            android:id="@+id/clearNoRacesFound"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="?attr/colorPrimary"
+            android:gravity="center"
+            android:text="@string/clear_no_races_found"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="?attr/colorOnPrimary"
+            android:visibility="invisible"
+            app:layout_constraintVertical_bias="0.05"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/racesNotFound" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"

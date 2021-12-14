@@ -23,6 +23,7 @@ import android.view.animation.AnimationUtils
 import android.widget.CompoundButton
 import android.widget.LinearLayout
 import android.widget.Switch
+import android.widget.ToggleButton
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.FragmentTransaction
@@ -50,6 +51,7 @@ class MapListFragment : Fragment(), OnMapReadyCallback {
     private lateinit var mapListViewModel: MapListViewModel
     private val loggedInViewModel : LoggedInViewModel by activityViewModels()
     var menuSwitch : Switch? = null
+    var favouriteToggleButton : Boolean = false
     lateinit var loader : AlertDialog
 
 
@@ -87,6 +89,34 @@ class MapListFragment : Fragment(), OnMapReadyCallback {
             onRaceClick(selectedRace)
         }
 
+        fragBinding.favouritesButton.setOnClickListener {
+            val checkedStatus = fragBinding.favouritesButton.isChecked
+            if (checkedStatus) {
+                favouriteToggleButton = true
+                Loader().showLoader(loader, "Downloading your favourited Races")
+                fragBinding.cardView.visibility = View.GONE
+                mapListViewModel.getUserFavourites()
+                Loader().hideLoader(loader)
+        }
+            else {
+                favouriteToggleButton = false
+                Loader().showLoader(loader, "Downloading  Races")
+                mapListViewModel.load()
+                Loader().hideLoader(loader)
+            }
+        }
+
+        fragBinding.clearNoRacesFound.setOnClickListener {
+            favouriteToggleButton = false
+            Loader().showLoader(loader, "Downloading  Races")
+            mapListViewModel.load()
+            fragBinding.favouritesButton.isChecked = false
+            fragBinding.racesNotFound.visibility = View.GONE
+            fragBinding.clearNoRacesFound.visibility = View.GONE
+            fragBinding.noRacesFoundLayout.visibility = View.GONE
+            Loader().hideLoader(loader)
+        }
+
 
 
 
@@ -102,6 +132,7 @@ class MapListFragment : Fragment(), OnMapReadyCallback {
             if (isChecked) {
                 userSwitchChecked = true
                 Loader().showLoader(loader, "Downloading your created Races")
+                fragBinding.favouritesButton.isChecked = false
                 fragBinding.cardView.visibility = View.GONE
                 mapListViewModel.getRacesCreatedByCurrentUser()
             } else {
@@ -169,8 +200,10 @@ class MapListFragment : Fragment(), OnMapReadyCallback {
 
         val loc = LatLng(53.534046, -7.599592)
 
-        if (!userSwitchChecked && races.size > 0) {
+        if (!userSwitchChecked && races.size > 0 && !favouriteToggleButton) {
             fragBinding.racesNotFound.visibility = View.INVISIBLE
+            fragBinding.clearNoRacesFound.visibility = View.INVISIBLE
+            fragBinding.noRacesFoundLayout.visibility = View.INVISIBLE
             for (race in races) {
                 val locationCoordinates = LatLng(race.location.lat, race.location.lng)
 
@@ -204,13 +237,17 @@ class MapListFragment : Fragment(), OnMapReadyCallback {
                 }
                 else {
                     fragBinding.racesNotFound.visibility = View.VISIBLE
+                    fragBinding.clearNoRacesFound.visibility = View.INVISIBLE
+                    fragBinding.noRacesFoundLayout.visibility = View.INVISIBLE
                 }
         }
 
         }
-        else {
+        else if (!favouriteToggleButton) {
             var userCreatedRaceExists = false
             fragBinding.racesNotFound.visibility = View.INVISIBLE
+            fragBinding.clearNoRacesFound.visibility = View.INVISIBLE
+            fragBinding.noRacesFoundLayout.visibility = View.INVISIBLE
             map.clear()
             if (races.size > 0) {
                 for (race in races) {
@@ -240,6 +277,42 @@ class MapListFragment : Fragment(), OnMapReadyCallback {
                 fragBinding.racesNotFound.visibility = View.VISIBLE
             }
 
+        }
+        else if (favouriteToggleButton) {
+            var userFavouritedRaceExists = false
+            map.clear()
+
+
+            if (races.size > 0) {
+                for (race in races) {
+                    val locationCoordinates = LatLng(race.location.lat, race.location.lng)
+
+                    val userFavouriteRaceCheck = race.favouritedBy.find { it == loggedInUserId }
+
+                    if (userFavouriteRaceCheck != null) {
+                        val options = MarkerOptions()
+                            .title(race.title)
+                            .snippet("GPS : $locationCoordinates")
+                            .draggable(false)
+                            .position(locationCoordinates)
+                            .icon(bitmapDescriptorFromVector(requireContext(), R.drawable.ic_favourite_icon))
+                        map.addMarker(options)
+                        userFavouritedRaceExists = true
+                    }
+                }
+                Loader().hideLoader(loader)
+                if (!userFavouritedRaceExists) {
+                    fragBinding.racesNotFound.visibility = View.VISIBLE
+                }
+
+            }
+
+            else {
+                favouriteToggleButton = false
+                fragBinding.racesNotFound.visibility = View.VISIBLE
+                fragBinding.clearNoRacesFound.visibility = View.VISIBLE
+                fragBinding.noRacesFoundLayout.visibility = View.VISIBLE
+            }
         }
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 6.5F))
         map.setOnMarkerClickListener { marker ->
