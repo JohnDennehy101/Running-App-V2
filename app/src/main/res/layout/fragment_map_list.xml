@@ -17,9 +17,10 @@
     <TextView
         android:id="@+id/racesNotFound"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-
-        android:background="@color/grey"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:background="?attr/colorOnPrimary"
+        android:visibility="invisible"
         android:text="@string/racesNotFound"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="@color/color_primary"

@@ -19,11 +19,13 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.view.*
+import android.view.animation.AnimationUtils
 import android.widget.CompoundButton
 import android.widget.LinearLayout
 import android.widget.Switch
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import com.google.android.gms.maps.model.*
@@ -100,6 +102,7 @@ class MapListFragment : Fragment(), OnMapReadyCallback {
             if (isChecked) {
                 userSwitchChecked = true
                 Loader().showLoader(loader, "Downloading your created Races")
+                fragBinding.cardView.visibility = View.GONE
                 mapListViewModel.getRacesCreatedByCurrentUser()
             } else {
                 userSwitchChecked = false
@@ -166,7 +169,8 @@ class MapListFragment : Fragment(), OnMapReadyCallback {
 
         val loc = LatLng(53.534046, -7.599592)
 
-        if (!userSwitchChecked) {
+        if (!userSwitchChecked && races.size > 0) {
+            fragBinding.racesNotFound.visibility = View.INVISIBLE
             for (race in races) {
                 val locationCoordinates = LatLng(race.location.lat, race.location.lng)
 
@@ -190,55 +194,59 @@ class MapListFragment : Fragment(), OnMapReadyCallback {
                         .icon(bitmapDescriptorFromVector(requireContext(), R.drawable.ic_favourite_icon))
                     map.addMarker(options)
                 }
-                else {
+                else if (races.size > 0) {
                     val options = MarkerOptions()
                         .title(race.title)
                         .snippet("GPS : $locationCoordinates")
                         .draggable(false)
                         .position(locationCoordinates)
                     map.addMarker(options)
+                }
+                else {
+                    fragBinding.racesNotFound.visibility = View.VISIBLE
                 }
         }
 
         }
         else {
+            var userCreatedRaceExists = false
+            fragBinding.racesNotFound.visibility = View.INVISIBLE
             map.clear()
-            for (race in races) {
-                val locationCoordinates = LatLng(race.location.lat, race.location.lng)
+            if (races.size > 0) {
+                for (race in races) {
+                    val locationCoordinates = LatLng(race.location.lat, race.location.lng)
 
-                val userFavouriteRaceCheck = race.favouritedBy.find { it == loggedInUserId }
+                    val userFavouriteRaceCheck = race.favouritedBy.find { it == loggedInUserId }
 
-                if (race.createdUser == loggedInUserId && userFavouriteRaceCheck == null) {
-                    val options = MarkerOptions()
-                        .title(race.title)
-                        .snippet("GPS : $locationCoordinates")
-                        .draggable(false)
-                        .position(locationCoordinates)
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-                    map.addMarker(options)
-                } else if (userFavouriteRaceCheck != null) {
-                    val options = MarkerOptions()
-                        .title(race.title)
-                        .snippet("GPS : $locationCoordinates")
-                        .draggable(false)
-                        .position(locationCoordinates)
-                        .icon(
-                            bitmapDescriptorFromVector(
-                                requireContext(),
-                                R.drawable.ic_favourite_icon
-                            )
-                        )
-                    map.addMarker(options)
+                    if (race.createdUser == loggedInUserId && userFavouriteRaceCheck == null) {
+                        val options = MarkerOptions()
+                            .title(race.title)
+                            .snippet("GPS : $locationCoordinates")
+                            .draggable(false)
+                            .position(locationCoordinates)
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                        map.addMarker(options)
+                        userCreatedRaceExists = true
+                    }
                 }
+                Loader().hideLoader(loader)
+                if (!userCreatedRaceExists) {
+                    fragBinding.racesNotFound.visibility = View.VISIBLE
+                }
+
             }
-            Loader().hideLoader(loader)
+
+            else {
+                fragBinding.racesNotFound.visibility = View.VISIBLE
+            }
+
         }
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 6.5F))
         map.setOnMarkerClickListener { marker ->
             if (marker.isInfoWindowShown) {
-                println("CHECKED")
             }
             else {
+                fragBinding.cardView.visibility = View.GONE
                 selectedRace = races.find { it.title == marker.title && it.location.lat == marker.position.latitude && it.location.lng == marker.position.longitude }!!
                 fragBinding.raceTitle.text = selectedRace!!.title
                 fragBinding.raceDescription.text = selectedRace.description
@@ -256,10 +264,8 @@ class MapListFragment : Fragment(), OnMapReadyCallback {
                 Picasso.get().load(selectedRace.image.toUri()).resize(200,200).into(fragBinding.imageIcon)
 
                 fragBinding.cardView.visibility = View.VISIBLE
-                ObjectAnimator.ofFloat(fragBinding.cardView, "translationX", 100f).apply {
-                    duration = 2000
-                    start()
-                }
+                val animation = AnimationUtils.loadAnimation(context, R.anim.slide_in)
+                fragBinding.cardView.startAnimation(animation)
             }
             true
         }
