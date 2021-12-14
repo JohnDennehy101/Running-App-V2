@@ -1,5 +1,6 @@
 package ie.wit.runappv2.ui.maplist
 
+import android.animation.ObjectAnimator
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
@@ -19,13 +20,18 @@ import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.view.*
 import android.widget.CompoundButton
+import android.widget.LinearLayout
 import android.widget.Switch
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.findNavController
 import com.google.android.gms.maps.model.*
+import com.squareup.picasso.Picasso
 
 import ie.wit.runappv2.helpers.ThemePreferenceHelper
 import ie.wit.runappv2.ui.auth.LoggedInViewModel
+import ie.wit.runappv2.ui.report.RaceListFragmentDirections
 import ie.wit.runappv2.utils.Loader
 import timber.log.Timber
 
@@ -35,6 +41,7 @@ class MapListFragment : Fragment(), OnMapReadyCallback {
     private var _fragBinding: FragmentMapListBinding? = null
     private val fragBinding get() = _fragBinding!!
     private lateinit var races : MutableList<RaceModel>
+    private lateinit var selectedRace : RaceModel
     private lateinit var map: GoogleMap
     private var nightThemeCheck : Boolean = false
     var userSwitchChecked : Boolean = false
@@ -74,6 +81,10 @@ class MapListFragment : Fragment(), OnMapReadyCallback {
             mapFragment.getMapAsync(this)
         })
 
+        fragBinding.cardView.setOnClickListener {
+            onRaceClick(selectedRace)
+        }
+
 
 
 
@@ -109,6 +120,11 @@ class MapListFragment : Fragment(), OnMapReadyCallback {
             draw(Canvas(bitmap))
             BitmapDescriptorFactory.fromBitmap(bitmap)
         }
+    }
+
+    private fun onRaceClick(race: RaceModel) {
+        val editRaceAction = MapListFragmentDirections.actionMapListFragmentToRaceFragment(race)
+        requireView().findNavController().navigate(editRaceAction)
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -218,6 +234,37 @@ class MapListFragment : Fragment(), OnMapReadyCallback {
             Loader().hideLoader(loader)
         }
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 6.5F))
+        map.setOnMarkerClickListener { marker ->
+            if (marker.isInfoWindowShown) {
+                println("CHECKED")
+            }
+            else {
+                selectedRace = races.find { it.title == marker.title && it.location.lat == marker.position.latitude && it.location.lng == marker.position.longitude }!!
+                fragBinding.raceTitle.text = selectedRace!!.title
+                fragBinding.raceDescription.text = selectedRace.description
+                fragBinding.raceDate.text = selectedRace.raceDate
+                fragBinding.raceDistance.text = selectedRace.raceDistance
+
+                val params = LinearLayout.LayoutParams(
+                    200,
+                    200
+                )
+                fragBinding.imageIcon.layoutParams = params
+                fragBinding.imageIcon.visibility = View.VISIBLE
+                Picasso.get().setLoggingEnabled(true);
+
+                Picasso.get().load(selectedRace.image.toUri()).resize(200,200).into(fragBinding.imageIcon)
+
+                fragBinding.cardView.visibility = View.VISIBLE
+                ObjectAnimator.ofFloat(fragBinding.cardView, "translationX", 100f).apply {
+                    duration = 2000
+                    start()
+                }
+            }
+            true
+        }
+
+
     }
 
     override fun onDestroyView() {
