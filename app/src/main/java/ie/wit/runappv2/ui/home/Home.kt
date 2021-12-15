@@ -35,7 +35,7 @@ class Home : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         homeBinding = HomeBinding.inflate(layoutInflater)
-        checkTheme()
+        //checkTheme()
         setContentView(homeBinding.root)
 
         drawerLayout = homeBinding.drawerLayout
