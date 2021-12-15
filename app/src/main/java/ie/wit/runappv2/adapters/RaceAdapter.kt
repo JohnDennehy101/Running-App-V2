@@ -37,6 +37,7 @@ class RaceAdapter(
     inner class MainHolder(val binding : CardRaceBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
+
         fun bind(race: RaceModel, listener: RaceListener) {
             //binding.root.tag = race._id
             binding.root.tag = race
@@ -65,6 +66,8 @@ class RaceAdapter(
             binding.root.setOnClickListener { listener.onRaceClick(race) }
             binding.deleteRaceButton.setOnClickListener {listener.onRaceDeleteClick(race)}
             binding.favButton.setOnClickListener{listener.onRaceFavouriteClick(race, binding.favButton)}
+
+            binding.executePendingBindings()
         }
     }
 }

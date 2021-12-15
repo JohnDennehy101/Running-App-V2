@@ -97,6 +97,9 @@ object FirebaseDBManager : RaceStore {
                         .removeEventListener(this)
                     liveData.postValue(racesList)
                 }
+                else {
+                    liveData.postValue(racesList)
+                }
             }
 
         })

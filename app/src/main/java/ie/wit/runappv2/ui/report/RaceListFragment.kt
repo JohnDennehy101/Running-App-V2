@@ -31,12 +31,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import ie.wit.runappv2.ui.auth.LoggedInViewModel
 import androidx.navigation.fragment.findNavController
-
-
-
-
-
-
+import com.google.android.material.snackbar.Snackbar
 
 
 class RaceListFragment : Fragment(), RaceListener  {
@@ -95,10 +90,12 @@ class RaceListFragment : Fragment(), RaceListener  {
 
                 when (checkedId) {
                     R.id.allRacesToggleButton -> {
-                        raceListViewModel.load()
+
+                        fragBinding.racesNotFound.visibility = View.GONE
                         fragBinding.toggleFavouritesButtonGroup.clearChecked()
                         fragBinding.toggleFavouritesButtonGroup.check(R.id.allRaceRecordsButton)
                         fragBinding.toggleFavouritesButtonGroup.visibility = View.INVISIBLE
+                        raceListViewModel.load()
                     }
                     R.id.userRacesToggleButton -> {
                         raceListViewModel.getRacesCreatedByCurrentUser()
@@ -115,7 +112,7 @@ class RaceListFragment : Fragment(), RaceListener  {
             if (isChecked) {
 
                 when (checkedId) {
-                    R.id.allRaceRecordsButton -> raceListViewModel.load()
+                    R.id.allRaceRecordsButton -> raceListViewModel.getRacesCreatedByCurrentUser()
                     R.id.userFavouritesButton -> raceListViewModel.getUserFavourites()
                 }
 
@@ -128,11 +125,21 @@ class RaceListFragment : Fragment(), RaceListener  {
 
         val swipeDeleteHandler = object : SwipeToDeleteCallback(requireContext()) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val race : RaceModel = viewHolder.itemView.tag as RaceModel
                 Loader().showLoader(loader,"Deleting Race")
                 val adapter = fragBinding.recyclerView.adapter as RaceAdapter
-                adapter.removeAt(viewHolder.adapterPosition)
-                val race : RaceModel = viewHolder.itemView.tag as RaceModel
-                raceListViewModel.delete(race.uid.toString())
+
+                if(race.createdUser == raceListViewModel.liveFirebaseUser.value?.uid!!) {
+                    adapter.removeAt(viewHolder.adapterPosition)
+
+                    raceListViewModel.delete(race.uid.toString())
+                }
+                else {
+                    Snackbar.make(requireView(), "Cannot delete other user's races.",
+                        Snackbar.LENGTH_SHORT).show()
+                    raceListViewModel.load()
+                }
+
                 Loader().hideLoader(loader)
             }
         }
@@ -195,8 +202,6 @@ class RaceListFragment : Fragment(), RaceListener  {
             if (isChecked) {
 
                 fragBinding.filterFunctionalityCard.visibility = View.VISIBLE
-                //raceListViewModel.getRacesCreatedByCurrentUser(currentUserEmail)
-                //fragBinding.recyclerView.adapter?.notifyDataSetChanged()
             }
             else {
                 fragBinding.filterFunctionalityCard.visibility = View.INVISIBLE
@@ -235,18 +240,37 @@ class RaceListFragment : Fragment(), RaceListener  {
 
     override fun onRaceClick(race: RaceModel) {
         val editRaceAction = RaceListFragmentDirections.actionReportFragmentToRaceFragment(race)
-        requireView().findNavController().navigate(editRaceAction)
+        if(race.createdUser == raceListViewModel.liveFirebaseUser.value?.uid!!) {
+            requireView().findNavController().navigate(editRaceAction)
+        }
+        else {
+            Snackbar.make(requireView(), "Cannot edit other user's races.",
+                Snackbar.LENGTH_SHORT).show()
+
+            raceListViewModel.load()
+        }
+
     }
 
     override fun onRaceDeleteClick(race: RaceModel) {
 
-        //RaceJSONMemStore.delete(race)
-        raceListViewModel.delete(race.uid.toString())
-
-        requireView().findNavController().run {
-            popBackStack()
-            navigate(R.id.reportFragment)
+        if(race.createdUser == raceListViewModel.liveFirebaseUser.value?.uid!!) {
+            raceListViewModel.delete(race.uid.toString())
+            requireView().findNavController().run {
+                popBackStack()
+                navigate(R.id.reportFragment)
+            }
         }
+
+        else {
+            Snackbar.make(requireView(), "Cannot delete other user's races.",
+                Snackbar.LENGTH_SHORT).show()
+
+            raceListViewModel.load()
+        }
+
+
+
 
     }
 
