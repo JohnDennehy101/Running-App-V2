@@ -30,6 +30,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import com.google.android.gms.maps.model.*
+import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 
 import ie.wit.runappv2.helpers.ThemePreferenceHelper
@@ -117,6 +118,18 @@ class MapListFragment : Fragment(), OnMapReadyCallback {
             Loader().hideLoader(loader)
         }
 
+        fragBinding.loadAllRacesButton.setOnClickListener {
+            favouriteToggleButton = false
+            Loader().showLoader(loader, "Downloading  Races")
+            mapListViewModel.load()
+            fragBinding.favouritesButton.isChecked = false
+            fragBinding.racesNotFound.visibility = View.GONE
+            fragBinding.loadAllRacesButton.visibility = View.GONE
+            fragBinding.noRacesFoundLayout.visibility = View.GONE
+            menuSwitch?.isChecked = false
+            Loader().hideLoader(loader)
+        }
+
 
 
 
@@ -158,7 +171,16 @@ class MapListFragment : Fragment(), OnMapReadyCallback {
 
     private fun onRaceClick(race: RaceModel) {
         val editRaceAction = MapListFragmentDirections.actionMapListFragmentToRaceFragment(race)
-        requireView().findNavController().navigate(editRaceAction)
+
+        if(race.createdUser == mapListViewModel.liveFirebaseUser.value?.uid!!) {
+            requireView().findNavController().navigate(editRaceAction)
+        }
+        else {
+            Snackbar.make(requireView(), "Cannot edit other user's races.",
+                Snackbar.LENGTH_SHORT).show()
+
+            mapListViewModel.load()
+        }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -268,6 +290,9 @@ class MapListFragment : Fragment(), OnMapReadyCallback {
                 }
                 Loader().hideLoader(loader)
                 if (!userCreatedRaceExists) {
+                    Loader().hideLoader(loader)
+                    fragBinding.clearNoRacesFound.visibility = View.VISIBLE
+                    fragBinding.noRacesFoundLayout.visibility = View.VISIBLE
                     fragBinding.racesNotFound.visibility = View.VISIBLE
                 }
 
@@ -275,6 +300,9 @@ class MapListFragment : Fragment(), OnMapReadyCallback {
 
             else {
                 fragBinding.racesNotFound.visibility = View.VISIBLE
+                fragBinding.loadAllRacesButton.visibility = View.VISIBLE
+                fragBinding.noRacesFoundLayout.visibility = View.VISIBLE
+                Loader().hideLoader(loader)
             }
 
         }
