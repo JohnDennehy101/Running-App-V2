@@ -214,4 +214,25 @@ object FirebaseDBManager : RaceStore {
 
         })
     }
+
+    fun updateImageRef(userid: String,imageUri: String) {
+
+        val userRaces = database.child("user-races").child(userid)
+        val allRaces = database.child("races")
+
+        userRaces.addListenerForSingleValueEvent(
+            object : ValueEventListener {
+                override fun onCancelled(error: DatabaseError) {}
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    snapshot.children.forEach {
+                        //Update Users imageUri
+                        it.ref.child("profilepic").setValue(imageUri)
+                        //Update all donations that match 'it'
+                        val race = it.getValue(RaceModel::class.java)
+                        allRaces.child(race!!.uid!!)
+                            .child("profilepic").setValue(imageUri)
+                    }
+                }
+            })
+    }
 }
